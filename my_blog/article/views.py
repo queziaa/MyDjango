@@ -8,11 +8,33 @@ from django.http import Http404
 # Create your views here.
 def home(request):
     post_list = Article.objects.all()  #获取全部的Article对象
-    return render(request, 'home.html', {'post_list' : post_list})
+    return render(request, 'home.html',{'post_list' : post_list})
 
-def detail(request, id):
-    try:
-        post = Article.objects.get(id=str(id))
-    except Article.DoesNotExist:
-        raise Http404
-    return render(request, 'post.html', {'post' : post})
+def me(request):
+    return render(request,'me.html')
+
+def detailed(request,id):
+    post = Article.objects.get(id=id)
+    return render(request, 'detailed.html',{'post':post})
+
+def archive(request):
+    post_list = Article.objects.all()  
+    return render(request,'archive.html',{'post_list' : post_list})
+
+# def detail(request, id):
+#     try:
+#         post = Article.objects.get(id=str(id))
+#     except Article.DoesNotExist:
+#         raise Http404
+#     return render(request, 'post.html', {'post' : post})
+
+# def archives(request) :
+#     try:
+#         post_list = Article.objects.all()
+#     except Article.DoesNotExist :
+#         raise Http404
+#     return render(request, 'archives.html', {'post_list' : post_list, 'error' : False})
+
+# def about_me(request) :
+#     return render(request, 'aboutme.html')
+

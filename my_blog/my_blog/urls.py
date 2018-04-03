@@ -17,10 +17,20 @@ from django.contrib import admin
 from django.urls import path
 from article import views
 from django.urls import include
+from django.conf.urls import url
+from django.conf.urls.static import static
+from django.conf import settings
 
+app_name = 'article'
 urlpatterns = [
     path('admin/',admin.site.urls),
     path('', views.home, name = 'home'),
-    path('<int:id>/',  views.detail, name='detail'),
+    path('me/',views.me,name='me'),
+    path('detailed/<int:id>/',views.detailed,name='detailed'),
+    path('archive',views.archive,name='archive')
+#    path('<int:id>/',  views.detail, name='detail'),
+#    path('archives', views.archives, name = 'archives'),
+#    path('aboutme' ,views.about_me, name = 'about_me'),
 
-]
+]+static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)
+

@@ -1,0 +1,17 @@
+<!--home.html-->
+{% extends "base.html" %}
+{% block content %}
+	{% load staticfiles %}
+	<link href="{% static 'css/detailed.css' %}" rel="stylesheet" type="text/css">
+		<div class="section_main">
+			<div class="title">
+				<p id="">{{ post.title }}</p>
+			</div>
+			<div class="ther">
+				<span >{{ post.date_time }}&emsp;&emsp;{{ post.comments }} Comments</span>
+			</div>
+			<div class="subject">
+					<p>{{ post.content }}</p>
+			</div>
+		</div>
+{% endblock %}
