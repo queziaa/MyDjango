@@ -5,7 +5,8 @@ class Article(models.Model) :
     title = models.CharField(max_length = 100)  #博客题目
     date_time = models.DateTimeField(auto_now_add = True)  #博客日期
     content = models.TextField(blank = True, null = True)  #博客文章正文
-    comments = models.IntegerField(default=0)  
+    comments_quantity = models.IntegerField(default=0)  
+    comment_ip = models.TextField(default='!')
 
     #python2使用__unicode__, python3使用__str__
     def __str__(self) :
@@ -13,4 +14,13 @@ class Article(models.Model) :
 
     class Meta:  #按时间下降排序
         ordering = ['-date_time']
+
+class Comment_db(models.Model):
+    date_time = models.DateTimeField(auto_now_add = True)
+    comments_text = models.TextField(max_length = 100)
+    ip_hash = models.CharField(max_length = 13) 
+
+    def __str__(self) :
+        return self.comments_text
+
 

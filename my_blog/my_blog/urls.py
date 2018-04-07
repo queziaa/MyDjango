@@ -27,7 +27,12 @@ urlpatterns = [
     path('', views.home, name = 'home'),
     path('me/',views.me,name='me'),
     path('detailed/<int:id>/',views.detailed,name='detailed'),
-    path('archive',views.archive,name='archive')
+    path('archive/',views.archive,name='archive'),
+    path('test/',views.test,name='test'),
+    path('add/',views.add,name='add'),
+
+    path('404',views.e404,name='e404'),
+
 #    path('<int:id>/',  views.detail, name='detail'),
 #    path('archives', views.archives, name = 'archives'),
 #    path('aboutme' ,views.about_me, name = 'about_me'),

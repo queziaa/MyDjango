@@ -8,6 +8,10 @@ body{
 a{
 	text-decoration:none
 }
+a:link {color: #a78d71}
+a:visited {color: #a78d71}
+a:hover {color: #4d3b31}
+a:active {color: #a78d71}
 #left{
 	position:fixed;
 	left:0;
@@ -20,10 +24,16 @@ a{
 #left ul{
 	padding:0px;
 }
-a:link {color: #a78d71}
-a:visited {color: #a78d71}
-a:hover {color: #4d3b31}
-a:active {color: #a78d71}
+#left a{ 
+	font-size:40px;
+	font-weight:bold;
+	
+}
+#left li{
+	list-style-type:none;
+}
+
+
 #right{
 	position:relative;
 	left:15%;
@@ -50,11 +60,68 @@ a:active {color: #a78d71}
 	color: #868F9C;
 	padding :0px 50px 0px 0px;
 }
-#left a{ 
-	font-size:40px;
-	font-weight:bold;
-	
+
+.comment{
+	padding:4% 0% 5% 0%;
 }
-#left li{
-	list-style-type:none;
+.comment label{
+	display:none;
+}
+.comment textarea{
+	border:none;
+	outline:none; 
+	font-size:20px;
+	width:99%;/*自动适应父布局宽度*/  
+	background-color:#31332e;
+	color:#a78d71;
+	padding: 1%;asdasda
+	border-radius: 5px;
+}
+.comment input{
+	margin-top: 10px;
+    height:40px;
+    border: 0;  
+	-moz-border-radius: 2px;
+    background: #bfc4cc;
+    color: #31332e;
+	font-size: 15px; 
+	border-radius: 5px;
+
+}
+
+#comment_text{
+	width:99%;/*自动适应父布局宽度*/ 
+	border:2px solid #a1a1a1;
+	border-radius:25px;
+	padding:0.5% 1% ;
+	margin:1% 0%; 
+}
+
+#comment_title{
+	padding:0% 0% 0% 1%;
+}
+#comment_title span{
+	margin:0% 1% 0% 0%;
+}
+#comment_name{
+	font-weight: bold;
+	font-size:23px;
+}
+#comment_time{
+
+}
+#comment_floor{
+	left:69%;
+	position:relative;
+	width:30%;
+	text-align:right;  
+	color:#a78d71;
+	font-size:20px;
+}
+#comment_content{
+	padding:0% 4% 0% 3%;
+	font-size:20px;
+	word-break:break-all; 
+    position:relative;
+    bottom:15px;
 }

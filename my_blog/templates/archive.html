@@ -4,13 +4,15 @@
 	{% for post in post_list %} 
 		<div class="section_main" style="padding:0% 0% 0% 3% ;">
 			<div class="title">
-				<a href="/detailed/{{ post.id }}">{{ post.title }}</a>
+				<a href="/detailed/{{ post.id }}/">{{ post.title }}</a>
 			</div>
 			<div class="ther">
 				<span>id:{{ post.id }}</span>
 				<span>{{ post.date_time }}</span>
-				<span>{{ post.comments }} Comments</span>
+				<span>{{ post.comments_quantity }} Comments</span>
 			</div>
 		</div>
 	{% endfor %} 
 {% endblock %}
+
+
