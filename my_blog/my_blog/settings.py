@@ -1,3 +1,4 @@
+#coding=utf-8
 """
 Django settings for my_blog project.
 
@@ -82,10 +83,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'HOST': '127.0.0.1',
         'PORT': '3306',
-        'NAME': 'mysql',
-        'USER': 'django',
+        'NAME': 'django_db',
+        'USER': 'root',
         'PASSWORD': 'root',
-        'OPTIONS': {
+        'OPTIONS': {    
             'sql_mode': 'traditional',
             },
     }
@@ -129,3 +130,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'article/static')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')    
+ #设置静态文件路径为主目录下的media文件夹
+MEDIA_URL = '/media/' 

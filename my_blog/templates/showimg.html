@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+	{% for img in imgs %}
+	<img src="{{ img.img.url }}" />
+	{% endfor %}	
+{% endblock %}

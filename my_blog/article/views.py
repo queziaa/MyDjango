@@ -1,3 +1,4 @@
+#coding=utf-8
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.http import HttpResponseRedirect  
@@ -5,8 +6,10 @@ from django.http import HttpResponse
 from django.urls import reverse  
 from article.models import Article
 from article.models import Comment_db
+from article.models import IMG
 from datetime import datetime
 from django.http import Http404
+from django.views.decorators.csrf import csrf_exempt
 import base64
 import hashlib
 
@@ -83,6 +86,27 @@ def add(request):
 def e404(request):
     return render(request,'404.html')
 
+
+@csrf_exempt
+def uploadImg(request):
+    if request.method == 'POST':
+        new_img = IMG(
+            img=request.FILES.get('img'),
+            name = request.FILES.get('img').name
+        )
+        new_img.save()
+    return render(request, 'uploadimg.html')
+
+@csrf_exempt
+def showImg(request):
+    imgs = IMG.objects.all()
+    content = {
+        'imgs':imgs,
+    }
+    for i in imgs:
+        print (i.img.url)
+    return render(request, 'showimg.html', content)
+
 # def detail(request, id):
 #     try:
 #         post = Article.objects.get(id=str(id))
@@ -101,6 +125,7 @@ def e404(request):
 #     return render(request, 'aboutme.html')
 
 def ip_base(ip):
+    print(ip)
     ip1=ip[:ip.find('.')]
     ip=ip[ip.find('.')+1:]
     ip2=ip[:ip.find('.')]

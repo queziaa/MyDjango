@@ -12,6 +12,10 @@ a:link {color: #a78d71}
 a:visited {color: #a78d71}
 a:hover {color: #4d3b31}
 a:active {color: #a78d71}
+
+img{
+	max-width: 100%;
+}
 #left{
 	position:fixed;
 	left:0;

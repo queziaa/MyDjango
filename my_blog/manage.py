@@ -1,6 +1,7 @@
-#!/usr/bin/env python
+#!/usr1051, "Unknown table '/bin/env python
 import os
 import sys
+
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "my_blog.settings")
