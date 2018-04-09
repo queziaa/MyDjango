@@ -88,24 +88,48 @@ def e404(request):
 
 
 @csrf_exempt
-def uploadImg(request):
+def upload(request):
+    new_img = None
     if request.method == 'POST':
-        new_img = IMG(
-            img=request.FILES.get('img'),
-            name = request.FILES.get('img').name
-        )
-        new_img.save()
-    return render(request, 'uploadimg.html')
+        myhash = hashlib.md5()
+        img_temp = request.FILES.get('img')
+        img_name = request.FILES.get('img').name
+        img_name = img_name[img_name.rfind('.'):]
+        while True:
+            b = img_temp.read(8096)
+            if not b :
+                break
+            myhash.update(b)
+        fobj = open('media/img/'+myhash.hexdigest()+img_name,'wb');
+        for chrunk in img_temp.chunks():
+            fobj.write(chrunk);
+        fobj.close();
+        new_img = IMG.objects.create(name = myhash.hexdigest(),img_type = img_name)
+
+    imgs_db = IMG.objects.all()
+    imgs = []
+
+    if None:
+        for img in imgs_db:
+            imgs.append('/media/img/'+img.name+img.img_type)
+            imgs[-1].id=img.id
+            #imgs[-1].time=img.time
+        new_img = str(new_img.id) 
+
+    return render(request, 'uploadimg.html',{'img_id' : new_img,'imgs':imgs})
 
 @csrf_exempt
 def showImg(request):
-    imgs = IMG.objects.all()
-    content = {
-        'imgs':imgs,
-    }
-    for i in imgs:
-        print (i.img.url)
-    return render(request, 'showimg.html', content)
+    imgs_db = IMG.objects.all()
+    imgs = []
+
+    if imgs_db:
+        for img in imgs_db:
+            imgs.append('/media/img/'+img.name+img.img_type)
+            imgs[-1].id=img.id
+            #imgs[-1].time=img.time
+
+    return render(request, 'showimg.html',{'imgs':imgs})
 
 # def detail(request, id):
 #     try:
@@ -125,7 +149,6 @@ def showImg(request):
 #     return render(request, 'aboutme.html')
 
 def ip_base(ip):
-    print(ip)
     ip1=ip[:ip.find('.')]
     ip=ip[ip.find('.')+1:]
     ip2=ip[:ip.find('.')]

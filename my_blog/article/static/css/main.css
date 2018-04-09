@@ -14,7 +14,10 @@ a:hover {color: #4d3b31}
 a:active {color: #a78d71}
 
 img{
-	max-width: 100%;
+	max-width: 42%;
+	margin:2%;
+	border: 10px solid #a1a1a1;
+	border-radius: 25px;
 }
 #left{
 	position:fixed;

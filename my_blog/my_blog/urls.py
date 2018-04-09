@@ -34,8 +34,8 @@ urlpatterns = [
     path('add/',views.add,name='add'),
 
     path('404',views.e404,name='e404'),
-    path('upload/', views.uploadImg),
-    path('showImg/', views.showImg),
+    path('upload/', views.upload,name='upload'),
+    path('showImg/', views.showImg,name='showImg'),
 
 #    path('<int:id>/',  views.detail, name='detail'),
 #    path('archives', views.archives, name = 'archives'),

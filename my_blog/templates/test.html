@@ -1,5 +1,12 @@
-<form method='post'>
-{% csrf_token %}
-{{ form }}
-<input type="submit" value="提交">
-</form>
+{% extends "base.html" %}
+{% block content %}
+	<form method='post'>
+		{% csrf_token %}
+		{{ form }}
+	<input type="submit" value="提交">
+
+	</form>
+	{% for img in imgs %}
+		<img src="{{ img }}" />
+	{% endfor %}	
+{% endblock %}

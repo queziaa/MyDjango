@@ -26,5 +26,11 @@ class Comment_db(models.Model):
 
 
 class IMG(models.Model):
-    img = models.ImageField(upload_to='img')
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=32)
+    img_type = models.CharField(max_length=7)
+
+
+
+    # time = models.DateTimeField(auto_now_add = True)  #博客日期
+    # class Meta:  #按时间下降排序
+    #     ordering = ['-time']

@@ -5,4 +5,13 @@
 		<input type="file" name="img">
 		<button type="submit">上传</button>
 	</form>
+	{% if img_id %}
+		<p>The picture id you uploaded is {{ img_id }}</p>
+	{% endif %}
+
+	{% for img in imgs %}
+	<img src="{{ img }}" />
+	<span>{{ img.id }}</span>
+	<span>{{ img.time }}</span>
+	{% endfor %}	
 {% endblock %}
