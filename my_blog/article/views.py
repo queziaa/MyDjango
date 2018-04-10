@@ -16,6 +16,7 @@ import hashlib
 
 from .forms import add_forms
 from .forms import add_comment
+from .forms import outside_img
 
 
 # Create your views here.
@@ -57,22 +58,7 @@ def detailed(request,id):
 def archive(request):
     post_list = Article.objects.all()  
     return render(request,'archive.html',{'post_list' : post_list})
-
-
-def test(request):
-    if request.method == 'POST':# 当提交表单时
-     
-        form = add_forms(request.POST) # form 包含提交的数据
-         
-        if form.is_valid():# 如果提交的数据合法
-            a = form.cleaned_data['a']
-            b = form.cleaned_data['b']
-            return HttpResponse(str(int(a) + int(b)))
-     
-    else:# 当正常访问时
-        form = add_forms()
-    return render(request, 'test.html', {'form': form})
-
+    
 
 def add(request):
     a = request.GET['a']
@@ -91,45 +77,63 @@ def e404(request):
 def upload(request):
     new_img = None
     if request.method == 'POST':
-        myhash = hashlib.md5()
-        img_temp = request.FILES.get('img')
-        img_name = request.FILES.get('img').name
-        img_name = img_name[img_name.rfind('.'):]
-        while True:
-            b = img_temp.read(8096)
-            if not b :
-                break
-            myhash.update(b)
-        fobj = open('media/img/'+myhash.hexdigest()+img_name,'wb');
-        for chrunk in img_temp.chunks():
-            fobj.write(chrunk);
-        fobj.close();
-        new_img = IMG.objects.create(name = myhash.hexdigest(),img_type = img_name)
+        form = outside_img(request.POST)
+        if form.is_valid():
+            url = form.cleaned_data['img_url']
+            new_img = img_db_repeat(url)
+            print('@@@@@@')
+            print(url)
+            print(new_img)
+            print('@@@@@@')
+            if not new_img:
+                new_img = IMG.objects.create(url = url ,img_type = False)
+                new_img = str(new_img.id)
+        else:
+            myhash = hashlib.md5()
+            img_temp = request.FILES.get('img')
+            img_name = request.FILES.get('img').name
+            img_name = img_name[img_name.rfind('.'):]
+            while True:
+                b = img_temp.read(8096)
+                if not b :
+                    break
+                myhash.update(b)
+            url = 'media/img/'+myhash.hexdigest()+img_name
+            new_img = img_db_repeat('/'+url)
+            if not new_img:
+                fobj = open(url,'wb');
+                for chrunk in img_temp.chunks():
+                    fobj.write(chrunk);
+                fobj.close();
+                new_img = IMG.objects.create(url = '/'+url ,img_type = True)
+                new_img = str(new_img.id)
+
+
 
     imgs_db = IMG.objects.all()
-    imgs = []
+    form_url = outside_img()
 
-    if None:
-        for img in imgs_db:
-            imgs.append('/media/img/'+img.name+img.img_type)
-            imgs[-1].id=img.id
-            #imgs[-1].time=img.time
-        new_img = str(new_img.id) 
+    return render(request, 'uploadimg.html',{'form_url' : form_url,'img_id' : new_img,'imgs':imgs_db})
 
-    return render(request, 'uploadimg.html',{'img_id' : new_img,'imgs':imgs})
 
-@csrf_exempt
-def showImg(request):
-    imgs_db = IMG.objects.all()
-    imgs = []
+# def test(request):
+#     if request.method == 'POST':# 当提交表单时
+#         form = add_forms(request.POST) # form 包含提交的数据
+#         if form.is_valid():# 如果提交的数据合法
 
-    if imgs_db:
-        for img in imgs_db:
-            imgs.append('/media/img/'+img.name+img.img_type)
-            imgs[-1].id=img.id
-            #imgs[-1].time=img.time
+#     return HttpResponse('OK')
+     
+#     else:# 当正常访问时
+#         form = add_forms()
+#     return render(request, 'test.html', {'form': form})
 
-    return render(request, 'showimg.html',{'imgs':imgs})
+
+
+#@csrf_exempt
+#def showImg(request):
+#    imgs_db = IMG.objects.all()
+#    imgs = []
+#    return render(request, 'showimg.html',{'imgs':imgs_db})
 
 # def detail(request, id):
 #     try:
@@ -175,3 +179,11 @@ def comment_ip_decode(ip_src):
         test = ip_src[:ip_src.find('@')]
         ip_src=ip_src[ip_src.find('@')+1:]
         gather.append(int(test,32))
+def img_db_repeat(url_test):
+    try:
+        a=IMG.objects.get(url=url_test)
+    except:
+        return None
+    else:
+        return a.id
+

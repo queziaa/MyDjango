@@ -1,17 +1,32 @@
 {% extends "base.html" %}
 {% block content %}
+	<style type="text/css">
+		.imfMod{
+			width:48%;
+			float:left; 
+			padding:0% 1% 0% 1%;
+		}
+	</style>
 	<form method="POST" enctype="multipart/form-data">
 		{% csrf_token %}
 		<input type="file" name="img">
 		<button type="submit">上传</button>
 	</form>
+
+	<form method='post'>
+		{% csrf_token %}
+		{{ form_url }}
+	<input type="submit" value="提交">
+	</form>
+
+
 	{% if img_id %}
 		<p>The picture id you uploaded is {{ img_id }}</p>
 	{% endif %}
 
 	{% for img in imgs %}
-	<img src="{{ img }}" />
-	<span>{{ img.id }}</span>
-	<span>{{ img.time }}</span>
+	<div class="imfMod">	
+		<img src="{{ img.url }}" title={{ img.id }}>
+	</div>
 	{% endfor %}	
 {% endblock %}
