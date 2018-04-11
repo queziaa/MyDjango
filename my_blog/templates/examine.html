@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+	{% for post in post_list %} 
+		<div class="section_main">
+			<div class="title">
+				<a href="#">{{ post.title }}</a>
+			</div>
+			<div class="subject">
+					<p>{{ post.content }}</p>
+			</div>
+			<div class="ther">
+				<span>id:{{ post.id }}</span>
+				<span>{{ post.examine_time }}</span>
+			</div>
+		</div>
+		<form action="/get_examine" 1method="get"> 
+		  <button name="judge" type="submit" value="1{{ post.id }}">通过</button>
+		  <button name="judge" type="submit" value="2{{ post.id }}">删除</button>
+		  <button name="judge" type="submit" value="3{{ post.id }}">隐藏</button>
+		</form>
+	{% endfor %}
+{% endblock %}

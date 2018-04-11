@@ -4,19 +4,15 @@ from django.shortcuts import redirect
 from django.http import HttpResponseRedirect  
 from django.http import HttpResponse
 from django.urls import reverse  
-from article.models import Article
-from article.models import Comment_db
-from article.models import IMG
 from datetime import datetime
 from django.http import Http404
 from django.views.decorators.csrf import csrf_exempt
+
+from .forms import add_forms,add_comment,outside_img,release_forms
+from article.models import Article,Comment_db,IMG,Article_examine
+
 import base64
-import hashlib
-
-
-from .forms import add_forms
-from .forms import add_comment
-from .forms import outside_img
+import hashlib 
 
 
 # Create your views here.
@@ -58,20 +54,6 @@ def detailed(request,id):
 def archive(request):
     post_list = Article.objects.all()  
     return render(request,'archive.html',{'post_list' : post_list})
-    
-
-def add(request):
-    a = request.GET['a']
-    b = request.GET['b']
-    a = int(a)
-    b = int(b)
-    return HttpResponse(str(a+b))
-
-
-
-def e404(request):
-    return render(request,'404.html')
-
 
 @csrf_exempt
 def upload(request):
@@ -81,10 +63,6 @@ def upload(request):
         if form.is_valid():
             url = form.cleaned_data['img_url']
             new_img = img_db_repeat(url)
-            print('@@@@@@')
-            print(url)
-            print(new_img)
-            print('@@@@@@')
             if not new_img:
                 new_img = IMG.objects.create(url = url ,img_type = False)
                 new_img = str(new_img.id)
@@ -108,20 +86,62 @@ def upload(request):
                 new_img = IMG.objects.create(url = '/'+url ,img_type = True)
                 new_img = str(new_img.id)
 
-
-
     imgs_db = IMG.objects.all()
     form_url = outside_img()
 
     return render(request, 'uploadimg.html',{'form_url' : form_url,'img_id' : new_img,'imgs':imgs_db})
 
+def release(request):
+    if request.method == 'POST':
+        form = release_forms(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data['title']
+            content = form.cleaned_data['content']
+            Article_examine.objects.create(title = title,content = content)
+            return render(request, 'release.html',{'form' : form,'Success' : True})
+        else:
+            return render(request,'404.html')
+
+    else:
+        form = release_forms()
+    return render(request, 'release.html',{'form' : form,'Success' : None})
+
+def examine(request):
+    examine_data = Article_examine.objects.filter(visible = True)
+    return render(request, 'examine.html',{'post_list' : examine_data})
+def get_examine(request):
+    judge = request.GET.get('judge')
+    if not judge.isdigit() or len(judge) > 10:
+        return render(request,'404.html')
+
+    article_db = Article_examine.objects.get(id = judge[1:])
+    if judge[:1] == '1':
+        Article.objects.create(title = article_db.title,content = article_db.content,examine_time = article_db.examine_time)
+        article_db.delete()
+    elif judge[:1] == '2':
+        article_db.delete()
+    elif judge[:1] == '3':
+        article_db.visible = False
+        article_db.save()
+    else:
+        return render(request,'404.html')
+
+    return HttpResponseRedirect('/examine/')
+
+
+def e404(request):
+    return render(request,'404.html')
+
 
 # def test(request):
 #     if request.method == 'POST':# 当提交表单时
+     
 #         form = add_forms(request.POST) # form 包含提交的数据
+         
 #         if form.is_valid():# 如果提交的数据合法
-
-#     return HttpResponse('OK')
+#             a = form.cleaned_data['a']
+#             b = form.cleaned_data['b']
+#             return HttpResponse(str(int(a) + int(b)))
      
 #     else:# 当正常访问时
 #         form = add_forms()

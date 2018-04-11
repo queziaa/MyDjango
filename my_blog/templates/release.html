@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+	<form method='post'>
+		{% csrf_token %}
+		{{ form }}
+	<input type="submit" value="提交">
+	</form>
+
+	{% if Success %}
+		<p>提交成功</p>
+	{% endif %}
+{% endblock %}

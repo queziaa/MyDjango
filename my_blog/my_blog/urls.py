@@ -30,9 +30,12 @@ urlpatterns = [
     path('me/',views.me,name='me'),
     path('detailed/<int:id>/',views.detailed,name='detailed'),
     path('archive/',views.archive,name='archive'),
-    path('add/',views.add,name='add'),
-    path('404',views.e404,name='e404'),
+    path('404/',views.e404,name='e404'),
     path('upload/', views.upload,name='upload'),
+    path('release/', views.release,name='release'),
+    path('examine/', views.examine,name='examine'),
+    path('get_examine/', views.get_examine,name='get_examine'),
+
     
 
 #    path('test/',views.test,name='test'),
