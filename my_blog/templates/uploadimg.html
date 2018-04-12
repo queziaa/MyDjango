@@ -1,12 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-	<style type="text/css">
-		.imfMod{
-			width:48%;
-			float:left; 
-			padding:0% 1% 0% 1%;
-		}
-	</style>
+	{% load staticfiles %}
+		<link href="{% static 'css/uploadimg.css' %}" rel="stylesheet" type="text/css">
 	<form method="POST" enctype="multipart/form-data">
 		{% csrf_token %}
 		<input type="file" name="img">
@@ -18,7 +13,6 @@
 		{{ form_url }}
 	<input type="submit" value="提交">
 	</form>
-
 
 	{% if img_id %}
 		<p>The picture id you uploaded is {{ img_id }}</p>

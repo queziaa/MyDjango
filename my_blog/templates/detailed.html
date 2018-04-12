@@ -16,7 +16,16 @@
 			<form class="comment" method='post'>
 				{% csrf_token %}
 				{{ comment }}
-				<input type="submit" value="Submit comment">
+
+				{% if Result %}
+					<span>@{{ name }}</span>
+					<input type="submit" value="发布评论">
+				{% else %}
+					<span>#{{ name }}</span>
+					<input type="submit" value="匿名评论">
+					<a href="/login">登陆</a>
+				{% endif %}
+
 			</form>
 			{% for comment_text in comment_content %} 
 				<div id="comment_text">

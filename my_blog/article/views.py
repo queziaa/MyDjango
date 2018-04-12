@@ -8,11 +8,14 @@ from datetime import datetime
 from django.http import Http404
 from django.views.decorators.csrf import csrf_exempt
 
-from .forms import add_forms,add_comment,outside_img,release_forms
-from article.models import Article,Comment_db,IMG,Article_examine
+from .forms import add_forms,add_comment,outside_img,release_forms,login_forms
+from article.models import Article,Comment_db,IMG,Article_examine,User_data
 
+import datetime
 import base64
 import hashlib 
+import random
+import time
 
 
 # Create your views here.
@@ -49,7 +52,8 @@ def detailed(request,id):
         comment_content.append(Comment_db.objects.get(id=test))
         comment_content[-1].floor=comment_ip_floor
         comment_ip_floor=comment_ip_floor-1
-    return render(request, 'detailed.html',{'post':post,'comment':comment,'comment_content':comment_content})
+    return render(request, 'detailed.html',{'post':post,'comment':comment,
+        'comment_content':comment_content,'name':'name'})
 
 def archive(request):
     post_list = Article.objects.all()  
@@ -128,9 +132,41 @@ def get_examine(request):
 
     return HttpResponseRedirect('/examine/')
 
-
 def e404(request):
     return render(request,'404.html')
+
+
+
+def login(request):
+    Result = None
+    if request.method == 'POST':
+        forms = login_forms(request.POST)
+        if forms.is_valid():
+            name = forms.cleaned_data['name']
+            password = forms.cleaned_data['password']
+            cookie_data = loing_verification(name,password)
+            if type(cookie_data) != str:
+                cookie_url = HttpResponseRedirect('/')
+                cookie_url.set_cookie("name",cookie_data['cookie_name'])
+                cookie_url.set_cookie("password",cookie_data['cookie_password'])
+                return cookie_url
+            else:
+                Result = cookie_data
+        else:
+            Result = '信息提交错误'
+    forms = login_forms()
+    return render(request,'login.html',{'forms':forms,'Result':Result})
+
+
+# def test(request):
+#     a = request.COOKIES.get("name")
+#     return HttpResponse(a)
+
+
+        #######
+    # cookie = HttpResponseRedirect('/test/')
+    # cookie.set_cookie("name","a")
+    # return cookie
 
 
 # def test(request):
@@ -148,29 +184,50 @@ def e404(request):
 #     return render(request, 'test.html', {'form': form})
 
 
+def loing_verification(name,password):
+    result = User_format(name,password)
+    if result != None:
+        return result
+    try:
+        User_db = User_data.objects.get(name=name)
+    except :
+        return '没有这个用户'
+    if User_db.password != sha256_s(password+'e0058ff4746e011cb58ed32a19530baba71c3286612a0'):
+        return '密码错误'
+    cookie_name =  sha256_s(random_s())
+    cookie_password = sha256_s(random_s())
 
-#@csrf_exempt
-#def showImg(request):
-#    imgs_db = IMG.objects.all()
-#    imgs = []
-#    return render(request, 'showimg.html',{'imgs':imgs_db})
+    User_db.cookie_name = cookie_name
+    User_db.cookie_password = sha256_s(cookie_password)
+    User_db.cookie_time = datetime.datetime.now()+datetime.timedelta(weeks=3)
+    User_db.save()
+    return {'cookie_name':cookie_name,'cookie_password':cookie_password}
 
-# def detail(request, id):
-#     try:
-#         post = Article.objects.get(id=str(id))
-#     except Article.DoesNotExist:
-#         raise Http404
-#     return render(request, 'post.html', {'post' : post})
 
-# def archives(request) :
-#     try:
-#         post_list = Article.objects.all()
-#     except Article.DoesNotExist :
-#         raise Http404
-#     return render(request, 'archives.html', {'post_list' : post_list, 'error' : False})
+def random_s():
+    random.seed()
+    time.sleep(random.random())
+    random.seed()
+    return str(random.random())
 
-# def about_me(request) :
-#     return render(request, 'aboutme.html')
+def sha256_s(value):
+    sha256 = hashlib.sha256()
+    sha256.update(value.encode('utf-8'))
+    return sha256.hexdigest()
+
+def User_format(name,password):
+    if not name.isalnum():
+        return '用户名只能用数字和字母'
+    if len(name) > 10:
+        return '用户名最多10位'
+    if len(password) > 20:
+        return '密码最多20位'
+    if len(name) < 5:
+        return '用户名最少6位'
+    if len(password) <7:
+        return '密码最少8位'
+    return None
+
 
 def ip_base(ip):
     ip1=ip[:ip.find('.')]
@@ -189,6 +246,7 @@ def ip_base(ip):
 def baseN(num, b):
     return ((num == 0) and "0") or \
            (baseN(num // b, b).lstrip("0") + "0123456789abcdefghijklmnopqrstuvwxyz"[num % b])
+
 
 def comment_ip_decode(ip_src):
     gather=[]

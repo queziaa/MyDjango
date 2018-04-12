@@ -45,3 +45,11 @@ class Article_examine(models.Model):
 
     class Meta:
         ordering = ['-examine_time']
+
+
+class User_data(models.Model):
+    name = models.CharField(max_length = 10)
+    password = models.CharField(max_length = 64)
+    cookie_name = models.CharField(max_length = 64,default = '!')
+    cookie_password = models.CharField(max_length = 64,default = '!')
+    cookie_time =  models.DateTimeField(auto_now_add = True)

@@ -74,6 +74,8 @@ img{
 }
 .comment label{
 	display:none;
+    padding:0.5% 0.7%;
+	font-size: 15px; 
 }
 .comment textarea{
 	border:none;
@@ -94,6 +96,21 @@ img{
     color: #31332e;
 	font-size: 15px; 
 	border-radius: 5px;
+}
+.comment span{
+	font-size: 25px; 
+	margin:0% 1% 0% 0% ;
+
+}
+.comment a{
+	margin:0% 0% 0% 1% ;
+	background: #bfc4cc;
+	color: #31332e;
+	border-radius: 5px;
+    height:40px;
+    padding:0.5% 0.7%;
+	font-size: 15px; 
+
 
 }
 

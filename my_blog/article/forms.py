@@ -13,3 +13,6 @@ class outside_img(forms.Form):
 class release_forms(forms.Form):
 	title = forms.CharField(widget=forms.Textarea(attrs={'placeholder':u'在此输入文章标题'}))
 	content = forms.CharField(widget=forms.Textarea(attrs={'placeholder':u'在此输入文章内容'}))
+class login_forms(forms.Form):
+	name = forms.CharField(widget=forms.Textarea(attrs={'placeholder':u'用户名'}))
+	password = forms.CharField(widget=forms.Textarea(attrs={'placeholder':u'密码'}))

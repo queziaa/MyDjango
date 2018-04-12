@@ -30,20 +30,20 @@ urlpatterns = [
     path('me/',views.me,name='me'),
     path('detailed/<int:id>/',views.detailed,name='detailed'),
     path('archive/',views.archive,name='archive'),
-    path('404/',views.e404,name='e404'),
     path('upload/', views.upload,name='upload'),
     path('release/', views.release,name='release'),
     path('examine/', views.examine,name='examine'),
     path('get_examine/', views.get_examine,name='get_examine'),
 
+    path('404/',views.e404,name='e404'),
+    path('login/', views.login,name='Login'),
     
 
-#    path('test/',views.test,name='test'),
-#    path('showImg/', views.showImg,name='showImg'),
-#    path('<int:id>/',  views.detail, name='detail'),
-#    path('archives', views.archives, name = 'archives'),
-#    path('aboutme' ,views.about_me, name = 'about_me'),
+#    path('test/', views.test,name='test'),
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+
+
