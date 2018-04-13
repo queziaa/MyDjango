@@ -2,13 +2,13 @@
 {% block content %}
 	{% load staticfiles %}
 		<link href="{% static 'css/uploadimg.css' %}" rel="stylesheet" type="text/css">
-	<form method="POST" enctype="multipart/form-data">
+	<form class="comment" method="POST" enctype="multipart/form-data">
 		{% csrf_token %}
 		<input type="file" name="img">
 		<button type="submit">上传</button>
 	</form>
 
-	<form method='post'>
+	<form class="comment" method='post'>
 		{% csrf_token %}
 		{{ form_url }}
 	<input type="submit" value="提交">

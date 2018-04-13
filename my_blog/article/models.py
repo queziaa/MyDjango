@@ -53,3 +53,4 @@ class User_data(models.Model):
     cookie_name = models.CharField(max_length = 64,default = '!')
     cookie_password = models.CharField(max_length = 64,default = '!')
     cookie_time =  models.DateTimeField(auto_now_add = True)
+    admin = models.BooleanField(default = False)

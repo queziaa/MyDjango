@@ -7,6 +7,8 @@ from django.urls import reverse
 from datetime import datetime
 from django.http import Http404
 from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone  
+
 
 from .forms import add_forms,add_comment,outside_img,release_forms,login_forms
 from article.models import Article,Comment_db,IMG,Article_examine,User_data
@@ -31,12 +33,9 @@ def detailed(request,id):
         form = add_comment(request.POST)
         if form.is_valid():
             comment_content = form.cleaned_data['comment_content']
-            if 'HTTP_X_FORWARDED_FOR' in request.META:  
-                ip =  request.META['HTTP_X_FORWARDED_FOR']  
-            else:  
-                ip = request.META['REMOTE_ADDR']
-            ip=ip_base(ip)
-            comment_id = Comment_db.objects.create(comments_text = comment_content,ip_hash = ip)
+            ip=ip_base(request)
+            comment_id = Comment_db.objects.create(comments_text = comment_content,
+                ip_hash = ip)
             post = Article.objects.get(id=id)
             post.comment_ip = (baseN(comment_id.id,32)+'@'+post.comment_ip)
             post.comments_quantity=post.comments_quantity+1
@@ -52,8 +51,21 @@ def detailed(request,id):
         comment_content.append(Comment_db.objects.get(id=test))
         comment_content[-1].floor=comment_ip_floor
         comment_ip_floor=comment_ip_floor-1
+    cookie_data = cookie_verification(request)
+    print(cookie_data)
+    if type(cookie_data) == str:
+        response = HttpResponseRedirect('/detailed/'+str(id)+'/')
+        response.delete_cookie('cookie_password')
+        response.delete_cookie('cookie_name')
+        return response
+    elif cookie_data == None:
+        User_name = ip_base(request)
+        Result = None
+    else:
+        User_name = cookie_data['name']
+        Result = True
     return render(request, 'detailed.html',{'post':post,'comment':comment,
-        'comment_content':comment_content,'name':'name'})
+        'comment_content':comment_content,'User_name':User_name,'Result':Result})
 
 def archive(request):
     post_list = Article.objects.all()  
@@ -147,8 +159,8 @@ def login(request):
             cookie_data = loing_verification(name,password)
             if type(cookie_data) != str:
                 cookie_url = HttpResponseRedirect('/')
-                cookie_url.set_cookie("name",cookie_data['cookie_name'])
-                cookie_url.set_cookie("password",cookie_data['cookie_password'])
+                cookie_url.set_cookie("name",cookie_data['cookie_name'],1209600)
+                cookie_url.set_cookie("password",cookie_data['cookie_password'],1209600)
                 return cookie_url
             else:
                 Result = cookie_data
@@ -203,6 +215,23 @@ def loing_verification(name,password):
     User_db.save()
     return {'cookie_name':cookie_name,'cookie_password':cookie_password}
 
+def cookie_verification(cookie):
+
+    cookie_name = cookie.COOKIES.get('name')
+    cookie_password = cookie.COOKIES.get('password')
+    print(cookie_name,cookie_password,cookie)
+    if cookie_name == None or cookie_password == None:
+        return None
+    try:
+        User_db = User_data.objects.get(cookie_name=cookie_name)
+    except :
+        return '登陆信息校验失败(N)'
+    if User_db.cookie_password != sha256_s(cookie_password):
+        return '登陆信息校验失败(P)'
+    if User_db.cookie_time < timezone.now():
+        return '登陆信息过期'
+    return {'name':User_db.name,'id':User_db.id,'admin':User_db.admin}
+
 
 def random_s():
     random.seed()
@@ -223,13 +252,17 @@ def User_format(name,password):
     if len(password) > 20:
         return '密码最多20位'
     if len(name) < 5:
-        return '用户名最少6位'
-    if len(password) <7:
-        return '密码最少8位'
+        return '用户名最少5位'
+    if len(password) <5:
+        return '密码最少5位'
     return None
 
 
-def ip_base(ip):
+def ip_base(request_ip):
+    if 'HTTP_X_FORWARDED_FOR' in request_ip.META:  
+        ip =  request_ip.META['HTTP_X_FORWARDED_FOR']  
+    else:  
+        ip = request_ip.META['REMOTE_ADDR']
     ip1=ip[:ip.find('.')]
     ip=ip[ip.find('.')+1:]
     ip2=ip[:ip.find('.')]
@@ -257,6 +290,7 @@ def comment_ip_decode(ip_src):
         test = ip_src[:ip_src.find('@')]
         ip_src=ip_src[ip_src.find('@')+1:]
         gather.append(int(test,32))
+        
 def img_db_repeat(url_test):
     try:
         a=IMG.objects.get(url=url_test)
