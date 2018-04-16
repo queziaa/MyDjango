@@ -22,6 +22,7 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.conf import settings
 
+from django.views import static 
 
 app_name = 'article'
 urlpatterns = [
@@ -37,13 +38,18 @@ urlpatterns = [
 
     path('404/',views.e404,name='e404'),
     path('login/', views.login,name='Login'),
-    
+
+    url(r'^static/(?P<path>.*)$', static.serve,  
+        {'document_root': settings.STATIC_ROOT}, name='static')  
 
 #    path('test/', views.test,name='test'),
 
 ]
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
 
 
 
