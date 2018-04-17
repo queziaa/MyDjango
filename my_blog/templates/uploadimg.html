@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-	{% load staticfiles %}
+	{% load staticfiles %}	
 		<link href="{% static 'css/uploadimg.css' %}" rel="stylesheet" type="text/css">
 	<form class="comment" method="POST" enctype="multipart/form-data">
 		{% csrf_token %}

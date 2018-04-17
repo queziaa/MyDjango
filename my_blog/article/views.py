@@ -95,7 +95,7 @@ def upload(request):
             url = 'static/img/'+myhash.hexdigest()+img_name
             new_img = img_db_repeat('/'+url)
             if not new_img:
-                fobj = open('article/'+url,'wb');
+                fobj = open(url,'wb');
                 for chrunk in img_temp.chunks():
                     fobj.write(chrunk);
                 fobj.close();
