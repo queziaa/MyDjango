@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+	<div class="title">
+		<p>ID:{{ id }}</p>
+		<p>用户名:{{ name }}</p>
+		{% if permissions %}
+			<p>权限:管理员</p>
+			<a href="/examine">审核博客</a>
+			<a href="/managing_users">管理用户</a>
+		{% else %}
+			<P>权限:用户</P>
+		{% endif %}
+		<a href="/exit">退出登录</a>
+	</div>
+{% endblock %}

@@ -35,9 +35,13 @@ urlpatterns = [
     path('release/', views.release,name='release'),
     path('examine/', views.examine,name='examine'),
     path('get_examine/', views.get_examine,name='get_examine'),
-
+    path('Error/',views.Error,name='Error'),
     path('404/',views.e404,name='e404'),
-    path('login/', views.login,name='Login'),
+    path('login/', views.login,name='login'),
+    path('registered/',views.registered,name='registered'),
+    path('user/',views.user,name='user'),
+    path('exit/',views.exit,name='exit'),
+    path('cehange_password/',views.cehange_password,name='cehange_password'),
 
     url(r'^static/(?P<path>.*)$', static.serve,  
         {'document_root': settings.STATIC_ROOT}, name='static')  

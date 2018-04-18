@@ -39,7 +39,10 @@ img{
 #left li{
 	list-style-type:none;
 }
-
+#user{
+	position:relative;
+    top:48%;
+}
 
 #right{
 	position:relative;

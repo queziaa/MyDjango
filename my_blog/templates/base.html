@@ -16,12 +16,6 @@
 				<a href="/archive">列表</a>
 			</li>
 			<li>
-				<a href="https://github.com/queziaa" target="_blank">Github</a>
-			</li>
-			<li>
-				<a href="mailto:queziaa31@gmail.com">E-mail</a>
-			</li>
-			<li>
 				<a href="/me">关于我</a>
 			</li>
 			<li>
@@ -30,13 +24,16 @@
 			<li>
 				<a href="/release">发布博客</a>
 			</li>
-			<li>
-				<a href="/examine">审核博客</a>
-			</li>
-			<li>
-				<a href="/login/">登陆</a>
-			</li>
 		</ul>
+		<div id="user">
+		{% if bash_name %}
+			<a href="/user" title="个人中心">{{ bash_name }}</a>
+		{% else %}
+			<a href="/login">登陆</a>
+			<a href="#">/</a>
+			<a href="/registered">注册</a>
+		{% endif %}
+		</div>
 	</div>
 	<div id="right">	
 		{% block content %}

@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone  
 
 
-from .forms import add_forms,add_comment,outside_img,release_forms,login_forms
+from .forms import add_forms,add_comment,outside_img,release_forms,login_forms,registered_foms,cehange_password_foms
 from article.models import Article,Comment_db,IMG,Article_examine,User_data
 
 import datetime
@@ -23,17 +23,18 @@ import time
 # Create your views here.
 def home(request):
     post_list = Article.objects.all()  #获取全部的Article对象
-    return render(request, 'home.html',{'post_list' : post_list})
+    return render(request, 'home.html',{'post_list' : post_list,
+        'bash_name':obtain_cookie_name(request,1)})
 
 def me(request):
-    return render(request,'me.html')
+    return render(request,'me.html',{'bash_name':obtain_cookie_name(request,1)})
 
 def detailed(request,id):
     if request.method == 'POST':
         form = add_comment(request.POST)
         if form.is_valid():
             comment_content = form.cleaned_data['comment_content']
-            ip=ip_base(request)
+            ip=obtain_cookie_name(request)
             comment_id = Comment_db.objects.create(comments_text = comment_content,
                 ip_hash = ip)
             post = Article.objects.get(id=id)
@@ -55,8 +56,8 @@ def detailed(request,id):
     print(cookie_data)
     if type(cookie_data) == str:
         response = HttpResponseRedirect('/detailed/'+str(id)+'/')
-        response.delete_cookie('cookie_password')
-        response.delete_cookie('cookie_name')
+        response.delete_cookie('password')
+        response.delete_cookie('name')
         return response
     elif cookie_data == None:
         User_name = ip_base(request)
@@ -65,11 +66,12 @@ def detailed(request,id):
         User_name = cookie_data['name']
         Result = True
     return render(request, 'detailed.html',{'post':post,'comment':comment,
-        'comment_content':comment_content,'User_name':User_name,'Result':Result})
+        'comment_content':comment_content,'User_name':User_name,'Result':Result,
+        'bash_name':obtain_cookie_name(request,1)})
 
 def archive(request):
     post_list = Article.objects.all()  
-    return render(request,'archive.html',{'post_list' : post_list})
+    return render(request,'archive.html',{'post_list' : post_list,'bash_name':obtain_cookie_name(request,1)})
 
 @csrf_exempt
 def upload(request):
@@ -105,7 +107,8 @@ def upload(request):
     imgs_db = IMG.objects.all()
     form_url = outside_img()
 
-    return render(request, 'uploadimg.html',{'form_url' : form_url,'img_id' : new_img,'imgs':imgs_db})
+    return render(request, 'uploadimg.html',{'form_url' : form_url,'img_id' : new_img,'imgs':imgs_db,
+        'bash_name':obtain_cookie_name(request,1)})
 
 def release(request):
     if request.method == 'POST':
@@ -114,22 +117,33 @@ def release(request):
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
             Article_examine.objects.create(title = title,content = content)
-            return render(request, 'release.html',{'form' : form,'Success' : True})
+            return render(request, 'release.html',{'form' : form,'Success' : True
+                ,'bash_name':obtain_cookie_name(request,1)})
         else:
-            return render(request,'404.html')
-
+            return HttpResponseRedirect('/user/')
     else:
         form = release_forms()
-    return render(request, 'release.html',{'form' : form,'Success' : None})
+    return render(request, 'release.html',{'form' : form,'Success' : None,
+        'bash_name':obtain_cookie_name(request,1)})
 
 def examine(request):
+    cookie_data = cookie_verification(request)
+    if type(cookie_data) != dict:
+        return HttpResponseRedirect('/exit/')
+    if not cookie_data['admin']:
+        return HttpResponseRedirect('/Error')
     examine_data = Article_examine.objects.filter(visible = True)
-    return render(request, 'examine.html',{'post_list' : examine_data})
+    return render(request, 'examine.html',{'post_list' : examine_data
+        ,'bash_name':obtain_cookie_name(request,1)})
 def get_examine(request):
+    cookie_data = cookie_verification(request)
+    if type(cookie_data) != dict:
+        return HttpResponseRedirect('/exit/')
+    if not cookie_data['admin']:
+        return HttpResponseRedirect('/Error')
     judge = request.GET.get('judge')
     if not judge.isdigit() or len(judge) > 10:
-        return render(request,'404.html')
-
+        return HttpResponseRedirect('/user/')
     article_db = Article_examine.objects.get(id = judge[1:])
     if judge[:1] == '1':
         Article.objects.create(title = article_db.title,content = article_db.content,examine_time = article_db.examine_time)
@@ -140,13 +154,14 @@ def get_examine(request):
         article_db.visible = False
         article_db.save()
     else:
-        return render(request,'404.html')
+        return HttpResponseRedirect('/user/')
 
     return HttpResponseRedirect('/examine/')
 
 def e404(request):
     return render(request,'404.html')
-
+def Error(request):
+    return render(request,'Error.html')
 
 
 def login(request):
@@ -167,8 +182,78 @@ def login(request):
         else:
             Result = '信息提交错误'
     forms = login_forms()
-    return render(request,'login.html',{'forms':forms,'Result':Result})
+    return render(request,'login.html',{'forms':forms,'Result':Result
+        ,'bash_name':obtain_cookie_name(request,1)})
 
+def registered(request):
+    Result = None
+    if request.method == 'POST':
+        forms = registered_foms(request.POST)
+        if forms.is_valid():
+            name = forms.cleaned_data['name']
+            password = forms.cleaned_data['password']
+            repeat_password = forms.cleaned_data['repeat_password']
+            cookie_data = registered_verification(name,password,repeat_password)
+            if type(cookie_data) != str:
+                cookie_url = HttpResponseRedirect('/')
+                cookie_url.set_cookie("name",cookie_data['cookie_name'],1209600)
+                cookie_url.set_cookie("password",cookie_data['cookie_password'],1209600)
+                return cookie_url
+            else:
+                Result = cookie_data
+        else:
+            Result = '信息提交错误'
+    forms = registered_foms()
+    return render(request,'registered.html',{'forms':forms,'Result':Result
+        ,'bash_name':obtain_cookie_name(request,1)})
+
+def user(request):
+    cookie_data = cookie_verification(request)
+    if type(cookie_data) != dict:
+        return HttpResponseRedirect('/exit/')
+    return render(request,'user.html',{'name':cookie_data['name'],'id':cookie_data['id']
+        ,'permissions':cookie_data['admin'],'bash_name':obtain_cookie_name(request,1)})
+
+def exit(request):
+    response = HttpResponseRedirect('/')
+    response.delete_cookie('password')
+    response.delete_cookie('name')
+    return response
+def cehange_password(request):
+    Result = None
+    name = obtain_cookie_name(request,1)
+    if name == None:
+        return HttpResponseRedirect('/exit/')
+    if request.method == 'POST':
+        forms = cehange_password_foms(request.POST)
+        if forms.is_valid():
+            oid = forms.cleaned_data['oid']
+            password = forms.cleaned_data['password']
+            repeat_password = forms.cleaned_data['repeat_password']
+            cookie_data = loing_verification(name,oid)
+            if type(cookie_data) == str:
+                Result = cookie_data
+            elif password != repeat_password:
+                Result = '两次密码不一致'
+            elif User_format(name,password)==str:
+                return User_format(name,password)
+            else:
+                User_db = User_data.objects.get(name=name)
+                User_db.password = sha256_s(password+'e0058ff4746e011cb58ed32a19530baba71c3286612a0')
+                User_db.save()
+                cookie_data = loing_verification(name,password)
+                cookie_url = HttpResponseRedirect('/')
+                cookie_url.set_cookie("name",cookie_data['cookie_name'],1209600)
+                cookie_url.set_cookie("password",cookie_data['cookie_password'],1209600)
+                return cookie_url
+        else:
+            Result = '信息提交错误'
+    forms = cehange_password_foms()
+    cookie_datas = cookie_verification(request)
+    return render(request,'cehange_password.html',{'name':cookie_datas['name'],'id':cookie_datas['id'],
+        'permissions':cookie_datas['admin'],'forms':forms,'Result':Result,'bash_name':obtain_cookie_name(request,1)})
+
+    
 
 # def test(request):
 #     a = request.COOKIES.get("name")
@@ -196,6 +281,32 @@ def login(request):
 #     return render(request, 'test.html', {'form': form})
 
 
+def obtain_cookie_name(request,pattern=0):
+    cookie_data = cookie_verification(request)
+    if type(cookie_data) == dict:
+        if pattern==0:
+            return '$'+cookie_data['name']
+        elif pattern==1:
+            return cookie_data['name']
+        else:
+            return 'ERROR'
+    else:
+        if pattern==0:
+            return '#'+ip_base(request)
+        elif pattern==1:
+            return None
+        else:
+            return 'ERROR:obtain_cookie_name'
+
+
+
+def registered_verification(name,password,repeat_password):
+    result = User_format(name,password,repeat_password)
+    if result != None:
+        return result
+    User_data.objects.create(name = name,password = sha256_s(password+'e0058ff4746e011cb58ed32a19530baba71c3286612a0'))
+    return loing_verification(name,password)
+
 def loing_verification(name,password):
     result = User_format(name,password)
     if result != None:
@@ -208,7 +319,6 @@ def loing_verification(name,password):
         return '密码错误'
     cookie_name =  sha256_s(random_s())
     cookie_password = sha256_s(random_s())
-
     User_db.cookie_name = cookie_name
     User_db.cookie_password = sha256_s(cookie_password)
     User_db.cookie_time = datetime.datetime.now()+datetime.timedelta(weeks=3)
@@ -219,7 +329,7 @@ def cookie_verification(cookie):
 
     cookie_name = cookie.COOKIES.get('name')
     cookie_password = cookie.COOKIES.get('password')
-    print(cookie_name,cookie_password,cookie)
+    # print(cookie_name,cookie_password,cookie)
     if cookie_name == None or cookie_password == None:
         return None
     try:
@@ -244,7 +354,7 @@ def sha256_s(value):
     sha256.update(value.encode('utf-8'))
     return sha256.hexdigest()
 
-def User_format(name,password):
+def User_format(name,password,repeat_password=None):
     if not name.isalnum():
         return '用户名只能用数字和字母'
     if len(name) > 10:
@@ -255,6 +365,15 @@ def User_format(name,password):
         return '用户名最少5位'
     if len(password) <5:
         return '密码最少5位'
+    if repeat_password != None:
+        try:
+            User_db = User_data.objects.get(name=name)
+        except :
+            pass
+        else:
+            return '用户名以存在'
+        if repeat_password != password:
+            return '两次密码不一致'
     return None
 
 
