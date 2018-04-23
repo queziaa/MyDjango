@@ -11,7 +11,12 @@
 				<span >发布于{{ post.date_time }}&emsp;&emsp;提交于{{ post.examine_time }}&emsp;&emsp;{{ post.comments_quantity }} 条评论</span>
 			</div>
 			<div class="subject">
-					<p>{{ post.content }}</p>
+				{% for temp in Article_mix_content %}
+					<p>{{ temp.text|linebreaksbr }}</p>	
+					{% if temp.img %}
+						<img src="{{ temp.img }}" >
+					{% endif %}
+				{% endfor %} 
 			</div>
 			<form class="comment" method='post'>
 				{% csrf_token %}

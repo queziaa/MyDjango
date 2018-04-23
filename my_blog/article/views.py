@@ -23,6 +23,13 @@ import time
 # Create your views here.
 def home(request):
     post_list = Article.objects.all()  #获取全部的Article对象
+    for num in range(len(post_list)):
+        text_temp=Article_mix(post_list[num].content)
+        post_list[num].content={'text':'','img':None}
+        for text in text_temp:
+            post_list[num].content['text']=post_list[num].content['text']+text['text']
+        print(text_temp)
+        post_list[num].content['img']=text_temp[0]['img']
     return render(request, 'home.html',{'post_list' : post_list,
         'bash_name':obtain_cookie_name(request,1)})
 
@@ -53,7 +60,6 @@ def detailed(request,id):
         comment_content[-1].floor=comment_ip_floor
         comment_ip_floor=comment_ip_floor-1
     cookie_data = cookie_verification(request)
-    print(cookie_data)
     if type(cookie_data) == str:
         response = HttpResponseRedirect('/detailed/'+str(id)+'/')
         response.delete_cookie('password')
@@ -65,7 +71,8 @@ def detailed(request,id):
     else:
         User_name = cookie_data['name']
         Result = True
-    return render(request, 'detailed.html',{'post':post,'comment':comment,
+    Article_mix_content=Article_mix(post.content)
+    return render(request, 'detailed.html',{'Article_mix_content':Article_mix_content,'post':post,'comment':comment,
         'comment_content':comment_content,'User_name':User_name,'Result':Result,
         'bash_name':obtain_cookie_name(request,1)})
 
@@ -418,3 +425,33 @@ def img_db_repeat(url_test):
     else:
         return a.id
 
+def Article_mix(text):
+    mix=[]
+    while True:
+        if text.find('{@') == -1:
+            mix.append({'text':text,'img':None})
+            return mix
+        else:
+            if text.find('@}') == -1:
+                text=text[:text.find('{@')]+text[text.find('{@')+2:]
+                continue
+            text_temp=text[:text.find('{@')]
+            text=text[text.find('{@')+2:]
+            img=text[:text.find('@}')]
+            img=img_id_url(img)
+            text=text[text.find('@}')+2:]
+            mix.append({'text':text_temp,'img':img})
+
+def img_id_url(id):
+    try:
+        if not id.isdigit():
+            return'/static/img/404.png'
+    except:
+        return'/static/img/404.png'
+
+    try:
+        a=IMG.objects.get(id=id)
+    except:
+        return '/static/img/404.png'
+    else:
+        return a.url

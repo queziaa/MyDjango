@@ -7,10 +7,13 @@
 				<a href="/detailed/{{ post.id }}/">{{ post.title }}</a>
 			</div>
 			<div class="subject">
-				{% if post.content|length < 1500 %}
-					<p>{{ post.content }}</p>
+				{% if post.content.text|length < 1500 %}
+					<p>{{ post.content.text }}</p>
 				{% else %}
-					<p>{{ post.content|slice:"1500" }}  ...</p>
+					<p>{{ post.content.text|slice:"1500" }}  ...</p>
+				{% endif %}
+				{% if post.content.img %}
+					<img src="{{ post.content.img }}" >
 				{% endif %}
 			</div>
 			<div class="ther">

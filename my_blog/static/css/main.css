@@ -64,6 +64,7 @@ img{
 	font-size:20px;
 }
 .subject p{
+	word-break:break-all;
 	text-indent:2em;
 	margin:0; 
 }
