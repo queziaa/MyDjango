@@ -430,6 +430,9 @@ def Article_mix(text):
     while True:
         if text.find('{@') == -1:
             mix.append({'text':text,'img':None})
+            for temp in range(len(mix)):
+                if mix[temp]['text']=='':
+                    mix[temp]['text']=None
             return mix
         else:
             if text.find('@}') == -1:

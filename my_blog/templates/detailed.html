@@ -12,7 +12,9 @@
 			</div>
 			<div class="subject">
 				{% for temp in Article_mix_content %}
-					<p>{{ temp.text|linebreaksbr }}</p>	
+					{% if temp.text %}
+					<p>{{ temp.text|linebreaksbr }}</p>
+					{% endif %}
 					{% if temp.img %}
 						<img src="{{ temp.img }}" >
 					{% endif %}
