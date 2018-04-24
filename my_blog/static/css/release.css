@@ -1,9 +1,30 @@
-.prompt p{
-    margin: 0;
+.comment{
+	padding: 0%;
+}
+.comment textarea{
+	width:92%;
+	height:10%;
+	margin:1% 3% 0% 3%;
+}
+.comment input{
+	width:8%;
+	position:fixed;
+	right:3%;
+}
+.prompt{
+    margin:3% 0% 3% 0%;
     font-size: 20px;
     padding: 0% 3% 0% 3%;
     color: #bfc4cc;
 }
-.comment{
-	padding: 0%;
+.prompt p{
+    margin:0%;
+}
+.middle{
+    margin:0%;
+	font-size: 40px;
+	text-align: center;
+}
+.title{
+	color: #a78d71;
 }

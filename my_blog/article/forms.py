@@ -21,7 +21,7 @@ class add_comment(forms.Form):
 
 class outside_img(forms.Form):
 	img_url = forms.CharField(
-		widget=forms.Textarea(attrs={'placeholder':u'在此提交图片外链'}),
+		widget=forms.Textarea(attrs={'placeholder':u'在此提交图片外链','rows':u'2'}),
 		max_length=150,
 		required=True,
         strip=True,
@@ -31,7 +31,7 @@ class outside_img(forms.Form):
 
 class release_forms(forms.Form):
 	title = forms.CharField(
-		widget=forms.Textarea(attrs={'placeholder':u'在此输入文章标题'}),
+		widget=forms.Textarea(attrs={'placeholder':u'在此输入文章标题','rows':u'2'}),
 		min_length=1,
 		max_length=110,
 		required=True,
@@ -42,7 +42,7 @@ class release_forms(forms.Form):
 
 	)
 	content = forms.CharField(
-		widget=forms.Textarea(attrs={'placeholder':u'在此输入文章内容'}),
+		widget=forms.Textarea(attrs={'placeholder':u'在此输入文章内容','rows':u'6'}),
 		min_length=1,
 		required=True,
         strip=True,

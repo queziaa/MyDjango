@@ -1,23 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
 	{% load staticfiles %}	
-		<link href="{% static 'css/uploadimg.css' %}" rel="stylesheet" type="text/css">
-	<form class="comment" method="POST" enctype="multipart/form-data">
-		{% csrf_token %}
-		<input type="file" name="img">
-		<button type="submit">上传</button>
-	</form>
-
-	<form class="comment" method='post'>
-		{% csrf_token %}
-		{{ form_url }}
-	<input type="submit" value="提交">
-	</form>
-
-	{% if img_id %}
-		<p>The picture id you uploaded is {{ img_id }}</p>
-	{% endif %}
-
+	<link href="{% static 'css/uploadimg.css' %}" rel="stylesheet" type="text/css">
+	<div class="comment_img">
+		<p>在此提交本地图片以在本站使用</p>
+		<form class="comment" method="POST" enctype="multipart/form-data">
+			{% csrf_token %}
+			<input type="file" name="img">
+			<button type="submit">上传</button>
+		</form>
+	</div>
+	<div class="comment_url">
+		<p>在此提交外链以在本站使用</p>
+		<form class="comment" method='post'>
+			{% csrf_token %}
+			{{ form_url }}
+			<input type="submit" value="提交">
+		</form>
+	</div>
+	<div class="prompt">
+		{% if img_id %}
+			<p>你提交的图片ID为{{ img_id }}</p>
+		{% endif %}
+			<p style="color: #bfc4cc;">鼠标放置在图片上查看ID</p>
+	</div>
 	{% for img in imgs %}
 	<div class="imfMod">	
 		<img src="{{ img.url }}" title={{ img.id }}>
