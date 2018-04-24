@@ -27,8 +27,9 @@ def home(request):
         text_temp=Article_mix(post_list[num].content)
         post_list[num].content={'text':'','img':None}
         for text in text_temp:
+            if text['text']==None:
+                continue
             post_list[num].content['text']=post_list[num].content['text']+text['text']
-        print(text_temp)
         post_list[num].content['img']=text_temp[0]['img']
     return render(request, 'home.html',{'post_list' : post_list,
         'bash_name':obtain_cookie_name(request,1)})
@@ -58,6 +59,7 @@ def detailed(request,id):
     for test in gather:
         comment_content.append(Comment_db.objects.get(id=test))
         comment_content[-1].floor=comment_ip_floor
+        comment_content[-1].comments_text=Article_mix(comment_content[-1].comments_text)
         comment_ip_floor=comment_ip_floor-1
     cookie_data = cookie_verification(request)
     if type(cookie_data) == str:
@@ -123,14 +125,22 @@ def release(request):
         if form.is_valid():
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
-            Article_examine.objects.create(title = title,content = content)
-            return render(request, 'release.html',{'form' : form,'Success' : True
-                ,'bash_name':obtain_cookie_name(request,1)})
+            cookie_data = cookie_verification(request)
+            if cookie_data == None:
+                User_name = '#'+ip_base(request)
+                Result = None
+            else:
+                User_name = '$'+cookie_data['name']
+                Result = True
+            Article_examine.objects.create(title = title,content = content,user = User_name)
+            return HttpResponseRedirect('/release/')
         else:
-            return HttpResponseRedirect('/user/')
+            return HttpResponseRedirect('/404/')
     else:
         form = release_forms()
-    return render(request, 'release.html',{'form' : form,'Success' : None,
+
+    post_list = Article_examine.objects.all()  #获取全部的Article对象
+    return render(request, 'release.html',{'form' : form,'post_list':post_list,
         'bash_name':obtain_cookie_name(request,1)})
 
 def examine(request):
@@ -153,7 +163,7 @@ def get_examine(request):
         return HttpResponseRedirect('/user/')
     article_db = Article_examine.objects.get(id = judge[1:])
     if judge[:1] == '1':
-        Article.objects.create(title = article_db.title,content = article_db.content,examine_time = article_db.examine_time)
+        Article.objects.create(title = article_db.title,content = article_db.content,examine_time = article_db.examine_time,user =article_db.user)
         article_db.delete()
     elif judge[:1] == '2':
         article_db.delete()
@@ -366,8 +376,8 @@ def User_format(name,password,repeat_password=None):
         return '用户名只能用数字和字母'
     if len(name) > 10:
         return '用户名最多10位'
-    if len(password) > 20:
-        return '密码最多20位'
+    if len(password) > 64:
+        return '密码最多64位'
     if len(name) < 5:
         return '用户名最少5位'
     if len(password) <5:

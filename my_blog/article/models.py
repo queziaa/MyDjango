@@ -3,12 +3,14 @@ from django.db import models
 
 # Create your models here.
 class Article(models.Model) :
-    title = models.CharField(max_length = 100)  #博客题目
+    title = models.CharField(max_length = 110)  #博客题目
     date_time = models.DateTimeField(auto_now_add = True)  #博客日期
     examine_time = models.DateTimeField(auto_now_add = True)  #
     content = models.TextField(blank = True, null = True)  #博客文章正文
     comments_quantity = models.IntegerField(default=0)  
     comment_ip = models.TextField(default='!')
+    user = models.CharField(max_length = 11)
+
 
     #python2使用__unicode__, python3使用__str__
     def __str__(self) :
@@ -19,7 +21,7 @@ class Article(models.Model) :
 
 class Comment_db(models.Model):
     date_time = models.DateTimeField(auto_now_add = True)
-    comments_text = models.TextField(max_length = 100)
+    comments_text = models.TextField(max_length = 450)
     ip_hash = models.CharField(max_length = 13) 
 
     def __str__(self) :
@@ -37,11 +39,11 @@ class IMG(models.Model):
         ordering = ['-id']
 
 class Article_examine(models.Model):
-    title = models.CharField(max_length = 100) 
+    title = models.CharField(max_length = 110) 
     examine_time = models.DateTimeField(auto_now_add = True)
     content = models.TextField(blank = True, null = True) 
     visible = models.BooleanField(default= True)
-
+    user = models.CharField(max_length = 11)
 
     def __str__(self) :
         return self.title
@@ -51,7 +53,7 @@ class Article_examine(models.Model):
 
 
 class User_data(models.Model):
-    name = models.CharField(max_length = 10)
+    name = models.CharField(max_length = 11)
     password = models.CharField(max_length = 64)
     cookie_name = models.CharField(max_length = 64,default = '!')
     cookie_password = models.CharField(max_length = 64,default = '!')
