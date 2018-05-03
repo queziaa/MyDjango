@@ -1,8 +1,6 @@
 #coduploading=utf-8
 from django import forms
 
-class add_forms(forms.Form):
-	pass
 
 class add_comment(forms.Form):
 	comment_content = forms.CharField(
@@ -48,6 +46,14 @@ class release_forms(forms.Form):
         strip=True,
         error_messages={'required': '内容不能为空',
                         'min_length': '内容最少为1个字符'},
+	)
+	label = forms.CharField(
+		widget=forms.Textarea(attrs={'placeholder':u'在此输入文章标签,不同标签以#分割','rows':u'1'}),
+		required=False,
+        strip=True,
+		max_length=110,
+        error_messages={
+                        'max_length': '标签最不超过为110个字符'},
 	)
 
 class login_forms(forms.Form):

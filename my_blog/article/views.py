@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone  
 
 
-from .forms import add_forms,add_comment,outside_img,release_forms,login_forms,registered_foms,cehange_password_foms
+from .forms import add_comment,outside_img,release_forms,login_forms,registered_foms,cehange_password_foms
 from article.models import Article,Comment_db,IMG,Article_examine,User_data
 
 import datetime
@@ -125,6 +125,20 @@ def release(request):
         if form.is_valid():
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
+            label = form.cleaned_data['label']
+            if not label:
+                label = '!'
+            else:
+                temp_label =  ''
+                if label[0] == '#':
+                    label = label[1:]
+                while False:
+                    if label.find('#') != -1 and label.find('#')+1 < len(label):
+                        temp_label = temp_label+'#'+label[:label.find('#')-1]
+                        label = label[label.find('#')+1:]
+                    else:
+                        label = temp_label
+                        break
             cookie_data = cookie_verification(request)
             if cookie_data == None:
                 User_name = '#'+ip_base(request)
@@ -132,7 +146,8 @@ def release(request):
             else:
                 User_name = '$'+cookie_data['name']
                 Result = True
-            Article_examine.objects.create(title = title,content = content,user = User_name)
+            Article_examine.objects.create(title = title,content = content,
+                user = User_name,label = label)
             return HttpResponseRedirect('/release/')
         else:
             return HttpResponseRedirect('/404/')
@@ -163,7 +178,8 @@ def get_examine(request):
         return HttpResponseRedirect('/user/')
     article_db = Article_examine.objects.get(id = judge[1:])
     if judge[:1] == '1':
-        Article.objects.create(title = article_db.title,content = article_db.content,examine_time = article_db.examine_time,user =article_db.user)
+        Article.objects.create(title = article_db.title,content = article_db.content,
+            examine_time = article_db.examine_time,user =article_db.user,label = article_db.label)
         article_db.delete()
     elif judge[:1] == '2':
         article_db.delete()
@@ -172,7 +188,6 @@ def get_examine(request):
         article_db.save()
     else:
         return HttpResponseRedirect('/user/')
-
     return HttpResponseRedirect('/examine/')
 
 def e404(request):
@@ -270,33 +285,8 @@ def cehange_password(request):
     return render(request,'cehange_password.html',{'name':cookie_datas['name'],'id':cookie_datas['id'],
         'permissions':cookie_datas['admin'],'forms':forms,'Result':Result,'bash_name':obtain_cookie_name(request,1)})
 
-    
-
-# def test(request):
-#     a = request.COOKIES.get("name")
-#     return HttpResponse(a)
-
-
-        #######
-    # cookie = HttpResponseRedirect('/test/')
-    # cookie.set_cookie("name","a")
-    # return cookie
-
-
-# def test(request):
-#     if request.method == 'POST':# 当提交表单时
-     
-#         form = add_forms(request.POST) # form 包含提交的数据
-         
-#         if form.is_valid():# 如果提交的数据合法
-#             a = form.cleaned_data['a']
-#             b = form.cleaned_data['b']
-#             return HttpResponse(str(int(a) + int(b)))
-     
-#     else:# 当正常访问时
-#         form = add_forms()
-#     return render(request, 'test.html', {'form': form})
-
+def confirmation(request):
+    return HttpResponse('7F0778BDEAF1F350E0956F1C210A613E286AE8D747CCC55F72CB00471A36F3A3 comodoca.com 5aeacff05638f')
 
 def obtain_cookie_name(request,pattern=0):
     cookie_data = cookie_verification(request)
