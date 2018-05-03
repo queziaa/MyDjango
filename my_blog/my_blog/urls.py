@@ -42,7 +42,7 @@ urlpatterns = [
     path('user/',views.user,name='user'),
     path('exit/',views.exit,name='exit'),
     path('cehange_password/',views.cehange_password,name='cehange_password'),
-    path('.well-known/pki-validation/filename.txt/',views.ssl_confirmation,name='confirmation')
+    path('.well-known/pki-validation/filename.txt/',views.ssl_confirmation,name='ssl_confirmation'),
 
     url(r'^static/(?P<path>.*)$', static.serve,  
         {'document_root': settings.STATIC_ROOT}, name='static')  

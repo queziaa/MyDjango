@@ -285,7 +285,7 @@ def cehange_password(request):
     return render(request,'cehange_password.html',{'name':cookie_datas['name'],'id':cookie_datas['id'],
         'permissions':cookie_datas['admin'],'forms':forms,'Result':Result,'bash_name':obtain_cookie_name(request,1)})
 
-def confirmation(request):
+def ssl_confirmation(request):
     return HttpResponse('7F0778BDEAF1F350E0956F1C210A613E286AE8D747CCC55F72CB00471A36F3A3 comodoca.com 5aeacff05638f')
 
 def obtain_cookie_name(request,pattern=0):
