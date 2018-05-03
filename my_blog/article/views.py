@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.http import HttpResponseRedirect  
 from django.http import HttpResponse
+from django.http import StreamingHttpResponse
 from django.urls import reverse  
 from datetime import datetime
 from django.http import Http404
@@ -286,7 +287,21 @@ def cehange_password(request):
         'permissions':cookie_datas['admin'],'forms':forms,'Result':Result,'bash_name':obtain_cookie_name(request,1)})
 
 def ssl_confirmation(request):
-    return HttpResponse('7F0778BDEAF1F350E0956F1C210A613E286AE8D747CCC55F72CB00471A36F3A3 comodoca.com 5aeacff05638f')
+
+    def file_iterator(file_name, chunk_size=512):
+        with open(file_name) as f:
+            while True:
+                c = f.read(chunk_size)
+                if c:
+                    yield c
+                else:
+                    break
+
+    the_file_name = "static/img/ed10c7e97e848ec85764641947f2715d.txt"
+    response = StreamingHttpResponse(file_iterator(the_file_name))
+    return response
+
+
 
 def obtain_cookie_name(request,pattern=0):
     cookie_data = cookie_verification(request)
