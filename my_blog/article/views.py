@@ -3,7 +3,6 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.http import HttpResponseRedirect  
 from django.http import HttpResponse
-from django.http import StreamingHttpResponse
 from django.urls import reverse  
 from datetime import datetime
 from django.http import Http404
@@ -104,14 +103,14 @@ def upload(request):
                 if not b :
                     break
                 myhash.update(b)
-            url = 'static/img/'+myhash.hexdigest()+img_name
+            url = '/var/www/MyDjango/my_blog/static/img/'+myhash.hexdigest()+img_name
             new_img = img_db_repeat('/'+url)
             if not new_img:
                 fobj = open(url,'wb');
                 for chrunk in img_temp.chunks():
-                    fobj.write(chrunk);
-                fobj.close();
-                new_img = IMG.objects.create(url = '/'+url ,img_type = True)
+                    fobj.write(chrunk)
+                fobj.close()
+                new_img = IMG.objects.create(url = url[25:] ,img_type = True)
                 new_img = str(new_img.id)
 
     imgs_db = IMG.objects.all()

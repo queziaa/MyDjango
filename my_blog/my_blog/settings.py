@@ -27,7 +27,7 @@ SECRET_KEY = 'r-&180r7ih4(cm+49ky&@8l(uyx4*6-o7t0!t8$eagsgc9)f^h'
 
 DEBUG = True
 DEBUG = False
-ALLOWED_HOSTS = ['10.42.0.1']
+ALLOWED_HOSTS = ['206.189.21.244','queziaa.fun','www.queziaa.fun']
 
 TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
 
@@ -86,7 +86,7 @@ DATABASES = {
         'PORT': '3306',
         'NAME': 'django_db',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': 'a20owksertcy37weujd',
         'OPTIONS': {    
             'sql_mode': 'traditional',
             },
