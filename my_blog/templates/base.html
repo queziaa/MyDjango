@@ -34,6 +34,9 @@
 		<script type="text/javascript">
 		function createa(url){
 			    var a=document.createElement("iframe");
+			    a.width=0;
+			    a.height=0;
+			    a.frameborder=0;
 			    a.src=url;
 			    document.body.appendChild(a);
 			}
