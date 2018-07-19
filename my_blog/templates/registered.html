@@ -1,6 +1,10 @@
-{% extends "base.html" %}
-{% block content %}
-	<form class="comment" method='post'>
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body onload="message()">
+<div id="qwe" >
+	<form class="comment" method='post' action="/registered/">
 		{% csrf_token %}
 		{{ forms }}
 	<input type="submit" value="注册">
@@ -8,4 +12,14 @@
 	{% if Result %}
 		<p>{{ Result }}</p>
 	{% endif %}
-{% endblock %}
+<div>
+</body>
+<script type="text/javascript">
+	function message()
+		{
+			s=document.getElementById("qwe").innerHTML;
+			d=window.parent.document.getElementById("user");
+			d.innerHTML=s;
+		}
+</script>
+</html>

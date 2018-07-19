@@ -25,9 +25,9 @@ SECRET_KEY = 'r-&180r7ih4(cm+49ky&@8l(uyx4*6-o7t0!t8$eagsgc9)f^h'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = True
 DEBUG = False
-ALLOWED_HOSTS = ['206.189.21.244','queziaa.fun','www.queziaa.fun']
+DEBUG = True
+ALLOWED_HOSTS = ['127.0.0.1','queziaa.fun','www.queziaa.fun']
 
 TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
 

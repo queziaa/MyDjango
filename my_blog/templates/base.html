@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html>
 <head>
 	<title>Queziaa's blog</title>
@@ -8,32 +8,36 @@
 </head>
 <body>
 	<div id="left">
-		<ul>
-			<li>
-				<a href="/">主页</a>
-			</li>
-			<li>
-				<a href="/archive">列表</a>
-			</li>
-			<li>
-				<a href="/me">关于我</a>
-			</li>
-			<li>
-				<a href="/upload">上传图片</a>
-			</li>
-			<li>
-				<a href="/release">发布博客</a>
-			</li>
-		</ul>
+		<br>
+		<a href="/">主页</a>
+		<br>
+		<a href="/archive">列表</a>
+		<br>
+		<a href="/me">关于我</a>
+		<br>
+		<a href="/upload">上传图片</a>
+		<br>
+		<a href="/release">发布博客</a>
+		<br>
 		<div id="user">
 		{% if bash_name %}
 			<a href="/user" title="个人中心">{{ bash_name }}</a>
 		{% else %}
-			<a href="/login">登陆</a>
+			<a href="#" onclick="createa('/login')">登陆</a>
 			<a href="#">/</a>
-			<a href="/registered">注册</a>
+			<a href="#" onclick="createa('/registered')">注册</a>
+			<br>
 		{% endif %}
 		</div>
+
+
+		<script type="text/javascript">
+		function createa(url){
+			    var a=document.createElement("iframe");
+			    a.src=url;
+			    document.body.appendChild(a);
+			}
+		</script>
 	</div>
 	<div id="right">	
 		{% block content %}

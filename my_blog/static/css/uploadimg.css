@@ -2,18 +2,19 @@
 	float:left; 
 	padding:0% 1% 0% 1%;
 }
-.comment{
+#right .comment{
 	padding:0%;
 }
-.comment textarea{
+#right .comment textarea{
 	width:70%;
 	height:10%;
 }
-.comment input{
+#right .comment input{
 	height:10%;
 	margin:1% 3% 0% 3%;
+	width: auto;
 }
-form{
+#right form{
 	width:500px;
 }
 .comment_img{

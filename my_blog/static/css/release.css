@@ -1,12 +1,12 @@
 .comment{
 	padding: 0%;
 }
-.comment textarea{
+#right .comment textarea{
 	width:92%;
 	height:10%;
 	margin:1% 3% 0% 3%;
 }
-.comment input{
+#right .comment input{
 	width:8%;
 	position:fixed;
 	right:3%;

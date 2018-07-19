@@ -10,3 +10,22 @@
 	padding :0px 0px 10px 0px;
 
 }
+.section_main .comment{
+	padding:4% 0%;
+}
+.section_main textarea{
+	height: 100%;
+	text-align:left;
+}
+.section_main input{
+	width: auto;
+}
+.comment a{
+	margin:0% 0% 0% 1% ;
+	background: #bfc4cc;
+	color: #31332e;
+	border-radius: 5px;
+    height:40px;
+    padding:2%;
+	font-size: 20px; 
+}
