@@ -20,29 +20,21 @@
 		<a href="/release">发布博客</a>
 		<br>
 		<div id="user">
-		{% if bash_name %}
-			<a href="/user" title="个人中心">{{ bash_name }}</a>
-		{% else %}
-			<a href="#" onclick="createa('/login')">登陆</a>
-			<a href="#">/</a>
-			<a href="#" onclick="createa('/registered')">注册</a>
-			<br>
-		{% endif %}
 		</div>
-
-
+		<iframe src="/Dynamic_window_user" width="0" height="0" frameborder="0">
+		</iframe>
 		<script type="text/javascript">
 		function createa(url){
-			    var a=document.createElement("iframe");
-			    a.width=0;
-			    a.height=0;
-			    a.frameborder=0;
-			    a.src=url;
-			    document.body.appendChild(a);
+			    var Dynamic_window=document.createElement("iframe");
+			    Dynamic_window.width=0;
+			    Dynamic_window.height=0;
+			    Dynamic_window.frameborder=0;
+			    Dynamic_window.src=url;
+			    document.body.appendChild(Dynamic_window);
 			}
 		</script>
 	</div>
-	<div id="right">	
+	<div id="right">
 		{% block content %}
 		{% endblock %}
 	</div>

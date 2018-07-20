@@ -32,21 +32,22 @@ urlpatterns = [
     path('detailed/<int:id>/',views.detailed,name='detailed'),
     path('archive/',views.archive,name='archive'),
     path('upload/', views.upload,name='upload'),
-    path('release/', views.release,name='release'),
     path('examine/', views.examine,name='examine'),
     path('get_examine/', views.get_examine,name='get_examine'),
     path('Error/',views.Error,name='Error'),
     path('404/',views.e404,name='e404'),
-    path('login/', views.login,name='login'),
-    path('registered/',views.registered,name='registered'),
+    path('release/', views.release,name='release'),
     path('user/',views.user,name='user'),
     path('exit/',views.exit,name='exit'),
     path('cehange_password/',views.cehange_password,name='cehange_password'),
 
+    path('Dynamic_window_user',views.Dynamic_window_user,name='Dynamic_window_user'),
+    path('Dynamic_window_registered/',views.registered,name='Dynamic_window_registered'),
+    path('Dynamic_window_login/', views.login,name='Dynamic_window_login'),
+
     url(r'^static/(?P<path>.*)$', static.serve,  
         {'document_root': settings.STATIC_ROOT}, name='static')  
 
-#    path('test/', views.test,name='test'),
 
 ]
 

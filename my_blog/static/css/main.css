@@ -4,7 +4,7 @@ html{
 body{ 
 	margin:0; 
 	height:100%;
-    background: #204042;
+	background: #204042;
 }
 a{
 	text-decoration:none
@@ -36,7 +36,7 @@ img{
 #user{
 	width:100%;
 	position:absolute;
-    bottom:2%;
+	bottom:2%;
 }
 
 #right{
@@ -71,7 +71,7 @@ img{
 }
 .comment label{
 	display:none;
-    padding:0.5% 0.7%;
+	padding:0.5% 0.7%;
 	font-size: 15px; 
 }
 .comment textarea{
@@ -87,16 +87,16 @@ img{
 	color:#a78d71;
 }
 .comment input{
-    height:40px;
+	height:40px;
 	width: 100%;
 	font-size: 20px; 
 	text-align:center;
 	margin-top: 10px;
-    border: 0;  
+	border: 0;  
 	-moz-border-radius: 2px;
 	border-radius: 5px;
-    background: #bfc4cc;
-    color: #31332e;
+	background: #bfc4cc;
+	color: #31332e;
 }
 .comment span{
 	font-size: 25px; 
@@ -108,12 +108,12 @@ img{
 	background: #bfc4cc;
 	color: #31332e;
 	border-radius: 5px;
-    height:40px;
-    padding:0.5% 0.7%;
+	height:40px;
+	padding:0.5% 0.7%;
 	font-size: 15px; 
 }
 #comment_text{
-	width:99%;/*自动适应父布局宽度*/ 
+	width:99%;
 	border:2px solid #a1a1a1;
 	border-radius:25px;
 	padding:0.5% 1% ;
@@ -145,6 +145,6 @@ img{
 	padding:0% 4% 0% 3%;
 	font-size:20px;
 	word-break:break-all; 
-    position:relative;
-    bottom:15px;
+	position:relative;
+	bottom:15px;
 }

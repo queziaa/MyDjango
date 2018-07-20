@@ -20,9 +20,8 @@ import random
 import time
 
 
-# Create your views here.
 def home(request):
-    post_list = Article.objects.all()  #获取全部的Article对象
+    post_list = Article.objects.all()  
     for num in range(len(post_list)):
         text_temp=Article_mix(post_list[num].content)
         post_list[num].content={'text':'','img':None}
@@ -31,11 +30,10 @@ def home(request):
                 continue
             post_list[num].content['text']=post_list[num].content['text']+text['text']
         post_list[num].content['img']=text_temp[0]['img']
-    return render(request, 'home.html',{'post_list' : post_list,
-        'bash_name':obtain_cookie_name(request,1)})
+    return render(request, 'home.html',{'post_list' : post_list})
 
 def me(request):
-    return render(request,'me.html',{'bash_name':obtain_cookie_name(request,1)})
+    return render(request,'me.html')
 
 def detailed(request,id):
     if request.method == 'POST':
@@ -75,12 +73,12 @@ def detailed(request,id):
         Result = True
     Article_mix_content=Article_mix(post.content)
     return render(request, 'detailed.html',{'Article_mix_content':Article_mix_content,'post':post,'comment':comment,
-        'comment_content':comment_content,'User_name':User_name,'Result':Result,
-        'bash_name':obtain_cookie_name(request,1)})
+        'comment_content':comment_content,'User_name':User_name,'Result':Result})
 
 def archive(request):
     post_list = Article.objects.all()  
-    return render(request,'archive.html',{'post_list' : post_list,'bash_name':obtain_cookie_name(request,1)})
+    return render(request,'archive.html',{'post_list' : post_list})
+
 
 @csrf_exempt
 def upload(request):
@@ -115,9 +113,7 @@ def upload(request):
 
     imgs_db = IMG.objects.all()
     form_url = outside_img()
-
-    return render(request, 'uploadimg.html',{'form_url' : form_url,'img_id' : new_img,'imgs':imgs_db,
-        'bash_name':obtain_cookie_name(request,1)})
+    return render(request, 'uploadimg.html',{'form_url' : form_url,'img_id' : new_img,'imgs':imgs_db})
 
 def release(request):
     if request.method == 'POST':
@@ -154,9 +150,9 @@ def release(request):
     else:
         form = release_forms()
 
-    post_list = Article_examine.objects.all()  #获取全部的Article对象
-    return render(request, 'release.html',{'form' : form,'post_list':post_list,
-        'bash_name':obtain_cookie_name(request,1)})
+    post_list = Article_examine.objects.all() 
+    return render(request, 'release.html',{'form' : form,'post_list':post_list})
+
 
 def examine(request):
     cookie_data = cookie_verification(request)
@@ -165,8 +161,9 @@ def examine(request):
     if not cookie_data['admin']:
         return HttpResponseRedirect('/Error')
     examine_data = Article_examine.objects.filter(visible = True)
-    return render(request, 'examine.html',{'post_list' : examine_data
-        ,'bash_name':obtain_cookie_name(request,1)})
+    return render(request, 'examine.html',{'post_list' : examine_data})
+
+
 def get_examine(request):
     cookie_data = cookie_verification(request)
     if type(cookie_data) != dict:
@@ -190,67 +187,16 @@ def get_examine(request):
         return HttpResponseRedirect('/user/')
     return HttpResponseRedirect('/examine/')
 
-def e404(request):
-    return render(request,'404.html')
-def Error(request):
-    return render(request,'Error.html')
 
-
-def login(request):
-    Result = None
-    if request.method == 'POST':
-        forms = login_forms(request.POST)
-        if forms.is_valid():
-            name = forms.cleaned_data['name']
-            password = forms.cleaned_data['password']
-            cookie_data = loing_verification(name,password)
-            if type(cookie_data) != str:
-                cookie_url = HttpResponseRedirect('/')
-                cookie_url.set_cookie("name",cookie_data['cookie_name'],1209600)
-                cookie_url.set_cookie("password",cookie_data['cookie_password'],1209600)
-                return cookie_url
-            else:
-                Result = cookie_data
-        else:
-            Result = '信息提交错误'
-    forms = login_forms()
-    return render(request,'login.html',{'forms':forms,'Result':Result
-        ,'bash_name':obtain_cookie_name(request,1)})
-
-def registered(request):
-    Result = None
-    if request.method == 'POST':
-        forms = registered_foms(request.POST)
-        if forms.is_valid():
-            name = forms.cleaned_data['name']
-            password = forms.cleaned_data['password']
-            repeat_password = forms.cleaned_data['repeat_password']
-            cookie_data = registered_verification(name,password,repeat_password)
-            if type(cookie_data) != str:
-                cookie_url = HttpResponseRedirect('/')
-                cookie_url.set_cookie("name",cookie_data['cookie_name'],1209600)
-                cookie_url.set_cookie("password",cookie_data['cookie_password'],1209600)
-                return cookie_url
-            else:
-                Result = cookie_data
-        else:
-            Result = '信息提交错误'
-    forms = registered_foms()
-    return render(request,'registered.html',{'forms':forms,'Result':Result
-        ,'bash_name':obtain_cookie_name(request,1)})
 
 def user(request):
     cookie_data = cookie_verification(request)
     if type(cookie_data) != dict:
         return HttpResponseRedirect('/exit/')
     return render(request,'user.html',{'name':cookie_data['name'],'id':cookie_data['id']
-        ,'permissions':cookie_data['admin'],'bash_name':obtain_cookie_name(request,1)})
+        ,'permissions':cookie_data['admin']})
 
-def exit(request):
-    response = HttpResponseRedirect('/')
-    response.delete_cookie('password')
-    response.delete_cookie('name')
-    return response
+
 def cehange_password(request):
     Result = None
     name = obtain_cookie_name(request,1)
@@ -283,7 +229,73 @@ def cehange_password(request):
     forms = cehange_password_foms()
     cookie_datas = cookie_verification(request)
     return render(request,'cehange_password.html',{'name':cookie_datas['name'],'id':cookie_datas['id'],
-        'permissions':cookie_datas['admin'],'forms':forms,'Result':Result,'bash_name':obtain_cookie_name(request,1)})
+        'permissions':cookie_datas['admin'],'forms':forms,'Result':Result})
+
+
+
+
+def login(request):
+    Result = None
+    if request.method == 'POST':
+        forms = login_forms(request.POST)
+        if forms.is_valid():
+            name = forms.cleaned_data['name']
+            password = forms.cleaned_data['password']
+            cookie_data = loing_verification(name,password)
+            if type(cookie_data) != str:
+                cookie_url = HttpResponseRedirect('/')
+                cookie_url.set_cookie("name",cookie_data['cookie_name'],1209600)
+                cookie_url.set_cookie("password",cookie_data['cookie_password'],1209600)
+                return cookie_url
+            else:
+                Result = cookie_data
+        else:
+            Result = '信息提交错误'
+    forms = login_forms()
+    return render(request,'Dynamic_window_LoginRegistered.html',{'Button_name':'登陆','action_url':'/Dynamic_window_login/','forms':forms,'Result':Result})
+
+def registered(request):
+    Result = None
+    if request.method == 'POST':
+        forms = registered_foms(request.POST)
+        if forms.is_valid():
+            name = forms.cleaned_data['name']
+            password = forms.cleaned_data['password']
+            repeat_password = forms.cleaned_data['repeat_password']
+            cookie_data = registered_verification(name,password,repeat_password)
+            if type(cookie_data) != str:
+                cookie_url = HttpResponseRedirect('/')
+                cookie_url.set_cookie("name",cookie_data['cookie_name'],1209600)
+                cookie_url.set_cookie("password",cookie_data['cookie_password'],1209600)
+                return cookie_url
+            else:
+                Result = cookie_data
+        else:
+            Result = '信息提交错误'
+    forms = registered_foms()
+    return render(request,'Dynamic_window_LoginRegistered.html',{'Button_name':'注册','action_url':'/Dynamic_window_registered/','forms':forms,'Result':Result})
+
+def Dynamic_window_user(request):
+    return render(request,'Dynamic_window_user.html',{'bash_name':obtain_cookie_name(request,1)})
+
+
+
+
+def exit(request):
+    response = HttpResponseRedirect('/')
+    response.delete_cookie('password')
+    response.delete_cookie('name')
+    return response
+
+def e404(request):
+    return render(request,'404.html')
+
+def Error(request):
+    return render(request,'Error.html')
+
+#############################################################################
+#############################################################################
+
 
 def ssl_confirmation(request):
 
@@ -299,7 +311,6 @@ def ssl_confirmation(request):
     the_file_name = "static/img/ed10c7e97e848ec85764641947f2715d.txt"
     response = StreamingHttpResponse(file_iterator(the_file_name))
     return response
-
 
 
 def obtain_cookie_name(request,pattern=0):

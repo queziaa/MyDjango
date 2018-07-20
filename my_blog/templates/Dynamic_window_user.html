@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html>
+<body>
+	<div id="user">
+	{% if bash_name %}
+		<a href="/user" title="个人中心">{{ bash_name }}</a>
+	{% else %}
+		<a href="#" onclick="createa('/Dynamic_window_login')">登陆</a>
+		<a href="#">/</a>
+		<a href="#" onclick="createa('/Dynamic_window_registered')">注册</a>
+		<br>
+	{% endif %}
+	</div>
+	<script type="text/javascript">
+		new_div=document.getElementById("user").innerHTML;
+		used_div=window.parent.document.getElementById("user");
+		used_div.innerHTML=new_div;
+	</script>
+</body>
+</html>

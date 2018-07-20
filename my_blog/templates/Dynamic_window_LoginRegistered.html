@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body onload="message()">
+<div id="dynamic_login" >
+	<form class="comment" method='post' action={{ action_url }}>
+		{% csrf_token %}
+		{{ forms }}
+	<input type="submit" value={{ Button_name }}>
+	</form>
+	{% if Result %}
+		<p>{{ Result }}</p>
+	{% endif %}
+<div>
+</body>
+<script type="text/javascript">
+	function message()
+		{
+			new_div=document.getElementById("dynamic_login").innerHTML;
+			used_div=window.parent.document.getElementById("user");
+			used_div.innerHTML=new_div;
+		}
+</script>
+</html>
