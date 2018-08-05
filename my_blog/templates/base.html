@@ -5,6 +5,30 @@
 	{% load staticfiles %}
 	<link href="{% static 'css/main.css' %}" rel="stylesheet" type="text/css">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script>
+		 window.onload=function(){
+			var request = new XMLHttpRequest();
+			request.open("GET", "/get_name");
+			request.send();
+			request.onreadystatechange = function() {
+				if (request.readyState===4) {
+					if (request.status===200) { 
+						var data = JSON.parse(request.responseText);
+						if(data["login"]=="True"){
+							var user = document.getElementById("user");
+							user.removeChild(document.getElementById("registered"));
+							user.removeChild(document.getElementById("login"));
+							name=document.getElementById("name").href="/user";
+							name=document.getElementById("name").text=data["name"];
+						}
+						document.getElementById("user").style.visibility="visible";
+					} else {
+						alert(request.status+":发生错误 请尝试刷新");
+					}
+				} 
+			}
+		}
+	</script>
 </head>
 <body>
 	<div id="left">
@@ -20,19 +44,10 @@
 		<a href="/release">发布博客</a>
 		<br>
 		<div id="user">
+			<a id="login" href="Dynamic_window_login">登陆</a>
+			<a id="name" href="#">/</a>
+			<a id="registered" href="/Dynamic_window_registered">注册</a>
 		</div>
-		<iframe src="/Dynamic_window_user" width="0" height="0" frameborder="0">
-		</iframe>
-		<script type="text/javascript">
-		function createa(url){
-			    var Dynamic_window=document.createElement("iframe");
-			    Dynamic_window.width=0;
-			    Dynamic_window.height=0;
-			    Dynamic_window.frameborder=0;
-			    Dynamic_window.src=url;
-			    document.body.appendChild(Dynamic_window);
-			}
-		</script>
 	</div>
 	<div id="right">
 		{% block content %}

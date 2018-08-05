@@ -1,5 +1,7 @@
 html{
 	height:100%;
+	font-family:open sans,hiragino sans gb,microsoft yahei,wenquanyi micro hei,Arial,Verdana,Tahoma,sans-serif;
+
 }
 body{ 
 	margin:0; 
@@ -37,6 +39,7 @@ img{
 	width:100%;
 	position:absolute;
 	bottom:2%;
+	visibility:hidden;
 }
 
 #right{

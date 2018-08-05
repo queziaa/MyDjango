@@ -18,6 +18,8 @@ import base64
 import hashlib 
 import random
 import time
+import json
+
 
 
 def home(request):
@@ -40,7 +42,7 @@ def detailed(request,id):
         form = add_comment(request.POST)
         if form.is_valid():
             comment_content = form.cleaned_data['comment_content']
-            ip=obtain_cookie_name(request)
+            ip=obtain_nameORip(request)
             comment_id = Comment_db.objects.create(comments_text = comment_content,
                 ip_hash = ip)
             post = Article.objects.get(id=id)
@@ -199,7 +201,7 @@ def user(request):
 
 def cehange_password(request):
     Result = None
-    name = obtain_cookie_name(request,1)
+    name = obtain_cookie_name(request)
     if name == None:
         return HttpResponseRedirect('/exit/')
     if request.method == 'POST':
@@ -275,8 +277,13 @@ def registered(request):
     forms = registered_foms()
     return render(request,'Dynamic_window_LoginRegistered.html',{'Button_name':'注册','action_url':'/Dynamic_window_registered/','forms':forms,'Result':Result})
 
-def Dynamic_window_user(request):
-    return render(request,'Dynamic_window_user.html',{'bash_name':obtain_cookie_name(request,1)})
+def get_name(request):
+    test=obtain_cookie_name(request)
+    if(test):
+        return HttpResponse('{"login": "True","name": "'+ test +'"}')
+    else:
+        return HttpResponse('{"login": "False"}')
+    
 
 
 
@@ -297,39 +304,22 @@ def Error(request):
 #############################################################################
 
 
-def ssl_confirmation(request):
-
-    def file_iterator(file_name, chunk_size=512):
-        with open(file_name) as f:
-            while True:
-                c = f.read(chunk_size)
-                if c:
-                    yield c
-                else:
-                    break
-
-    the_file_name = "static/img/ed10c7e97e848ec85764641947f2715d.txt"
-    response = StreamingHttpResponse(file_iterator(the_file_name))
-    return response
 
 
-def obtain_cookie_name(request,pattern=0):
+
+def obtain_cookie_name(request):
     cookie_data = cookie_verification(request)
     if type(cookie_data) == dict:
-        if pattern==0:
-            return '$'+cookie_data['name']
-        elif pattern==1:
-            return cookie_data['name']
-        else:
-            return 'ERROR'
+        return cookie_data['name']
     else:
-        if pattern==0:
-            return '#'+ip_base(request)
-        elif pattern==1:
-            return None
-        else:
-            return 'ERROR:obtain_cookie_name'
+        return None
 
+def obtain_nameORip(request):
+    cookie_data = cookie_verification(request)
+    if type(cookie_data) == dict:
+        return '$'+cookie_data['name']
+    else:
+        return '#'+ip_base(request)
 
 
 def registered_verification(name,password,repeat_password):

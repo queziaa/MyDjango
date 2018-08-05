@@ -41,12 +41,13 @@ urlpatterns = [
     path('exit/',views.exit,name='exit'),
     path('cehange_password/',views.cehange_password,name='cehange_password'),
 
-    path('Dynamic_window_user',views.Dynamic_window_user,name='Dynamic_window_user'),
+    path('get_name/',views.get_name,name='get_name'),
     path('Dynamic_window_registered/',views.registered,name='Dynamic_window_registered'),
     path('Dynamic_window_login/', views.login,name='Dynamic_window_login'),
 
-    url(r'^static/(?P<path>.*)$', static.serve,  
-        {'document_root': settings.STATIC_ROOT}, name='static')  
+
+    url(r'^favicon\.ico$', static.serve,{'document_root': settings.STATIC_ROOT,'path': "/img/favicon.ico"}),
+    url(r'^static/(?P<path>.*)$', static.serve,{'document_root': settings.STATIC_ROOT}, name='static'), 
 
 
 ]
