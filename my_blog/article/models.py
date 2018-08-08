@@ -9,7 +9,7 @@ class Article(models.Model) :
     content = models.TextField(blank = True, null = True)  #博客文章正文
     comments_quantity = models.IntegerField(default=0)  
     comment_ip = models.TextField(default='!')
-    user = models.CharField(max_length = 11)
+    user = models.CharField(max_length = 16)
     label = models.CharField(max_length = 110,default = '!')
 
 
@@ -55,8 +55,8 @@ class Article_examine(models.Model):
 
 
 class User_data(models.Model):
-    name = models.CharField(max_length = 11,null = True)
-    password = models.CharField(max_length = 64,null = True)
+    name = models.CharField(max_length = 16,null = True)
+    password = models.CharField(max_length = 16,null = True)
     cookie_name = models.CharField(max_length = 64,default = '!')
     cookie_password = models.CharField(max_length = 64,default = '!')
     cookie_time =  models.DateTimeField(auto_now_add = True)

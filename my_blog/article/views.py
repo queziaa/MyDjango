@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone  
 
 
-from .forms import add_comment,outside_img,release_forms,login_forms,registered_foms,cehange_password_foms
+from .forms import add_comment,outside_img,release_forms,registered_foms,cehange_password_foms
 from article.models import Article,Comment_db,IMG,Article_examine,User_data
 
 import datetime
@@ -237,47 +237,29 @@ def cehange_password(request):
 
 
 def login(request):
-    Result = None
     if request.method == 'POST':
-        forms = login_forms(request.POST)
-        if forms.is_valid():
-            name = forms.cleaned_data['name']
-            password = forms.cleaned_data['password']
-            cookie_data = loing_verification(name,password)
-            if type(cookie_data) != str:
-                cookie_url = HttpResponseRedirect('/')
-                cookie_url.set_cookie("name",cookie_data['cookie_name'],1209600)
-                cookie_url.set_cookie("password",cookie_data['cookie_password'],1209600)
-                return cookie_url
-            else:
-                Result = cookie_data
+        name=request.POST.get('name','')
+        password=request.POST.get('password','')
+        cookie_data = loing_verification(name,password)
+        if type(cookie_data) != str:
+            return HttpResponse('{"state": "0","info":"OK","cookie_name":"'+cookie_data['cookie_name']+'","cookie_password": "'+cookie_data['cookie_password']+'"}')
         else:
-            Result = '信息提交错误'
-    forms = login_forms()
-    return render(request,'Dynamic_window_LoginRegistered.html',{'Button_name':'登陆','action_url':'/Dynamic_window_login/','forms':forms,'Result':Result})
+            return HttpResponse('{"state":"1","info":"'+cookie_data+'"}')
+    return HttpResponse('{"state": "2","info":"Nome"}')
 
 def registered(request):
-    Result = None
     if request.method == 'POST':
-        forms = registered_foms(request.POST)
-        if forms.is_valid():
-            name = forms.cleaned_data['name']
-            password = forms.cleaned_data['password']
-            repeat_password = forms.cleaned_data['repeat_password']
-            cookie_data = registered_verification(name,password,repeat_password)
-            if type(cookie_data) != str:
-                cookie_url = HttpResponseRedirect('/')
-                cookie_url.set_cookie("name",cookie_data['cookie_name'],1209600)
-                cookie_url.set_cookie("password",cookie_data['cookie_password'],1209600)
-                return cookie_url
-            else:
-                Result = cookie_data
+        name = request.POST.get('name','')
+        password = request.POST.get('password','')
+        repeat_password = request.POST.get('repeat_password','')
+        cookie_data = registered_verification(name,password,repeat_password)
+        if type(cookie_data) != str:
+            return HttpResponse('{"state": "0","info":"OK","cookie_name":"'+cookie_data['cookie_name']+'","cookie_password": "'+cookie_data['cookie_password']+'"}')
         else:
-            Result = '信息提交错误'
-    forms = registered_foms()
-    return render(request,'Dynamic_window_LoginRegistered.html',{'Button_name':'注册','action_url':'/Dynamic_window_registered/','forms':forms,'Result':Result})
+            return HttpResponse('{"state":"1","info":"'+cookie_data+'"}')
+    return HttpResponse('{"state": "2","info":"Nome"}')
 
-def get_name(request):
+def obtain_name(request):
     test=obtain_cookie_name(request)
     if(test):
         return HttpResponse('{"login": "True","name": "'+ test +'"}')
@@ -379,13 +361,13 @@ def sha256_s(value):
 def User_format(name,password,repeat_password=None):
     if not name.isalnum():
         return '用户名只能用数字和字母'
-    if len(name) > 10:
-        return '用户名最多10位'
-    if len(password) > 64:
-        return '密码最多64位'
+    if len(name) > 14:
+        return '用户名最多14位'
+    if len(password) > 14:
+        return '密码最多14位'
     if len(name) < 5:
         return '用户名最少5位'
-    if len(password) <5:
+    if len(password) < 5:
         return '密码最少5位'
     if repeat_password != None:
         try:

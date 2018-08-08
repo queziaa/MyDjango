@@ -41,9 +41,9 @@ urlpatterns = [
     path('exit/',views.exit,name='exit'),
     path('cehange_password/',views.cehange_password,name='cehange_password'),
 
-    path('get_name/',views.get_name,name='get_name'),
-    path('Dynamic_window_registered/',views.registered,name='Dynamic_window_registered'),
-    path('Dynamic_window_login/', views.login,name='Dynamic_window_login'),
+    path('login/', views.login,name='login'),
+    path('registered/',views.registered,name='registered'),
+    path('obtain_name/',views.obtain_name,name='obtain_name'),
 
 
     url(r'^favicon\.ico$', static.serve,{'document_root': settings.STATIC_ROOT,'path': "/img/favicon.ico"}),

@@ -35,11 +35,15 @@ img{
 	font-size:350%;
 	font-weight:bold;
 }
+#dynamic_login{
+	display: none;
+}
 #user{
 	width:100%;
 	position:absolute;
 	bottom:2%;
 	visibility:hidden;
+
 }
 
 #right{
@@ -78,6 +82,18 @@ img{
 	font-size: 15px; 
 }
 .comment textarea{
+	height: 40px;
+	width: 100%;
+	font-size: 20px;
+	text-align:center;
+	border:none;
+	outline:none; 
+	padding: 1%;
+	border-radius: 5px;
+	background-color:#31332e;
+	color:#a78d71;
+}
+.comment #name{
 	height: 40px;
 	width: 100%;
 	font-size: 20px;
