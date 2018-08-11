@@ -5,7 +5,7 @@ from django import forms
 class add_comment(forms.Form):
 	comment_content = forms.CharField(
 		widget=forms.Textarea(
-			attrs={'placeholder':u'在此输入评论\n以$开头的评论，登陆了账户发布的评论.以#开头的评论，匿名的评论,此时ID是由ip地址生成的，且过程不可逆.\n如需插入图片,请事先提交图片获取图片id,在插入图片位置书写{@图片id@}',
+			attrs={'placeholder':u'在此输入评论\n以$开头的评论为登陆账户评论.以#开头的评论为匿名评论,匿名ID是由ip地址生成过程不可逆.\n查看图片超链接输入格式,点击格式帮助按钮',
 			'rows':u'4'}
 		),
 		min_length=1,

@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 	{% load staticfiles %}
+	<script>
+		function help() {
+			document.getElementById("id_comment_content").placeholder='下个版本加...';
+			return false
+		}
+	</script>
 	<link href="{% static 'css/detailed.css' %}" rel="stylesheet" type="text/css">
 		<div class="section_main">
 			<div class="title">
@@ -14,15 +20,17 @@
 					{% if temp.text %}
 					<p>{{ temp.text|linebreaksbr }}</p>
 					{% endif %}
-					{% if temp.img %}
-						<img src="{{ temp.img }}" >
+					{% if temp.type == 'img' %}
+						<img src="{{ temp.date_1 }}" >
+					{% elif temp.type == 'a' %}
+						<a href="{{ temp.date_1 }}">{{ temp.date_2 }}</a>
+					{% else %}
 					{% endif %}
 				{% endfor %} 
 			</div>
 			<form class="comment" method='post'>
 				{% csrf_token %}
 				{{ comment }}
-
 				{% if Result %}
 					<span>${{ User_name }}</span>
 					<input type="submit" value="发布评论">
@@ -30,7 +38,7 @@
 					<span>#{{ User_name }}</span>
 					<input type="submit" value="匿名评论">
 				{% endif %}
-
+					<input type="button" value="格式帮助" onclick="help()">
 			</form>
 			{% for comment_text in comment_content %} 
 				<div id="comment_text">
@@ -44,9 +52,12 @@
 							{% if temp.text %}
 							<p>{{ temp.text|linebreaksbr }}</p>
 							{% endif %}
-							{% if temp.img %}
-								<img src="{{ temp.img }}" >
-							{% endif %}
+								{% if temp.type == 'img' %}
+									<img src="{{ temp.date_1 }}" >
+								{% elif temp.type == 'a' %}
+									<a href="{{ temp.date_1 }}">{{ temp.date_2 }}</a>
+								{% else %}
+								{% endif %}
 						{% endfor %} 
 					</div>
 				</div>

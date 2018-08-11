@@ -25,13 +25,16 @@ import json
 def home(request):
     post_list = Article.objects.all()  
     for num in range(len(post_list)):
+        img_obtain=True
         text_temp=Article_mix(post_list[num].content)
         post_list[num].content={'text':'','img':None}
         for text in text_temp:
+            if img_obtain and text['type']=='img':
+                post_list[num].content['img']=text['date_1']
+                img_obtain=False
             if text['text']==None:
                 continue
             post_list[num].content['text']=post_list[num].content['text']+text['text']
-        post_list[num].content['img']=text_temp[0]['img']
     return render(request, 'home.html',{'post_list' : post_list})
 
 def me(request):
@@ -75,7 +78,7 @@ def detailed(request,id):
         Result = True
     Article_mix_content=Article_mix(post.content)
     return render(request, 'detailed.html',{'Article_mix_content':Article_mix_content,'post':post,'comment':comment,
-        'comment_content':comment_content,'User_name':User_name,'Result':Result})
+        'comment_content':comment_content,'User_name':User_name,'Result':Result,'test':str(Article_mix_content)})
 
 def archive(request):
     post_list = Article.objects.all()  
@@ -426,7 +429,7 @@ def Article_mix(text):
     mix=[]
     while True:
         if text.find('{@') == -1:
-            mix.append({'text':text,'img':None})
+            mix.append({'text':text,'type':None,'date_1':None,'date_2':None})
             for temp in range(len(mix)):
                 if mix[temp]['text']=='':
                     mix[temp]['text']=None
@@ -437,10 +440,17 @@ def Article_mix(text):
                 continue
             text_temp=text[:text.find('{@')]
             text=text[text.find('{@')+2:]
-            img=text[:text.find('@}')]
-            img=img_id_url(img)
+            rich=text[:text.find('@}')]
+            rich_type=rich[:rich.find('|')]
+            if rich_type == 'img':
+                mix.append({'text':text_temp,'type':'img','date_1':img_id_url(rich[rich.find('|')+1:])})
+            elif rich[:rich.find('|')] == 'a':
+                rich=rich[rich.find('|')+1:]
+                mix.append({'text':text_temp,'type':'a','date_1':rich[:rich.find('|')],'date_2':rich[rich.find('|')+1:]})
+            else:
+                mix.append({'text':text,'type':None,'date_1':None,'data_2':None})
+
             text=text[text.find('@}')+2:]
-            mix.append({'text':text_temp,'img':img})
 
 def img_id_url(id):
     try:
