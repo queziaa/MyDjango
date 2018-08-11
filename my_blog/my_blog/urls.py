@@ -39,10 +39,10 @@ urlpatterns = [
     path('release/', views.release,name='release'),
     path('user/',views.user,name='user'),
     path('exit/',views.exit,name='exit'),
-    path('cehange_password/',views.cehange_password,name='cehange_password'),
 
     path('login/', views.login,name='login'),
     path('registered/',views.registered,name='registered'),
+    path('cehange_password/',views.cehange_password,name='cehange_password'),
     path('obtain_name/',views.obtain_name,name='obtain_name'),
 
 

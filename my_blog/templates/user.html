@@ -2,7 +2,8 @@
 {% block content %}
 	{% load staticfiles %}
 	<link href="{% static 'css/user.css' %}" rel="stylesheet" type="text/css">
-	<div class="title">
+	<script src="{% static 'js/user.js' %}" charset="utf-8"></script>
+	<div id="user_title"  class="title">
 		<p>ID:{{ id }}</p>
 		<p>用户名:{{ name }}</p>
 		{% if permissions %}
@@ -11,6 +12,7 @@
 		{% else %}
 			<P>权限:用户</P>
 		{% endif %}
+		<a href="#" onclick="open_change_password()">修改密码</a>
 		<a href="/exit">退出登录</a>
 	</div>
 {% endblock %}

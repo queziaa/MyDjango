@@ -43,6 +43,7 @@ function loadRegister(){
 		for(var i=0; i<comment.length;i++){
 			if(comment[i].name=="csrfmiddlewaretoken"){
 				var csrf = comment[i].value;
+				break;
 			}
 		}
 		if(register){
@@ -66,13 +67,7 @@ function loadRegister(){
 				if (request.status===200) { 
 					var jsondata = JSON.parse(request.responseText);
 					if (jsondata["state"]=="0"){
-						var exp = new Date();
-						exp.setTime(exp.getTime() + 1209600000);
-						document.cookie = "name="+ jsondata["cookie_name"] + ";expires=" + exp.toGMTString() + ";path=/";
-						document.cookie = "password="+ jsondata["cookie_password"] + ";expires=" + exp.toGMTString() + ";path=/";
-						input_error("登陆成功 三秒后刷新.");
-						setTimeout('input_error("登陆成功 三秒后刷新..")',1000);
-						setTimeout('location.reload()',1500);
+						set_cookie(jsondata,"登陆");
 					}else{
 						input_error(jsondata["info"]);
 					}
@@ -83,7 +78,6 @@ function loadRegister(){
 		}
 		return false;
 	}
-
 }
 function loadLogin(){
 	loadRegister();
@@ -98,4 +92,13 @@ function input_error(info){
 	login_reg.style.background="#204042";
 	login_reg.style.color="#bfc4cc";
 	return false;
+}
+function set_cookie(jsondata,info){
+	var exp = new Date();
+	exp.setTime(exp.getTime() + 1209600000);
+	document.cookie = "name="+ jsondata["cookie_name"] + ";expires=" + exp.toGMTString() + ";path=/";
+	document.cookie = "password="+ jsondata["cookie_password"] + ";expires=" + exp.toGMTString() + ";path=/";
+	input_error(info+"成功 三秒后刷新.");
+	setTimeout('input_error("'+info+'成功 三秒后刷新..")',1000);
+	setTimeout('location.reload()',1500);
 }

@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone  
 
 
-from .forms import add_comment,outside_img,release_forms,registered_foms,cehange_password_foms
+from .forms import add_comment,outside_img,release_forms
 from article.models import Article,Comment_db,IMG,Article_examine,User_data
 
 import datetime
@@ -20,7 +20,7 @@ import random
 import time
 import json
 
-
+SALT='e0058ff4746e011cb58ed32a19530baba71c3286612a0'
 
 def home(request):
     post_list = Article.objects.all()  
@@ -203,41 +203,25 @@ def user(request):
 
 
 def cehange_password(request):
-    Result = None
     name = obtain_cookie_name(request)
     if name == None:
-        return HttpResponseRedirect('/exit/')
+        return HttpResponse('{"state":"2","info":"Nome"}')
     if request.method == 'POST':
-        forms = cehange_password_foms(request.POST)
-        if forms.is_valid():
-            oid = forms.cleaned_data['oid']
-            password = forms.cleaned_data['password']
-            repeat_password = forms.cleaned_data['repeat_password']
-            cookie_data = loing_verification(name,oid)
-            if type(cookie_data) == str:
-                Result = cookie_data
-            elif password != repeat_password:
-                Result = '两次密码不一致'
-            elif User_format(name,password)==str:
-                return User_format(name,password)
-            else:
-                User_db = User_data.objects.get(name=name)
-                User_db.password = sha256_s(password+'e0058ff4746e011cb58ed32a19530baba71c3286612a0')
-                User_db.save()
-                cookie_data = loing_verification(name,password)
-                cookie_url = HttpResponseRedirect('/')
-                cookie_url.set_cookie("name",cookie_data['cookie_name'],1209600)
-                cookie_url.set_cookie("password",cookie_data['cookie_password'],1209600)
-                return cookie_url
+        old_password=request.POST.get('old_password','')
+        password=request.POST.get('password','')
+        repeat_password=request.POST.get('repeat_password','')
+        cookie_data = loing_verification(name,old_password)
+        if type(cookie_data) == str:
+            return HttpResponse('{"state":"1","info":"'+cookie_data+'"}')
+        elif User_format(name,password,repeat_password)==str:
+            return HttpResponse('{"state":"1","info":"'+User_format(name,password,repeat_password)+'"}')
         else:
-            Result = '信息提交错误'
-    forms = cehange_password_foms()
-    cookie_datas = cookie_verification(request)
-    return render(request,'cehange_password.html',{'name':cookie_datas['name'],'id':cookie_datas['id'],
-        'permissions':cookie_datas['admin'],'forms':forms,'Result':Result})
-
-
-
+            User_db = User_data.objects.get(name=name)
+            User_db.password = sha256_s(password+SALT)
+            User_db.save()
+            cookie_data = loing_verification(name,password)
+            return HttpResponse('{"state":"0","info":"OK","cookie_name":"'+cookie_data['cookie_name']+'","cookie_password":"'+cookie_data['cookie_password']+'"}')
+    return HttpResponse('{"state":"1","info":"Nome"}')
 
 def login(request):
     if request.method == 'POST':
@@ -245,10 +229,10 @@ def login(request):
         password=request.POST.get('password','')
         cookie_data = loing_verification(name,password)
         if type(cookie_data) != str:
-            return HttpResponse('{"state": "0","info":"OK","cookie_name":"'+cookie_data['cookie_name']+'","cookie_password": "'+cookie_data['cookie_password']+'"}')
+            return HttpResponse('{"state":"0","info":"OK","cookie_name":"'+cookie_data['cookie_name']+'","cookie_password":"'+cookie_data['cookie_password']+'"}')
         else:
             return HttpResponse('{"state":"1","info":"'+cookie_data+'"}')
-    return HttpResponse('{"state": "2","info":"Nome"}')
+    return HttpResponse('{"state":"2","info":"Nome"}')
 
 def registered(request):
     if request.method == 'POST':
@@ -257,17 +241,17 @@ def registered(request):
         repeat_password = request.POST.get('repeat_password','')
         cookie_data = registered_verification(name,password,repeat_password)
         if type(cookie_data) != str:
-            return HttpResponse('{"state": "0","info":"OK","cookie_name":"'+cookie_data['cookie_name']+'","cookie_password": "'+cookie_data['cookie_password']+'"}')
+            return HttpResponse('{"state":"0","info":"OK","cookie_name":"'+cookie_data['cookie_name']+'","cookie_password":"'+cookie_data['cookie_password']+'"}')
         else:
             return HttpResponse('{"state":"1","info":"'+cookie_data+'"}')
-    return HttpResponse('{"state": "2","info":"Nome"}')
+    return HttpResponse('{"state":"2","info":"Nome"}')
 
 def obtain_name(request):
     test=obtain_cookie_name(request)
     if(test):
-        return HttpResponse('{"login": "True","name": "'+ test +'"}')
+        return HttpResponse('{"login":"True","name":"'+test+'"}')
     else:
-        return HttpResponse('{"login": "False"}')
+        return HttpResponse('{"login":"False"}')
     
 
 
@@ -311,7 +295,7 @@ def registered_verification(name,password,repeat_password):
     result = User_format(name,password,repeat_password)
     if result != None:
         return result
-    User_data.objects.create(name = name,password = sha256_s(password+'e0058ff4746e011cb58ed32a19530baba71c3286612a0'))
+    User_data.objects.create(name = name,password = sha256_s(password+SALT))
     return loing_verification(name,password)
 
 def loing_verification(name,password):
@@ -322,7 +306,7 @@ def loing_verification(name,password):
         User_db = User_data.objects.get(name=name)
     except :
         return '没有这个用户'
-    if User_db.password != sha256_s(password+'e0058ff4746e011cb58ed32a19530baba71c3286612a0'):
+    if User_db.password != sha256_s(password+SALT):
         return '密码错误'
     cookie_name =  sha256_s(random_s())
     cookie_password = sha256_s(random_s())
@@ -336,7 +320,6 @@ def cookie_verification(cookie):
 
     cookie_name = cookie.COOKIES.get('name')
     cookie_password = cookie.COOKIES.get('password')
-    # print(cookie_name,cookie_password,cookie)
     if cookie_name == None or cookie_password == None:
         return None
     try:
