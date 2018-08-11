@@ -55,8 +55,8 @@ class Article_examine(models.Model):
 
 
 class User_data(models.Model):
-    name = models.CharField(max_length = 16,null = True)
-    password = models.CharField(max_length = 16,null = True)
+    name = models.CharField(max_length = 14,null = True)
+    password = models.CharField(max_length = 64,null = True)
     cookie_name = models.CharField(max_length = 64,default = '!')
     cookie_password = models.CharField(max_length = 64,default = '!')
     cookie_time =  models.DateTimeField(auto_now_add = True)
