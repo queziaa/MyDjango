@@ -6,6 +6,31 @@
 			document.getElementById("id_comment_content").placeholder='下个版本加...';
 			return false
 		}
+		function enlarge(fixed_img){
+		    var new_img=document.createElement("img");
+		    new_img.src=fixed_img.src;
+		    document.body.appendChild(new_img);
+			new_img.style.position="fixed";
+			new_img.style.margin="0px";
+			new_img.style.border="0px";
+			new_img.onclick=function(){this.parentNode.removeChild(this)};
+			if(document.body.clientHeight/fixed_img.height*fixed_img.width<document.body.clientWidth){
+				new_img.width*=document.body.clientHeight/fixed_img.height;
+				new_img.height=document.body.clientHeight;
+				new_img.style.left=(document.body.clientWidth-fixed_img.width)/2+"px";
+				new_img.style.top="0px";
+			}else if(document.body.clientHeight/fixed_img.height*fixed_img.width>document.body.clientWidth){
+				new_img.height*=document.body.clientWidth/fixed_img.width;
+				new_img.width=document.body.clientWidth;
+				new_img.style.top=(document.body.clientHeight-fixed_img.height)/2+"px";
+				new_img.style.left="0px";
+			}else{
+				new_img.height=document.body.clientHeight;
+				new_img.width=document.body.clientWidth;
+				new_img.style.top="0px";
+				new_img.style.left="0px";
+			}
+		}
 	</script>
 	<link href="{% static 'css/detailed.css' %}" rel="stylesheet" type="text/css">
 		<div class="section_main">
@@ -16,17 +41,19 @@
 				<span >发布于{{ post.date_time }}&emsp;&emsp;提交于{{ post.examine_time }}&emsp;&emsp;{{ post.comments_quantity }} 条评论&emsp;&emsp;发布者:{{ post.user }}</span>
 			</div>
 			<div class="subject">
-				{% for temp in Article_mix_content %}
-					{% if temp.text %}
-					<p>{{ temp.text|linebreaksbr }}</p>
-					{% endif %}
-					{% if temp.type == 'img' %}
-						<img src="{{ temp.date_1 }}" >
-					{% elif temp.type == 'a' %}
-						<a href="{{ temp.date_1 }}">{{ temp.date_2 }}</a>
-					{% else %}
-					{% endif %}
-				{% endfor %} 
+				<p>
+					{% for temp in Article_mix_content %}
+						{% if temp.text %}
+						{{ temp.text|linebreaksbr }}
+						{% endif %}
+						{% if temp.type == 'img' %}
+							<img src="{{ temp.date_1 }}" onclick="enlarge(this)">
+						{% elif temp.type == 'a' %}
+							<a href="{{ temp.date_1 }}">{{ temp.date_2 }}</a>
+						{% else %}
+						{% endif %}
+					{% endfor %} 
+				</p>
 			</div>
 			<form class="comment" method='post'>
 				{% csrf_token %}
@@ -48,17 +75,19 @@
 					</div>
 					<div id="comment_floor">#{{ comment_text.floor }}</div>
 					<div id="comment_content">
-						{% for temp in comment_text.comments_text %}
-							{% if temp.text %}
-							<p>{{ temp.text|linebreaksbr }}</p>
-							{% endif %}
-								{% if temp.type == 'img' %}
-									<img src="{{ temp.date_1 }}" >
-								{% elif temp.type == 'a' %}
-									<a href="{{ temp.date_1 }}">{{ temp.date_2 }}</a>
-								{% else %}
+						<p>
+							{% for temp in comment_text.comments_text %}
+								{% if temp.text %}
+									{{ temp.text|linebreaksbr }}
 								{% endif %}
-						{% endfor %} 
+									{% if temp.type == 'img' %}
+										<img src="{{ temp.date_1 }}" >
+									{% elif temp.type == 'a' %}
+										<a href="{{ temp.date_1 }}">{{ temp.date_2 }}</a>
+									{% else %}
+									{% endif %}
+							{% endfor %} 
+						</p>
 					</div>
 				</div>
 			{% endfor %} 

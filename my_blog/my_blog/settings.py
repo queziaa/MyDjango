@@ -27,7 +27,7 @@ SECRET_KEY = 'r-&180r7ih4(cm+49ky&@8l(uyx4*6-o7t0!t8$eagsgc9)f^h'
 
 DEBUG = True
 DEBUG = False
-ALLOWED_HOSTS = ['queziaa.fun','www.queziaa.fun']
+ALLOWED_HOSTS = ['queziaa.fun','www.queziaa.fun','localhost.com']
 
 TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
 
