@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 	{% load staticfiles %}
+	<link href="{% static 'css/monokai-sublime.css' %}" rel="stylesheet" type="text/css">
+	<link href="{% static 'css/detailed.css' %}" rel="stylesheet" type="text/css">
+	<script src="{% static 'js/highlight.pack.js' %}" charset="utf-8"></script>
 	<script>
+		hljs.initHighlightingOnLoad();
 		function help() {
-			document.getElementById("id_comment_content").placeholder='下个版本加...';
+			document.getElementById("id_comment_content").placeholder='使用图片请在上传图片初提交图片{@img|图片ID@}\n使用超链接{@a|url|显示文字@}\n插入代码{@code|代码@}';
 			return false
 		}
 		function enlarge(fixed_img){
@@ -32,7 +36,6 @@
 			}
 		}
 	</script>
-	<link href="{% static 'css/detailed.css' %}" rel="stylesheet" type="text/css">
 		<div class="section_main">
 			<div class="title">
 				<p id="">{{ post.title }}</p>
@@ -50,6 +53,8 @@
 							<img src="{{ temp.date_1 }}" onclick="enlarge(this)">
 						{% elif temp.type == 'a' %}
 							<a href="{{ temp.date_1 }}">{{ temp.date_2 }}</a>
+						{% elif temp.type == 'code' %}
+							<pre><code>{{ temp.date_1 }}</code></pre>
 						{% else %}
 						{% endif %}
 					{% endfor %} 
@@ -84,6 +89,8 @@
 										<img src="{{ temp.date_1 }}" >
 									{% elif temp.type == 'a' %}
 										<a href="{{ temp.date_1 }}">{{ temp.date_2 }}</a>
+									{% elif temp.type == 'code' %}
+										<pre><code>{{ temp.date_1 }}</code></pre>
 									{% else %}
 									{% endif %}
 							{% endfor %} 

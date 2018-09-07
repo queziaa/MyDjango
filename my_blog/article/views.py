@@ -78,7 +78,7 @@ def detailed(request,id):
         Result = True
     Article_mix_content=Article_mix(post.content)
     return render(request, 'detailed.html',{'Article_mix_content':Article_mix_content,'post':post,'comment':comment,
-        'comment_content':comment_content,'User_name':User_name,'Result':Result,'test':str(Article_mix_content)})
+        'comment_content':comment_content,'User_name':User_name,'Result':Result})
 
 def archive(request):
     post_list = Article.objects.all()  
@@ -427,12 +427,14 @@ def Article_mix(text):
             rich_type=rich[:rich.find('|')]
             if rich_type == 'img':
                 mix.append({'text':text_temp,'type':'img','date_1':img_id_url(rich[rich.find('|')+1:])})
-            elif rich[:rich.find('|')] == 'a':
+            elif rich_type == 'a':
                 rich=rich[rich.find('|')+1:]
                 mix.append({'text':text_temp,'type':'a','date_1':rich[:rich.find('|')],'date_2':rich[rich.find('|')+1:]})
+            elif rich_type == 'code':
+                rich=rich[rich.find('|')+1:]
+                mix.append({'text':text_temp,'type':'code','date_1':rich[rich.find('|')+1:]})
             else:
                 mix.append({'text':text,'type':None,'date_1':None,'data_2':None})
-
             text=text[text.find('@}')+2:]
 
 def img_id_url(id):
