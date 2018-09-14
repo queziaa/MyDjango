@@ -1,11 +1,17 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-	<title>Queziaa's blog</title>
+	<title>{{ html_title }}Queziaa's blog</title>
 	{% load staticfiles %}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<link href="{% static 'css/main.css' %}" rel="stylesheet">
+	<link href="{% static 'css/monokai-sublime.css' %}" rel="stylesheet" type="text/css">
 	<script src="{% static 'js/login.js' %}" charset="utf-8"></script>
+	<script src="{% static 'js/img_max.js' %}" charset="utf-8"></script>
+	<script src="{% static 'js/highlight.pack.js' %}" charset="utf-8"></script>
+	<script>
+		hljs.initHighlightingOnLoad();
+	</script>
 </head>
 <body>
 	<div id="left">

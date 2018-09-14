@@ -15,7 +15,6 @@ a:link {color: #a78d71}
 a:visited {color: #a78d71}
 a:hover {color: #4d3b31}
 a:active {color: #a78d71}
-
 img{
 	max-width: 93%;
 	margin:2%;
@@ -46,9 +45,7 @@ code{
 	position:absolute;
 	bottom:2%;
 	visibility:hidden;
-
 }
-
 #right{
 	position:relative;
 	left:15%;
@@ -103,7 +100,6 @@ code{
 	text-align:center;
 	border:none;
 	outline:none; 
-	padding: 1%;
 	border-radius: 5px;
 	background-color:#31332e;
 	color:#a78d71;

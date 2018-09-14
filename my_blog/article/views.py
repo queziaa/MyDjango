@@ -32,13 +32,18 @@ def home(request):
             if img_obtain and text['type']=='img':
                 post_list[num].content['img']=text['date_1']
                 img_obtain=False
+            elif img_obtain and text['type']=='code':
+                post_list[num].content['code']=text['date_1']
+                img_obtain=False
+            else:
+                pass
             if text['text']==None:
                 continue
             post_list[num].content['text']=post_list[num].content['text']+text['text']
     return render(request, 'home.html',{'post_list' : post_list})
 
 def me(request):
-    return render(request,'me.html')
+    return render(request,'me.html',{'html_title':'关于我_'})
 
 def detailed(request,id):
     if request.method == 'POST':
@@ -78,12 +83,11 @@ def detailed(request,id):
         Result = True
     Article_mix_content=Article_mix(post.content)
     return render(request, 'detailed.html',{'Article_mix_content':Article_mix_content,'post':post,'comment':comment,
-        'comment_content':comment_content,'User_name':User_name,'Result':Result})
+        'comment_content':comment_content,'User_name':User_name,'Result':Result,'html_title':post.title+'_'})
 
 def archive(request):
     post_list = Article.objects.all()  
-    return render(request,'archive.html',{'post_list' : post_list})
-
+    return render(request,'archive.html',{'post_list' : post_list,'html_title':'列表_'})
 
 @csrf_exempt
 def upload(request):
@@ -118,7 +122,7 @@ def upload(request):
 
     imgs_db = IMG.objects.all()
     form_url = outside_img()
-    return render(request, 'uploadimg.html',{'form_url' : form_url,'img_id' : new_img,'imgs':imgs_db})
+    return render(request, 'uploadimg.html',{'form_url' : form_url,'img_id' : new_img,'imgs':imgs_db,'html_title':'上传图片_'})
 
 def release(request):
     if request.method == 'POST':
@@ -156,8 +160,7 @@ def release(request):
         form = release_forms()
 
     post_list = Article_examine.objects.all() 
-    return render(request, 'release.html',{'form' : form,'post_list':post_list})
-
+    return render(request, 'release.html',{'form' : form,'post_list':post_list,'html_title':'发布博客_'})
 
 def examine(request):
     cookie_data = cookie_verification(request)
@@ -166,8 +169,7 @@ def examine(request):
     if not cookie_data['admin']:
         return HttpResponseRedirect('/Error')
     examine_data = Article_examine.objects.filter(visible = True)
-    return render(request, 'examine.html',{'post_list' : examine_data})
-
+    return render(request, 'examine.html',{'post_list' : examine_data,'html_title':'审核博客_'})
 
 def get_examine(request):
     cookie_data = cookie_verification(request)
@@ -193,13 +195,12 @@ def get_examine(request):
     return HttpResponseRedirect('/examine/')
 
 
-
 def user(request):
     cookie_data = cookie_verification(request)
     if type(cookie_data) != dict:
         return HttpResponseRedirect('/exit/')
     return render(request,'user.html',{'name':cookie_data['name'],'id':cookie_data['id']
-        ,'permissions':cookie_data['admin']})
+        ,'permissions':cookie_data['admin'],'html_title':'个人中心_'})
 
 
 def cehange_password(request):
@@ -271,9 +272,6 @@ def Error(request):
 
 #############################################################################
 #############################################################################
-
-
-
 
 
 def obtain_cookie_name(request):

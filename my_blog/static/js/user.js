@@ -44,13 +44,14 @@ function open_change_password() {
 					if (jsondata["state"]=="0"){
 						set_cookie(jsondata,"修改");
 					}else if(jsondata["state"]=="2"){
-						alert(request.status+":发生错误 请重新登录");
+						document.cookie = "name=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+						document.cookie = "password=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 						location.reload();
 					}else{
 						input_error(jsondata["info"]);
 					}
 				} else {
-					alert(request.status+":发生错误 请尝试刷新");
+					request.send(data);
 				}
 			} 
 		}

@@ -1,4 +1,5 @@
 var register = true;
+var login_reg_click = true;
 window.onload=function(){
 	var request = new XMLHttpRequest();
 	request.open("GET", "/obtain_name");
@@ -16,7 +17,7 @@ window.onload=function(){
 				}
 				document.getElementById("user").style.visibility="visible";
 			} else {
-				alert(request.status+":发生错误 请尝试刷新");
+				request.send();
 			}
 		} 
 	}
@@ -28,7 +29,9 @@ function loadRegister(){
 	dynamic_login.parentNode.removeChild(dynamic_login);
 
 	document.getElementById("login_reg").onclick = function() {
-		input_error("加载中. . .");
+		if(!login_reg_click)
+			return false;
+		input_error("加载中. . .",true);
 		var name = document.getElementById("name").value;
 		var password = document.getElementById("password").value;
 		if(name.length<5)
@@ -54,7 +57,6 @@ function loadRegister(){
 		}else{
 			var url = "/login/";
 		}
-
 		var request = new XMLHttpRequest();
 		request.open("POST", url);
 		var data = "name=" + name + "&password=" + password	+ "&csrfmiddlewaretoken=" + csrf;
@@ -72,7 +74,7 @@ function loadRegister(){
 						input_error(jsondata["info"]);
 					}
 				} else {
-					alert(request.status+":发生错误 请尝试刷新");
+					request.send();
 				}
 			} 
 		}
@@ -86,7 +88,11 @@ function loadLogin(){
 	repeatPass.parentNode.removeChild(repeatPass);
 	document.getElementById("login_reg").value="登陆";
 }
-function input_error(info){
+function input_error(info,noClick){
+	if(noClick==undefined)
+		login_reg_click=true;
+	else
+		login_reg_click=false;
 	var login_reg = document.getElementById("login_reg");
 	login_reg.value=info;
 	login_reg.style.background="#204042";
@@ -98,7 +104,7 @@ function set_cookie(jsondata,info){
 	exp.setTime(exp.getTime() + 1209600000);
 	document.cookie = "name="+ jsondata["cookie_name"] + ";expires=" + exp.toGMTString() + ";path=/";
 	document.cookie = "password="+ jsondata["cookie_password"] + ";expires=" + exp.toGMTString() + ";path=/";
-	input_error(info+"成功 三秒后刷新.");
-	setTimeout('input_error("'+info+'成功 三秒后刷新..")',1000);
+	input_error(info+"成功 三秒后刷新.",true);
+	setTimeout('input_error("'+info+'成功 三秒后刷新..",true)',1000);
 	setTimeout('location.reload()',1500);
 }

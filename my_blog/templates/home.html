@@ -13,7 +13,9 @@
 					<p>{{ post.content.text|slice:"150" }}  ......</p>
 				{% endif %}
 				{% if post.content.img %}
-					<img src="{{ post.content.img }}" >
+					<img src="{{ post.content.img }}" onclick="enlarge(this)">
+				{% elif post.content.code %}
+					<pre><code>{{ post.content.code }}</code></pre>
 				{% endif %}
 			</div>
 			<div class="ther">
@@ -24,7 +26,5 @@
 			</div>
 		</div>
 	{% endfor %} 
-	<code>
-		
-	</code>
+	<code></code>
 {% endblock %}
