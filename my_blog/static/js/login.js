@@ -19,7 +19,6 @@ $(document).ready(function(){
 			$("#user").css("visibility","visible");
 		}
 	});
-
 });
 function loadRegister(){
 	register = true;
@@ -60,6 +59,7 @@ function loginRegisteredAjax(){
 				input_error(data["info"]);
 		},
 		error:function(jqXHR){
+			alert(jqXHR);
 			input_error("发生错误 请尝试刷新");
 		}
 	});

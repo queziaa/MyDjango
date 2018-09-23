@@ -120,9 +120,15 @@ def upload(request):
                 new_img = IMG.objects.create(url = url[25:] ,img_type = True)
                 new_img = str(new_img.id)
 
-    imgs_db = IMG.objects.all()
     form_url = outside_img()
-    return render(request, 'uploadimg.html',{'form_url' : form_url,'img_id' : new_img,'imgs':imgs_db,'html_title':'上传图片_'})
+    return render(request, 'uploadimg.html',{'form_url' : form_url,'img_id' : new_img,'html_title':'上传图片_'})
+
+def get_img(request,page):
+    imgs_db = IMG.objects.all()[page*5:(page+1)*5]
+    imgs_json = ({"len":len(imgs_db),"data":[]})
+    for img in imgs_db:
+        imgs_json["data"].append({"id":img.id,"url":img.url})
+    return HttpResponse(json.dumps(imgs_json))
 
 def release(request):
     if request.method == 'POST':
@@ -194,7 +200,6 @@ def get_examine(request):
         return HttpResponseRedirect('/user/')
     return HttpResponseRedirect('/examine/')
 
-
 def user(request):
     cookie_data = cookie_verification(request)
     if type(cookie_data) != dict:
@@ -202,20 +207,18 @@ def user(request):
     return render(request,'user.html',{'name':cookie_data['name'],'id':cookie_data['id']
         ,'permissions':cookie_data['admin'],'html_title':'个人中心_'})
 
-
-def cehange_password(request):
+def change_password(request):
     name = obtain_cookie_name(request)
     if name == None:
         return HttpResponse('{"state":"2","info":"Nome"}')
     if request.method == 'POST':
         old_password=request.POST.get('old_password','')
         password=request.POST.get('password','')
-        repeat_password=request.POST.get('repeat_password','')
         cookie_data = loing_verification(name,old_password)
         if type(cookie_data) == str:
             return HttpResponse('{"state":"1","info":"'+cookie_data+'"}')
-        elif User_format(name,password,repeat_password)==str:
-            return HttpResponse('{"state":"1","info":"'+User_format(name,password,repeat_password)+'"}')
+        elif User_format(name,password)==str:
+            return HttpResponse('{"state":"1","info":"'+User_format(name,password)+'"}')
         else:
             User_db = User_data.objects.get(name=name)
             User_db.password = sha256_s(password+SALT)
@@ -239,8 +242,7 @@ def registered(request):
     if request.method == 'POST':
         name = request.POST.get('name','')
         password = request.POST.get('password','')
-        repeat_password = request.POST.get('repeat_password','')
-        cookie_data = registered_verification(name,password,repeat_password)
+        cookie_data = registered_verification(name,password)
         if type(cookie_data) != str:
             return HttpResponse('{"state":"0","info":"OK","cookie_name":"'+cookie_data['cookie_name']+'","cookie_password":"'+cookie_data['cookie_password']+'"}')
         else:
@@ -250,13 +252,9 @@ def registered(request):
 def obtain_name(request):
     test=obtain_cookie_name(request)
     if(test):
-        return HttpResponse('{"login":"True","name":"'+test+'"}')
+        return HttpResponse('{"login":true,"name":"'+test+'"}')
     else:
-        return HttpResponse('{"login":"False"}')
-    
-
-
-
+        return HttpResponse('{"login":false}')
 
 def exit(request):
     response = HttpResponseRedirect('/')
@@ -288,11 +286,16 @@ def obtain_nameORip(request):
     else:
         return '#'+ip_base(request)
 
-
-def registered_verification(name,password,repeat_password):
-    result = User_format(name,password,repeat_password)
+def registered_verification(name,password):
+    result = User_format(name,password)
     if result != None:
         return result
+    try:
+        User_db = User_data.objects.get(name=name)
+    except :
+        pass
+    else:
+        return '用户名以存在'
     User_data.objects.create(name = name,password = sha256_s(password+SALT))
     return loing_verification(name,password)
 
@@ -315,7 +318,6 @@ def loing_verification(name,password):
     return {'cookie_name':cookie_name,'cookie_password':cookie_password}
 
 def cookie_verification(cookie):
-
     cookie_name = cookie.COOKIES.get('name')
     cookie_password = cookie.COOKIES.get('password')
     if cookie_name == None or cookie_password == None:
@@ -330,7 +332,6 @@ def cookie_verification(cookie):
         return '登陆信息过期'
     return {'name':User_db.name,'id':User_db.id,'admin':User_db.admin}
 
-
 def random_s():
     random.seed()
     time.sleep(random.random())
@@ -342,7 +343,7 @@ def sha256_s(value):
     sha256.update(value.encode('utf-8'))
     return sha256.hexdigest()
 
-def User_format(name,password,repeat_password=None):
+def User_format(name,password):
     if not name.isalnum():
         return '用户名只能用数字和字母'
     if len(name) > 14:
@@ -353,17 +354,7 @@ def User_format(name,password,repeat_password=None):
         return '用户名最少5位'
     if len(password) < 5:
         return '密码最少5位'
-    if repeat_password != None:
-        try:
-            User_db = User_data.objects.get(name=name)
-        except :
-            pass
-        else:
-            return '用户名以存在'
-        if repeat_password != password:
-            return '两次密码不一致'
     return None
-
 
 def ip_base(request_ip):
     if 'HTTP_X_FORWARDED_FOR' in request_ip.META:  

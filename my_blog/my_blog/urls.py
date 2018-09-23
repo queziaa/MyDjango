@@ -42,8 +42,9 @@ urlpatterns = [
 
     path('login/', views.login,name='login'),
     path('registered/',views.registered,name='registered'),
-    path('cehange_password/',views.cehange_password,name='cehange_password'),
+    path('change_password/',views.change_password,name='change_password'),
     path('obtain_name/',views.obtain_name,name='obtain_name'),
+    path('get_img/<int:page>/',views.get_img,name='get_img'),
 
 
     url(r'^favicon\.ico$', static.serve,{'document_root': settings.STATIC_ROOT,'path': "/img/favicon.ico"}),

@@ -2,6 +2,7 @@
 {% block content %}
 	{% load staticfiles %}	
 	<link href="{% static 'css/uploadimg.css' %}" rel="stylesheet" type="text/css">
+	<script src="{% static 'js/uploadimg.js' %}" charset="utf-8"></script>
 	<div class="comment_img">
 		<p>在此提交本地图片以在本站使用</p>
 		<form class="comment" method="POST" enctype="multipart/form-data">
@@ -24,9 +25,4 @@
 		{% endif %}
 			<p style="color: #bfc4cc;">鼠标放置在图片上查看ID</p>
 	</div>
-	{% for img in imgs %}
-	<div class="imfMod">	
-		<img src="{{ img.url }}" title={{ img.id }} onclick="enlarge(this)">
-	</div>
-	{% endfor %}	
 {% endblock %}
