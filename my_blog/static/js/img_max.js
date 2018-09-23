@@ -2,7 +2,6 @@ function Delete_node(node){
 	node.parentNode.removeChild(node);
 }
 function enlarge(fixed_img){
-
 	var backgroundDiv=document.createElement("div");
 	backgroundDiv.style.cssText="left:0;top:0;position:fixed;background:#000;opacity:0.5;width:100%;height:100%";
 	backgroundDiv.id="backgroundDiv";
