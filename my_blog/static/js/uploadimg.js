@@ -1,12 +1,16 @@
 $(document).ready(function () {
 	window["page"] = 0;
 	window["imgPrompt"] = $("#imgPrompt");
+	window["ajaxState"]=false;
 	imgPrompt.attr("onclick","load_img_funct()");
 	$(document).ready(function(){
 		window["imgs_interval"] = setInterval(load_img_funct,500);
 	}); 
 });
 function load_img_funct(){
+	if (ajaxState)
+	return false;
+	ajaxState = true;
 	if($(document).scrollTop()>$(document).height()-$(window).height()-20){
 		imgPrompt.html("正在加载中...");
 		$.ajax({
@@ -27,4 +31,5 @@ function load_img_funct(){
 			}
 		});
 	}
+	ajaxState = false;
 }

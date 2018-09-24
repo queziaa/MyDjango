@@ -31,7 +31,7 @@ def get_home_articles(request,page):
     for post in post_list:
         img_obtain=True
         text_temp=Article_mix(post.content)
-        archive_json.append({'content':{'text':'','img':None},'title':post.title,'id':post.id,'user':post.user,'date_time':post.date_time.strftime('%Y-%m-%d'),
+        archive_json.append({'content':{'text':'','img':None},'title':cgi.escape(post.title),'id':post.id,'user':post.user,'date_time':post.date_time.strftime('%Y-%m-%d'),
             'examine_time':post.examine_time.strftime('%Y-%m-%d'),'comments_quantity':post.comments_quantity})
         for text in text_temp:
             if len(archive_json[-1]['content']['text'])>150 and not img_obtain:
@@ -45,7 +45,8 @@ def get_home_articles(request,page):
             else:
                 pass
             if text['text']!=None and len(archive_json[-1]['content']['text'])<150:
-                archive_json[-1]['content']['text']+=text['text']
+                archive_json[-1]['content']['text']+=cgi.escape(text['text'])
+        archive_json[-1]['content']['text']=archive_json[-1]['content']['text'][:150]
     return HttpResponse(json.dumps(archive_json))
 
 def me(request):

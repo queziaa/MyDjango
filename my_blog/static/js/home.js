@@ -1,12 +1,16 @@
 $(document).ready(function () {
 	window["page"] = 0;
 	window["imgarticles"] = $("#imgPrompt");
+	window["ajaxState"]=false;
 	imgarticles.attr("onclick","load_articles_funct();");
 	$(document).ready(function(){
 		window["articles_interval"] = setInterval(load_articles_funct,500);
 	}); 
 });
 function load_articles_funct(){
+	if (ajaxState)
+		return false;
+	ajaxState = true;
 	if($(document).scrollTop()>$(document).height()-$(window).height()-20){
 		imgarticles.html("正在加载中...");
 		$.ajax({
@@ -30,6 +34,7 @@ function load_articles_funct(){
 			}
 		});
 	}
+	ajaxState = false;
 }
 function establishArticles(articlesJson){
 	var $section_main = $('<dir class="section_main"></dir>').append($('<div class="title"><a href="/detailed/'+articlesJson.id+'/">'+articlesJson.title+'</a></div>'));
