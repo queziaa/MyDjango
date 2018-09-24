@@ -1,30 +1,7 @@
 <!--home.html-->
 {% extends "base.html" %}
 {% block content %}
-	{% for post in post_list %} 
-		<div class="section_main">
-			<div class="title">
-				<a href="/detailed/{{ post.id }}/">{{ post.title }}</a>
-			</div>
-			<div class="subject">
-				{% if post.content.text|length < 150 %}
-					<p>{{ post.content.text }}</p>
-				{% else %}
-					<p>{{ post.content.text|slice:"150" }}  ......</p>
-				{% endif %}
-				{% if post.content.img %}
-					<img src="{{ post.content.img }}" onclick="enlarge(this)">
-				{% elif post.content.code %}
-					<pre><code>{{ post.content.code }}</code></pre>
-				{% endif %}
-			</div>
-			<div class="ther">
-				<span>发布者:{{ post.user }}</span>
-				<span>发布于{{ post.date_time }}</span>
-				<span>提交于{{ post.examine_time }}</span>
-				<span>{{ post.comments_quantity }} 条评论</span>
-			</div>
-		</div>
-	{% endfor %} 
-	<code></code>
+	{% load staticfiles %}	
+	<script src="{% static 'js/home.js' %}" charset="utf-8"></script>
+	<dir class="loadPrompt" id="imgPrompt">下拉或点击加载更多</dir>
 {% endblock %}

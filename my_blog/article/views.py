@@ -9,7 +9,6 @@ from django.http import Http404
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone  
 
-
 from .forms import add_comment,outside_img,release_forms
 from article.models import Article,Comment_db,IMG,Article_examine,User_data
 
@@ -19,28 +18,35 @@ import hashlib
 import random
 import time
 import json
+import cgi
 
 SALT='e0058ff4746e011cb58ed32a19530baba71c3286612a0'
 
 def home(request):
-    post_list = Article.objects.all()  
-    for num in range(len(post_list)):
+    return render(request, 'home.html')
+
+def get_home_articles(request,page):
+    post_list = Article.objects.all()[page*5:(page+1)*5]
+    archive_json = []
+    for post in post_list:
         img_obtain=True
-        text_temp=Article_mix(post_list[num].content)
-        post_list[num].content={'text':'','img':None}
+        text_temp=Article_mix(post.content)
+        archive_json.append({'content':{'text':'','img':None},'title':post.title,'id':post.id,'user':post.user,'date_time':post.date_time.strftime('%Y-%m-%d'),
+            'examine_time':post.examine_time.strftime('%Y-%m-%d'),'comments_quantity':post.comments_quantity})
         for text in text_temp:
+            if len(archive_json[-1]['content']['text'])>150 and not img_obtain:
+                break
             if img_obtain and text['type']=='img':
-                post_list[num].content['img']=text['date_1']
+                archive_json[-1]['content']['img']=text['date_1']
                 img_obtain=False
             elif img_obtain and text['type']=='code':
-                post_list[num].content['code']=text['date_1']
+                archive_json[-1]['content']['code']=cgi.escape(text['date_1'])
                 img_obtain=False
             else:
                 pass
-            if text['text']==None:
-                continue
-            post_list[num].content['text']=post_list[num].content['text']+text['text']
-    return render(request, 'home.html',{'post_list' : post_list})
+            if text['text']!=None and len(archive_json[-1]['content']['text'])<150:
+                archive_json[-1]['content']['text']+=text['text']
+    return HttpResponse(json.dumps(archive_json))
 
 def me(request):
     return render(request,'me.html',{'html_title':'关于我_'})
