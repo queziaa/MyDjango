@@ -1,5 +1,5 @@
 $(document).ready(function () {
-	window["page"] = 0;
+	window["page"] = -1;
 	window["imgarticles"] = $("#imgPrompt");
 	window["ajaxState"]=false;
 	imgarticles.attr("onclick","load_articles_funct();");
@@ -15,10 +15,9 @@ function load_articles_funct(){
 		imgarticles.html("正在加载中...");
 		$.ajax({
 			type:"GET",
-			url:"/get_home_articles/"+page,
+			url:"/get_home_articles/"+(page+=1),
 			dataType:"json",
 			success:function(articles_json){
-				page+=1;
 				for(var i=0;i<articles_json.length;i++)
 					establishArticles(articles_json[i]);
 				if(articles_json.length<5){

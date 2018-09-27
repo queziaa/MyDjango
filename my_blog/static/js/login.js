@@ -1,6 +1,7 @@
 $(document).ready(function(){ 
 	window["register"] = true;
 	window["login_reg_click"] = true;
+	window["track"] = "";
 	$("#search").attr("onclick","loadSearch();return false;")
 	$.ajax({
 		type:"GET",
@@ -30,6 +31,7 @@ function loadSearch(){
 	$("#password").remove();
 	input_error("搜索");
 	$("#display").remove();
+	delSearch();
 }
 function loadSearchAjax(){
 	if(!login_reg_click)
@@ -58,13 +60,7 @@ function loadSearchAjax(){
 				loadSearchDom(data.data);
 				if(!surplus){
 					window["imgs_interval"] = setInterval(load_Search_funct,500);
-						window.onbeforeunload = function (){
-						$.ajax({
-						url:"/surplus_search/?track="+track+"&end=true",
-						type : 'GET',
-						dataType : 'json',
-						});
-					}; 
+					window.onbeforeunload = delSearch;
 				}
 				else{
 					imgarticles.html("已经没有更多结果了");
@@ -218,4 +214,11 @@ function establishArticles(articlesJson){
 	$section_main.append($('<div class="ther"><span>发布者:'+articlesJson.user+'</span><span>发布于:'+articlesJson.date_time+'</span><span>提交于:'+
 		articlesJson.examine_time+'</span><span>评论数:'+articlesJson.comments_quantity+'</span><span>'+Label_test+'</span>'+'</div>'));
 	imgarticles.before($section_main);
+}
+function delSearch(){
+        $.ajax({
+        	url:"/surplus_search/?track="+track+"&end=true",
+                type : 'GET',
+		dataType : 'json',
+        });
 }
