@@ -38,9 +38,9 @@ function changeAjax(){
 		},
 		dataType:"json",
 		success:function(data){
-			if (data.state=="0")
+			if (data.state==0)
 				set_cookie(data,"修改");
-			else if(data.state=="2")
+			else if(data.state==2)
 				location.reload();
 			else
 				input_error(data.info);

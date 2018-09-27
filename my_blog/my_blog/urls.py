@@ -46,6 +46,8 @@ urlpatterns = [
     path('obtain_name/',views.obtain_name,name='obtain_name'),
     path('get_img/<int:page>/',views.get_img,name='get_img'),
     path('get_home_articles/<int:page>/',views.get_home_articles,name='get_home_articles'),
+    path('port_search/',views.port_search,name='port_search'),
+    path('surplus_search/',views.surplus_search,name='surplus_search'),
 
 
     url(r'^favicon\.ico$', static.serve,{'document_root': settings.STATIC_ROOT,'path': "/img/favicon.ico"}),

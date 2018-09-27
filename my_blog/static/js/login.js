@@ -1,6 +1,7 @@
-var register = true;
-var login_reg_click = true;
 $(document).ready(function(){ 
+	window["register"] = true;
+	window["login_reg_click"] = true;
+	$("#search").attr("onclick","loadSearch();return false;")
 	$.ajax({
 		type:"GET",
 		url:"/obtain_name",
@@ -20,6 +21,105 @@ $(document).ready(function(){
 		}
 	});
 });
+function loadSearch(){
+	login_reg_click = true;
+	$('#user').html($('#dynamic_login').html());
+	$("#login_reg").attr("onclick","loadSearchAjax();return false;");
+	$("#name").attr("placeholder","关键字");
+	$("#repeat_password").remove();
+	$("#password").remove();
+	input_error("搜索");
+	$("#display").remove();
+}
+function loadSearchAjax(){
+	if(!login_reg_click)
+		return false;
+	input_error("加载中. . .",true);
+	var keyword = $("#name").val();
+	var csrf = $('#comment [name="csrfmiddlewaretoken"]').val();
+	$.ajax({
+		type:"POST",	
+		url:"/port_search/",
+		data:{
+			keyword:keyword,
+			csrfmiddlewaretoken:csrf
+		},
+		dataType:"json",
+		success:function(data){
+			if(data.state==0){
+				window["track"] = data.track;
+				window["surplus"] = data.end;
+				window["$right"] = $("#right");
+				if(typeof(imgs_interval) != "undefined" )
+					clearInterval(imgs_interval);
+				$("#right").html(null);
+				$right.append($('<dir class="loadPrompt" id="imgPrompt">下拉或点击加载更多</dir>'));				
+				window["imgarticles"] = $("#imgPrompt");
+				loadSearchDom(data.data);
+				if(!surplus){
+					window["imgs_interval"] = setInterval(load_Search_funct,500);
+						window.onbeforeunload = function (){
+						$.ajax({
+						url:"/surplus_search/?track="+track+"&end=true",
+						type : 'GET',
+						dataType : 'json',
+						});
+					}; 
+				}
+				else{
+					imgarticles.html("已经没有更多结果了");
+				}
+				input_error("搜索");
+			}
+			else if(data.state==1)
+				input_error(data.info);
+			else if(data.state==2)
+				input_error("1发生错误 请尝试刷新");
+			else
+				input_error("2发生错误 请尝试刷新");
+		},
+		error: function (XMLHttpRequest, textStatus, errorThrown) {
+			input_error("3发生错误 请尝试刷新");
+		}
+	});
+	window["searchState"] = false;
+	return false;
+};
+function load_Search_funct(){
+	if (searchState||surplus)
+		return false;
+	searchState = true;
+	if($(document).scrollTop()>$(document).height()-$(window).height()-20){
+		imgarticles.html("正在加载中...");
+		$.ajax({
+			type:"GET",
+			url:"/surplus_search/?track="+track+"&end=false",
+			dataType:"json",
+			success:function(Search_json){
+				if(Search_json.state==0){
+					if(Search_json.end){
+						surplus = true;
+						clearInterval(imgs_interval);
+						imgarticles.html("已经没有更多结果了");
+						if(imgarticles.outerHeight() + imgarticles.offset().top+2 > $('#right').outerHeight())
+							imgarticles.css("position","static");
+					}else{
+						imgarticles.html("下拉或点击加载更多");
+					}
+					loadSearchDom(Search_json.data);
+				}
+				else{
+					imgarticles.html("发生错误 请尝试刷新");
+				}
+			}
+		});
+	}
+	searchState = false;
+}
+function loadSearchDom(domJson){
+	for(i in domJson)
+		establishArticles(domJson[i]);
+}
 function loadRegister(){
 	register = true;
 	$('#user').html($('#dynamic_login').html());
@@ -53,13 +153,12 @@ function loginRegisteredAjax(){
 		},
 		dataType:"json",
 		success:function(data){
-			if(data.state=="0")
+			if(data.state==0)
 				set_cookie(data,"登陆");
 			else
 				input_error(data["info"]);
 		},
 		error:function(jqXHR){
-			alert(jqXHR);
 			input_error("发生错误 请尝试刷新");
 		}
 	});
@@ -72,13 +171,16 @@ function loadLogin(){
 	$("#login_reg").val("登陆");
 }
 function input_error(info,noClick){
-	if(noClick==undefined)
-		login_reg_click=true;
-	else
-		login_reg_click=false;
 	var login_reg = $("#login_reg");
+	if(noClick==undefined){
+		login_reg_click=true;
+		login_reg.css({"background":"#bfc4cc","color":"#31332e"});
+	}
+	else{
+		login_reg_click=false;
+		login_reg.css({"background":"#204042","color":"#bfc4cc"});
+	}
 	login_reg.val(info);
-	login_reg.css({"background":"#204042","color":"#bfc4cc"});
 	return false;
 }
 function set_cookie(jsondata,info){
@@ -99,4 +201,21 @@ function namePassCheck(name,password,repeat_password){
 		return "密码最多十四位";
 	if(password!=repeat_password)
 		return "两次密码不一致";
+}
+function establishArticles(articlesJson){
+	var $section_main = $('<dir class="section_main"></dir>').append($('<div class="title"><a href="/detailed/'+articlesJson.id+'/">'+articlesJson.title+'</a></div>'));
+	if(articlesJson.content.img)
+		var $img = $('<img src="'+articlesJson.content.img+'" onclick="enlarge(this)">');
+	else if(articlesJson.content.code)
+		var $img = $('<pre><code>'+articlesJson.content.code+'</code></pre>');
+	else
+		var $img = null;
+	$section_main.append($('<div class="subject"><p>'+articlesJson.content.text+'......</p></div>').append($img));
+	articlesJson.label = articlesJson.label.split('#')
+	Label_test = "";
+	for(Label_single in articlesJson.label)
+		Label_test = Label_test+'<a class="label">&#60;'+articlesJson.label[Label_single]+'&#62;</a>'
+	$section_main.append($('<div class="ther"><span>发布者:'+articlesJson.user+'</span><span>发布于:'+articlesJson.date_time+'</span><span>提交于:'+
+		articlesJson.examine_time+'</span><span>评论数:'+articlesJson.comments_quantity+'</span><span>'+Label_test+'</span>'+'</div>'));
+	imgarticles.before($section_main);
 }

@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone  
 
 from .forms import add_comment,outside_img,release_forms
-from article.models import Article,Comment_db,IMG,Article_examine,User_data
+from article.models import Article,Comment_db,IMG,Article_examine,User_data,Search_db
 
 import datetime
 import base64
@@ -19,6 +19,8 @@ import random
 import time
 import json
 import cgi
+import threading
+
 
 SALT='e0058ff4746e011cb58ed32a19530baba71c3286612a0'
 
@@ -32,7 +34,7 @@ def get_home_articles(request,page):
         img_obtain=True
         text_temp=Article_mix(post.content)
         archive_json.append({'content':{'text':'','img':None},'title':cgi.escape(post.title),'id':post.id,'user':post.user,'date_time':post.date_time.strftime('%Y-%m-%d'),
-            'examine_time':post.examine_time.strftime('%Y-%m-%d'),'comments_quantity':post.comments_quantity})
+            'examine_time':post.examine_time.strftime('%Y-%m-%d'),'comments_quantity':post.comments_quantity,'label':cgi.escape(post.label)})
         for text in text_temp:
             if len(archive_json[-1]['content']['text'])>150 and not img_obtain:
                 break
@@ -67,6 +69,7 @@ def detailed(request,id):
             return HttpResponseRedirect('/detailed/'+str(id)+'/')
 
     post = Article.objects.get(id=id)
+    post.label=post.label.split('#')
     comment=add_comment()
     gather=comment_ip_decode(post.comment_ip)
     comment_ip_floor = post.comment_ip.count('@')
@@ -217,22 +220,22 @@ def user(request):
 def change_password(request):
     name = obtain_cookie_name(request)
     if name == None:
-        return HttpResponse('{"state":"2","info":"Nome"}')
+        return HttpResponse('{"state":2,"info":"Nome"}')
     if request.method == 'POST':
         old_password=request.POST.get('old_password','')
         password=request.POST.get('password','')
         cookie_data = loing_verification(name,old_password)
         if type(cookie_data) == str:
-            return HttpResponse('{"state":"1","info":"'+cookie_data+'"}')
+            return HttpResponse('{"state":1,"info":"'+cookie_data+'"}')
         elif User_format(name,password)==str:
-            return HttpResponse('{"state":"1","info":"'+User_format(name,password)+'"}')
+            return HttpResponse('{"state":1,"info":"'+User_format(name,password)+'"}')
         else:
             User_db = User_data.objects.get(name=name)
             User_db.password = sha256_s(password+SALT)
             User_db.save()
             cookie_data = loing_verification(name,password)
-            return HttpResponse('{"state":"0","info":"OK","cookie_name":"'+cookie_data['cookie_name']+'","cookie_password":"'+cookie_data['cookie_password']+'"}')
-    return HttpResponse('{"state":"1","info":"Nome"}')
+            return HttpResponse('{"state":0,"info":"OK","cookie_name":"'+cookie_data['cookie_name']+'","cookie_password":"'+cookie_data['cookie_password']+'"}')
+    return HttpResponse('{"state":1,"info":"Nome"}')
 
 def login(request):
     if request.method == 'POST':
@@ -240,10 +243,10 @@ def login(request):
         password=request.POST.get('password','')
         cookie_data = loing_verification(name,password)
         if type(cookie_data) != str:
-            return HttpResponse('{"state":"0","info":"OK","cookie_name":"'+cookie_data['cookie_name']+'","cookie_password":"'+cookie_data['cookie_password']+'"}')
+            return HttpResponse('{"state":0,"info":"OK","cookie_name":"'+cookie_data['cookie_name']+'","cookie_password":"'+cookie_data['cookie_password']+'"}')
         else:
-            return HttpResponse('{"state":"1","info":"'+cookie_data+'"}')
-    return HttpResponse('{"state":"2","info":"Nome"}')
+            return HttpResponse('{"state":1,"info":"'+cookie_data+'"}')
+    return HttpResponse('{"state":2,"info":"Nome"}')
 
 def registered(request):
     if request.method == 'POST':
@@ -251,10 +254,10 @@ def registered(request):
         password = request.POST.get('password','')
         cookie_data = registered_verification(name,password)
         if type(cookie_data) != str:
-            return HttpResponse('{"state":"0","info":"OK","cookie_name":"'+cookie_data['cookie_name']+'","cookie_password":"'+cookie_data['cookie_password']+'"}')
+            return HttpResponse('{"state":0,"info":"OK","cookie_name":"'+cookie_data['cookie_name']+'","cookie_password":"'+cookie_data['cookie_password']+'"}')
         else:
-            return HttpResponse('{"state":"1","info":"'+cookie_data+'"}')
-    return HttpResponse('{"state":"2","info":"Nome"}')
+            return HttpResponse('{"state":1,"info":"'+cookie_data+'"}')
+    return HttpResponse('{"state":2,"info":"Nome"}')
 
 def obtain_name(request):
     test=obtain_cookie_name(request)
@@ -262,6 +265,78 @@ def obtain_name(request):
         return HttpResponse('{"login":true,"name":"'+test+'"}')
     else:
         return HttpResponse('{"login":false}')
+
+def port_search(request):
+    if request.method == 'POST':
+        keyword=request.POST.get('keyword','')
+        article_list = Article.objects.all()
+        temp_lost = []
+        for article in article_list:
+            weight = 0
+            content_text = False
+            weight += article.content.count(keyword)
+            if weight:
+                position = article.content.find(keyword)
+                if position < 20:
+                    content_text = article.content[:position+20]
+                else:
+                    content_text = article.content[position-20:position+20]
+            if article.title.find(keyword)!=-1 or article.label.find(keyword)!=-1:
+                weight+=10
+                if content_text == False:
+                    content_text = article.content[:20]
+            if weight!=0:
+                temp_lost.append({'id':article.id,"weight":weight,'content':{'text':cgi.escape(content_text)},'title':cgi.escape(article.title),
+                    'user':article.user,'date_time':article.date_time.strftime('%Y-%m-%d'),'examine_time':article.examine_time.strftime('%Y-%m-%d'),
+                    'comments_quantity':article.comments_quantity,'label':cgi.escape(article.label)})
+        if(len(temp_lost)==0):
+            return HttpResponse(json.dumps({"state":1,"info":"没有搜索结果","track":None,"end":True}))
+        sort_list = []
+        ranking = 0
+        while True:
+            ranking += 1
+            if len(temp_lost)==1:
+                sort_list.append(temp_lost[0])
+                break
+            position=0
+            high_weight=0
+            position=0
+            for i in range(len(temp_lost)):
+                if temp_lost[i]['weight'] > high_weight:
+                    high_weight=temp_lost[i]['weight']
+                    position=i
+            sort_list.append(temp_lost[position])
+            del temp_lost[position]
+        if(len(sort_list)<=5):
+            return HttpResponse(json.dumps({"state":0,"data":sort_list,"track":None,"end":True}))
+        else:
+            marking = sha256_s(random_s())[:16]
+            arrangement_thread = threading.Thread(target = SearchArrangementThread)
+            arrangement_thread.start()
+            Search_db.objects.create(marking = marking,page_quantity = len(sort_list)-5,page = json.dumps(sort_list[5:]))
+            return HttpResponse(json.dumps({"state":0,"data":sort_list[:5],"track":marking,"end":False}))
+    return HttpResponse(json.dumps({"state":2,"end":True}))
+
+def surplus_search(request):
+    if request.method == 'GET':
+        track = request.GET['track']
+        end = request.GET['end']
+        try:
+            search = Search_db.objects.get(marking=track)
+        except :
+            return HttpResponse(json.dumps({"state":1,"info":"没有更多的结果","end":True}))
+        if(end=='true'):
+            search.delete()
+            return HttpResponse('')
+        dumps_json = json.loads(search.page)
+        if(int(search.page_quantity)<=5):
+            search.delete()
+            return HttpResponse(json.dumps({"state":0,"data":dumps_json,"end":True}))
+        search.page_quantity-=5
+        search.page=json.dumps(dumps_json[5:])
+        search.save()                
+        return HttpResponse(json.dumps({"state":0,"data":dumps_json,"end":True}))
+    return HttpResponse(json.dumps({"state":3,"end":True}))
 
 def exit(request):
     response = HttpResponseRedirect('/')
@@ -446,3 +521,11 @@ def img_id_url(id):
         return '/static/img/404.png'
     else:
         return a.url
+
+def SearchArrangementThread():
+    try:
+        search = Search_db.objects.filter(examine_time__lte=datetime.date.today()+datetime.timedelta(days=2))
+    except :
+        pass 
+    else:
+        search.delete()

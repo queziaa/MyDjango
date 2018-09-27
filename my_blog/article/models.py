@@ -12,7 +12,6 @@ class Article(models.Model) :
     user = models.CharField(max_length = 16)
     label = models.CharField(max_length = 110,default = '!')
 
-
     #python2使用__unicode__, python3使用__str__
     def __str__(self) :
         return self.title
@@ -27,7 +26,6 @@ class Comment_db(models.Model):
 
     def __str__(self) :
         return self.comments_text
-
 
 class IMG(models.Model):
     url = models.CharField(max_length=200,null = True)
@@ -53,7 +51,6 @@ class Article_examine(models.Model):
     class Meta:
         ordering = ['-examine_time']
 
-
 class User_data(models.Model):
     name = models.CharField(max_length = 14,null = True)
     password = models.CharField(max_length = 64,null = True)
@@ -64,3 +61,12 @@ class User_data(models.Model):
 
     def __str__(self) :
         return self.name
+
+class Search_db(models.Model):
+    marking = models.CharField(max_length = 16)
+    page_quantity = models.IntegerField()
+    page = models.TextField(max_length = 10000,null = True)
+    examine_time = models.DateTimeField(auto_now_add = True)
+    
+    def __str__(self) :
+        return self.marking

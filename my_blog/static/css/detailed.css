@@ -6,8 +6,7 @@
 	padding :0px 0px 10px 0px;
 }
 .ther span{
-	text-align: center;display:block;
-	padding :0px 0px 10px 0px;
+	text-align: center;
 }
 .section_main .comment{
 	padding:4% 0%;
@@ -27,4 +26,7 @@
 	height:40px;
 	padding:2%;
 	font-size: 20px; 
+}
+.ther{
+	padding:0px 0px 30px 0px;
 }

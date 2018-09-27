@@ -24,9 +24,10 @@ function load_img_funct(){
 				if(imgs_json.len<5){
 					clearInterval(imgs_interval);
 					imgPrompt.html("已经没有更多图片了");
+					if(imgarticles.outerHeight() + imgarticles.offset().top+2 > $('#right').outerHeight())
+						imgPrompt.css("position","static");
 				}else{
 					imgPrompt.html("下拉或点击加载更多");
-					imgPrompt.css("position","static");
 				}
 			}
 		});
