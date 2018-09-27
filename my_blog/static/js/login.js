@@ -58,6 +58,7 @@ function loadSearchAjax(){
 				$right.append($('<dir class="loadPrompt" id="imgPrompt">下拉或点击加载更多</dir>'));				
 				window["imgarticles"] = $("#imgPrompt");
 				loadSearchDom(data.data);
+				imgarticlesPosition();
 				if(!surplus){
 					window["imgs_interval"] = setInterval(load_Search_funct,500);
 					window.onbeforeunload = delSearch;
@@ -70,12 +71,12 @@ function loadSearchAjax(){
 			else if(data.state==1)
 				input_error(data.info);
 			else if(data.state==2)
-				input_error("1发生错误 请尝试刷新");
+				input_error("发生错误 请尝试刷新");
 			else
-				input_error("2发生错误 请尝试刷新");
+				input_error("发生错误 请尝试刷新");
 		},
 		error: function (XMLHttpRequest, textStatus, errorThrown) {
-			input_error("3发生错误 请尝试刷新");
+			input_error("发生错误 请尝试刷新");
 		}
 	});
 	window["searchState"] = false;
@@ -97,12 +98,11 @@ function load_Search_funct(){
 						surplus = true;
 						clearInterval(imgs_interval);
 						imgarticles.html("已经没有更多结果了");
-						if(imgarticles.outerHeight() + imgarticles.offset().top+2 > $('#right').outerHeight())
-							imgarticles.css("position","static");
 					}else{
 						imgarticles.html("下拉或点击加载更多");
 					}
 					loadSearchDom(Search_json.data);
+					imgarticlesPosition();
 				}
 				else{
 					imgarticles.html("发生错误 请尝试刷新");
@@ -210,15 +210,28 @@ function establishArticles(articlesJson){
 	articlesJson.label = articlesJson.label.split('#')
 	Label_test = "";
 	for(Label_single in articlesJson.label)
-		Label_test = Label_test+'<a class="label">&#60;'+articlesJson.label[Label_single]+'&#62;</a>'
+		Label_test = Label_test+'<a class="label" onclick="searchTags(this);return false;">'+articlesJson.label[Label_single]+'</a>'
 	$section_main.append($('<div class="ther"><span>发布者:'+articlesJson.user+'</span><span>发布于:'+articlesJson.date_time+'</span><span>提交于:'+
 		articlesJson.examine_time+'</span><span>评论数:'+articlesJson.comments_quantity+'</span><span>'+Label_test+'</span>'+'</div>'));
 	imgarticles.before($section_main);
 }
 function delSearch(){
-        $.ajax({
-        	url:"/surplus_search/?track="+track+"&end=true",
-                type : 'GET',
+	$.ajax({
+		url:"/surplus_search/?track="+track+"&end=true",
+		type : 'GET',
 		dataType : 'json',
-        });
+	});
+}
+function searchTags(aLabel){
+	loadSearch();
+	$("#name").val(aLabel.text);
+	loadSearchAjax();
+
+}
+function imgarticlesPosition(){
+	imgarticles.css("position","static");
+	if(imgarticles.outerHeight() + imgarticles.offset().top+2 > $('#right').outerHeight())
+		imgarticles.css("position","static");
+	else
+		imgarticles.css("position","");
 }

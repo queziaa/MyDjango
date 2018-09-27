@@ -311,9 +311,9 @@ def port_search(request):
             return HttpResponse(json.dumps({"state":0,"data":sort_list,"track":None,"end":True}))
         else:
             marking = sha256_s(random_s())[:16]
+            Search_db.objects.create(marking = marking,page_quantity = len(sort_list)-5,page = json.dumps(sort_list[5:]))
             arrangement_thread = threading.Thread(target = SearchArrangementThread)
             arrangement_thread.start()
-            Search_db.objects.create(marking = marking,page_quantity = len(sort_list)-5,page = json.dumps(sort_list[5:]))
             return HttpResponse(json.dumps({"state":0,"data":sort_list[:5],"track":marking,"end":False}))
     return HttpResponse(json.dumps({"state":2,"end":True}))
 
@@ -324,8 +324,11 @@ def surplus_search(request):
         try:
             search = Search_db.objects.get(marking=track)
         except :
-            return HttpResponse(json.dumps({"state":1,"info":"没有更多的结果","end":True}))
-        if(end=='true'):
+            if(end == 'true'):
+                return HttpResponse('')
+            else:
+                return HttpResponse(json.dumps({"state":0,"info":"没有更多的结果","end":True}))
+        if(end == 'true'):
             search.delete()
             return HttpResponse('')
         dumps_json = json.loads(search.page)
@@ -524,7 +527,7 @@ def img_id_url(id):
 
 def SearchArrangementThread():
     try:
-        search = Search_db.objects.filter(examine_time__lte=datetime.date.today()+datetime.timedelta(days=2))
+        search = Search_db.objects.filter(examine_time__lte=datetime.date.today()-datetime.timedelta(days=2))
     except :
         pass 
     else:

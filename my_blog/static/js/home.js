@@ -23,8 +23,7 @@ function load_articles_funct(){
 				if(articles_json.length<5){
 					clearInterval(imgs_interval);
 					imgarticles.html("已经没有更多文章了");
-					if(imgarticles.outerHeight() + imgarticles.offset().top+2 > $('#right').outerHeight())
-						imgarticles.css("position","static");
+					imgarticlesPosition();
 				}else{
 					imgarticles.html("下拉或点击加载更多");
 				}
