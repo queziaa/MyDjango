@@ -27,7 +27,7 @@ SECRET_KEY = 'r-&180r7ih4(cm+49ky&@8l(uyx4*6-o7t0!t8$eagsgc9)f^h'
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['queziaa.fun','www.queziaa.fun','localhost.com']
+ALLOWED_HOSTS = ['www.queziaa.fun','blog.queziaa.fun','monitor.queziaa.fun','www.localhost.com','blog.localhost.com','monitor.localhost.com']
 
 TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
 
@@ -41,10 +41,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_hosts',
     'article',
 ]
 
 MIDDLEWARE = [
+    'django_hosts.middleware.HostsRequestMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -52,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_hosts.middleware.HostsResponseMiddleware',
 ]
 
 ROOT_URLCONF = 'my_blog.urls'
@@ -125,6 +128,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+ROOT_HOSTCONF = 'my_blog.hosts'
+DEFAULT_HOST = 'www'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/

@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin 
 from django.urls import path
-from article import views
+from www import views
 from django.urls import include
 from django.conf.urls import url
 from django.conf.urls.static import static
@@ -24,31 +24,9 @@ from django.conf import settings
 
 from django.views import static 
 
-app_name = 'article'
+app_name = 'www'
 urlpatterns = [
-    path('admin/',admin.site.urls),
     path('', views.home, name = 'home'),
-    path('me/',views.me,name='me'),
-    path('detailed/<int:id>/',views.detailed,name='detailed'),
-    path('archive/',views.archive,name='archive'),
-    path('upload/', views.upload,name='upload'),
-    path('examine/', views.examine,name='examine'),
-    path('get_examine/', views.get_examine,name='get_examine'),
-    path('Error/',views.Error,name='Error'),
-    path('404/',views.e404,name='e404'),
-    path('release/', views.release,name='release'),
-    path('user/',views.user,name='user'),
-    path('exit/',views.exit,name='exit'),
-
-    path('login/', views.login,name='login'),
-    path('registered/',views.registered,name='registered'),
-    path('change_password/',views.change_password,name='change_password'),
-    path('obtain_name/',views.obtain_name,name='obtain_name'),
-    path('get_img/<int:page>/',views.get_img,name='get_img'),
-    path('get_home_articles/<int:page>/',views.get_home_articles,name='get_home_articles'),
-    path('port_search/',views.port_search,name='port_search'),
-    path('surplus_search/',views.surplus_search,name='surplus_search'),
-
 
     url(r'^favicon\.ico$', static.serve,{'document_root': settings.STATIC_ROOT,'path': "/img/favicon.ico"}),
     url(r'^static/(?P<path>.*)$', static.serve,{'document_root': settings.STATIC_ROOT}, name='static'), 
@@ -58,7 +36,3 @@ urlpatterns = [
 
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
-
-
-
