@@ -8,7 +8,7 @@ from datetime import datetime
 from django.http import Http404
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone  
-
+from my_blog.settings import SECRET_KEY as SALT
 from .forms import add_comment,outside_img,release_forms
 from article.models import Article,Comment_db,IMG,Article_examine,User_data,Search_db
 
@@ -19,10 +19,9 @@ import random
 import time
 import json
 import cgi
-import threading
+# import threading
 
 
-SALT='e0058ff4746e011cb58ed32a19530baba71c3286612a0'
 
 def home(request):
     return render(request, 'home.html')
@@ -312,8 +311,8 @@ def port_search(request):
         else:
             marking = sha256_s(random_s())[:16]
             Search_db.objects.create(marking = marking,page_quantity = len(sort_list)-5,page = json.dumps(sort_list[5:]))
-            arrangement_thread = threading.Thread(target = SearchArrangementThread)
-            arrangement_thread.start()
+            # arrangement_thread = threading.Thread(target = SearchArrangementThread)
+            # arrangement_thread.start()
             return HttpResponse(json.dumps({"state":0,"data":sort_list[:5],"track":marking,"end":False}))
     return HttpResponse(json.dumps({"state":2,"end":True}))
 
@@ -525,10 +524,10 @@ def img_id_url(id):
     else:
         return a.url
 
-def SearchArrangementThread():
-    try:
-        search = Search_db.objects.filter(examine_time__lte=datetime.date.today()-datetime.timedelta(days=2))
-    except :
-        pass 
-    else:
-        search.delete()
+# def SearchArrangementThread():
+#     try:
+#         search = Search_db.objects.filter(examine_time__lte=datetime.date.today()-datetime.timedelta(days=2))
+#     except :
+#         pass 
+#     else:
+#         search.delete()

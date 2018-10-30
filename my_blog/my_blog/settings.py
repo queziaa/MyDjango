@@ -12,7 +12,10 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
-
+import djcelery
+from celery.schedules import crontab
+from celery.schedules import timedelta
+djcelery.setup_loader()
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -42,7 +45,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_hosts',
+    'djcelery',
     'article',
+    'monitor',
+    'www',
 ]
 
 MIDDLEWARE = [
@@ -139,3 +145,29 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')    
  #设置静态文件路径为主目录下的media文件夹
 MEDIA_URL = '/media/' 
+
+CELERY_ENABLE_UTC = False
+CELERY_TIMEZONE = 'Asia/Shanghai' 
+BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'  
+# 这是使用了django-celery默认的数据库调度模型,任务执行周期都被存在你指定的orm数据库中
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERYBEAT_SCHEDULE={
+        "sqlclear-1-day": {
+            'task': 'article.tasks.SearchArrangementThread',
+            'schedule': crontab(minute=0,hour=0)
+            # 'args':
+        },
+        "bilibili_spider_time-1-hour": {
+            'task': 'monitor.tasks.spider_time',
+            'schedule': crontab(hour='*/1')
+        },
+        "bilibili_spider_data-3-minute":{
+            'task': 'monitor.tasks.spider_data',
+            'schedule': crontab(minute='*/2')
+        }
+}
+CELERY_ERROR_LOG = r'/home/que-linux/bilibili_monitor.log'
