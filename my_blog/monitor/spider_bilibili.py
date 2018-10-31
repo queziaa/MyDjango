@@ -11,12 +11,8 @@ headers = {"Accept":"application/json, text/plain, */*",
 "Connection":"keep-alive",
 "Pragma":"no-cache",
 "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36"}
-mongoHost = '127.0.0.1'
-mongoPort = 27017
-mongoName = 'monitor'
-mongodb = 'start_time'
-client = pymongo.MongoClient(host=mongoHost,port=mongoPort)
-mongopost = client[mongoName][mongodb]
+client = pymongo.MongoClient(host='localhost', port=27017, connect=False)
+mongopost = client['monitor']['start_time']
 
 def count_time(start):
     hour_freq = 0
@@ -163,4 +159,4 @@ def time_range(time_data,r):
 
 if __name__ == '__main__':
     CELERY_ERROR_LOG = r'/home/que-linux/bilibili_monitor.log'
-    main_spider_data(CELERY_ERROR_LOG)
+    main_spider_time(CELERY_ERROR_LOG)

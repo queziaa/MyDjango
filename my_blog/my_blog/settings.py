@@ -14,7 +14,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 import djcelery
 from celery.schedules import crontab
-from celery.schedules import timedelta
+from datetime import datetime,timedelta  
 djcelery.setup_loader()
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -30,7 +30,7 @@ SECRET_KEY = 'r-&180r7ih4(cm+49ky&@8l(uyx4*6-o7t0!t8$eagsgc9)f^h'
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['www.queziaa.fun','blog.queziaa.fun','monitor.queziaa.fun','www.localhost.com','blog.localhost.com','monitor.localhost.com']
+ALLOWED_HOSTS = ['www.queziaa.fun','blog.queziaa.fun','monitor.queziaa.fun']
 
 TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
 
@@ -132,7 +132,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+# USE_TZ = True
 
 ROOT_HOSTCONF = 'my_blog.hosts'
 DEFAULT_HOST = 'www'
@@ -158,16 +158,16 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERYBEAT_SCHEDULE={
         "sqlclear-1-day": {
             'task': 'article.tasks.SearchArrangementThread',
-            'schedule': crontab(minute=0,hour=0)
+            'schedule': timedelta(days=1)
             # 'args':
         },
         "bilibili_spider_time-1-hour": {
             'task': 'monitor.tasks.spider_time',
-            'schedule': crontab(hour='*/1')
+            'schedule': timedelta(hours=1)
         },
         "bilibili_spider_data-3-minute":{
             'task': 'monitor.tasks.spider_data',
-            'schedule': crontab(minute='*/2')
+            'schedule': timedelta(minutes=2)
         }
 }
 CELERY_ERROR_LOG = r'/home/que-linux/bilibili_monitor.log'
