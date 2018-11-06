@@ -6,44 +6,90 @@
         {% load staticfiles %}
         <link href="{% static 'libs/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
         <title>Queziaa-简历</title>
-        <style>.box-shadow{ box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }</style>
+        <style>
+            .box-shadow{ box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
+            body{ padding-top: 90px; padding-bottom: 70px;}
+            @media (max-width: 768px) { body{ padding-top: 130px; padding-bottom: 70px;}}
+        </style>
     </head>
     <body>
-        <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+        <nav class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow navbar fixed-top">
             <h5 class="my-0 mr-md-auto font-weight-normal">简历</h5>
             <nav class="my-2 my-md-0 mr-md-3">
                 <a class="p-2 text-dark" href="https://blog.queziaa.fun">博客</a>
                 <a class="p-2 text-dark" href="https://monitor.queziaa.fun">bilibili监控</a>
+                <a class="p-2 text-white btn-sm btn-primary" href="#">保存为PDF</a>
             </nav>
-        </div>
+        </nav>
 
-        <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-                <h1 class="display-4">poi</h1>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-                <p class="lead">poi! poi! poi! poi! poi!</p>
-        </div>
-              
+<!--         <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
+        <div class="d-flex justify-content-between flex-wrap   pb-2 mb-3">
+            <h1 class="h2">Dashboard</h1>
+            <div class="btn-toolbar mb-2 mb-md-0">SSSSSSSSSS
+            </div>
+        </div> -->
+
+        <div class="container">
+            <div class="row">
+                <div class="h1 col-6">金益淼</div>
+                <div class="text-right py-4 col-6">求职意向：后端开发</div>
+            </div>
+            <ul class="row nav">
+                <li class="col-lg-4 col-md-6 col-sd-12 text-lg-left text-md-left text-sd-left">电话：1XXXXXXXXXX</li>
+                <li class="col-lg-4 col-md-6 col-sd-12 text-lg-center text-md-right text-sd-left">邮箱：<a class="text-secondary" href="mailto:queziaa31@gmail.com">queziaa31@gmail.com</a></li>
+                <li class="col-lg-4 col-md-6 col-sd-12 text-lg-right text-md-left text-sd-left">Github：<a class="text-secondary" href="https://github.com/queziaa">github.com/queziaa</a></li>
+                <li class="col-lg-4 col-md-6 col-sd-12 text-lg-left text-md-right text-sd-left">学历：大专/计算机网络</li>
+                <li class="col-lg-4 col-md-6 col-sd-12 text-lg-center text-md-left text-sd-left">个人网站：<a class="text-secondary" href="https://queziaa.fun">queziaa.fun</a></li>
+            </ul>
+            <br>
+            <h3>专业能力</h3>
+            <hr>
+            <dl class="row">
+                <dt class="pl-5 col-md-4 col-sd-12">编程语言：</dt>
+                <dd class="pl-5 col-md-8 col-sd-12">Python/HTML/CSS/JavaScript/C</dd>
+                <dt class="pl-5 col-md-4 col-sd-12">框架：</dt>
+                <dd class="pl-5 col-md-8 col-sd-12">Django/Scrapy/Celery</dd>
+                <dt class="pl-5 col-md-4 col-sd-12">前端：</dt>
+                <dd class="pl-5 col-md-8 col-sd-12">Bootstrap/jQuery/React</dd>
+                <dt class="pl-5 col-md-4 col-sd-12">数据库：</dt>
+                <dd class="pl-5 col-md-8 col-sd-12">MySQL/MongoDB/Redis</dd>
+                <dt class="pl-5 col-md-4 col-sd-12">版本管理、单元测试：</dt>
+                <dd class="pl-5 col-md-8 col-sd-12">Git/UnitTest</dd>
+            </dl>
+            <h3>项目</h3>
+            <hr>
+            <dl class="row">
+                <dt class="pl-5 col-md-4 col-sd-12">抓取某视频网站信息生成图表：</dt>
+                <dd class="pl-5 col-md-8 col-sd-12">
+                    <a class="text-secondary" href="https://monitor.queziaa.fun">monitor.queziaa.fun</a>
+                    <p class="my-0">XXXXXXXXXXXXCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC</p>
+                    <p class="my-0">CCCCXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</p>
+                    <p class="my-0">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</p>
+                </dd>
+                <dt class="pl-5 col-md-4 col-sd-12">对几家网课网站的爬虫：</dt>
+                <dd class="pl-5 col-md-8 col-sd-12">
+                    <a class="text-secondary" href="https://github.com/queziaa/study163_imooc_lou_jike_scrapy">github.com/queziaa/study163_imooc_lou_jike_scrapy</a>
+                    <p class="my-0">XXXXXXXXXXXXCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC</p>
+                    <p class="my-0">CCCCXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</p>
+                    <p class="my-0">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</p>
+                </dd>
+                <dt class="pl-5 col-md-4 col-sd-12">个人博客：</dt>
+                <dd class="pl-5 col-md-8 col-sd-12">
+                    <a class="text-secondary" href="https://blog.queziaa.fun">blog.queziaa.fun</a>
+                    <p class="my-0">XXXXXXXXXXXXCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC</p>
+                    <p class="my-0">CCCCXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</p>
+                    <p class="my-0">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</p>
+                </dd>
+            </dl>
+            <h3>其他经历</h3>
+            <hr>
+                <dl class="row">
+                    <dt class="pl-5 py-1 col-md-12 col-sd-12">曾参加创业沙拉并担任队长获得二等奖。</dt>
+                    <dt class="pl-5 py-1 col-md-12 col-sd-12">曾在建设银行担任大堂经理、了解部分金融知识、有良好的与人沟通的能力。</dt>
+                </dl>
+            </dl>
+
+            
         <script src="{% static 'libs/jquery-3.3.1.min.js' %}" charset="utf-8"></script>
         <script src="{% static 'libs/popper.min.js' %}" charset="utf-8"></script>
         <script src="{% static 'libs/bootstrap.min.js' %}" charset="utf-8"></script>

@@ -27,6 +27,8 @@ from django.views import static
 app_name = 'monitor'
 urlpatterns = [
     path('', views.home, name = 'home'),
+    path('admin/',admin.site.urls),
+
     
     url(r'^favicon\.ico$', static.serve,{'document_root': settings.STATIC_ROOT,'path': "/img/favicon.ico"}),
     url(r'^static/(?P<path>.*)$', static.serve,{'document_root': settings.STATIC_ROOT}, name='static'), 

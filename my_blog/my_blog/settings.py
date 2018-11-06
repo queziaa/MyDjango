@@ -29,8 +29,12 @@ SECRET_KEY = 'r-&180r7ih4(cm+49ky&@8l(uyx4*6-o7t0!t8$eagsgc9)f^h'
 # SECURITY WARNING: don't run with debug turned on in production!
 
 DEBUG = False
-
 ALLOWED_HOSTS = ['www.queziaa.fun','blog.queziaa.fun','monitor.queziaa.fun']
+CELERY_ERROR_LOG = r'/root/bilibili_monitor.log'
+
+# ALLOWED_HOSTS = ['www.queziaa.fun','blog.queziaa.fun','monitor.queziaa.fun','www.localhost.com','blog.localhost.com','monitor.localhost.com']
+# DEBUG = True
+# CELERY_ERROR_LOG = r'/home/que-linux/bilibili_monitor.log'
 
 TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
 
@@ -49,6 +53,7 @@ INSTALLED_APPS = [
     'article',
     'monitor',
     'www',
+    'django_mongoengine',
 ]
 
 MIDDLEWARE = [
@@ -100,6 +105,15 @@ DATABASES = {
             'sql_mode': 'traditional',
             },
     }
+}
+MONGODB_DATABASES = {
+    "default": {
+        "name": 'monitor',
+        "host": "127.0.0.1",
+        "password": '',
+        "username": '',
+        "tz_aware": False, # if you using timezones in django (USE_TZ = True)
+    },
 }
 
 # Password validation
@@ -163,11 +177,10 @@ CELERYBEAT_SCHEDULE={
         },
         "bilibili_spider_time-1-hour": {
             'task': 'monitor.tasks.spider_time',
-            'schedule': timedelta(hours=1)
+            'schedule': timedelta(hours=6)
         },
         "bilibili_spider_data-3-minute":{
             'task': 'monitor.tasks.spider_data',
             'schedule': timedelta(minutes=2)
         }
 }
-CELERY_ERROR_LOG = r'/home/que-linux/bilibili_monitor.log'

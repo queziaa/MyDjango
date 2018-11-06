@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        {% load staticfiles %}
+        <link href="{% static 'libs/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+        <title>bilibili监控</title>
+    </head>
+    <body>
+        {{ log }}
+        <script src="{% static 'libs/jquery-3.3.1.min.js' %}" charset="utf-8"></script>
+        <script src="{% static 'libs/popper.min.js' %}" charset="utf-8"></script>
+        <script src="{% static 'libs/bootstrap.min.js' %}" charset="utf-8"></script>
+    </body>
+</html>
