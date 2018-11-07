@@ -1,3 +1,4 @@
+#coding=utf-8
 import requests,json,pymongo,os,time,re,traceback
 
 url = 'https://bangumi.bilibili.com/web_api/timeline_global'

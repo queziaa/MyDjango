@@ -32,7 +32,7 @@ DEBUG = False
 ALLOWED_HOSTS = ['www.queziaa.fun','blog.queziaa.fun','monitor.queziaa.fun']
 CELERY_ERROR_LOG = r'/root/bilibili_monitor.log'
 
-# ALLOWED_HOSTS = ['www.queziaa.fun','blog.queziaa.fun','monitor.queziaa.fun','www.localhost.com','blog.localhost.com','monitor.localhost.com']
+# ALLOWED_HOSTS = ['www.localhost.com','blog.localhost.com','monitor.localhost.com']
 # DEBUG = True
 # CELERY_ERROR_LOG = r'/home/que-linux/bilibili_monitor.log'
 

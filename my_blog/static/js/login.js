@@ -38,6 +38,10 @@ function loadSearchAjax(){
 		return false;
 	input_error("加载中. . .",true);
 	var keyword = $("#name").val();
+	if (keyword == ''){
+		input_error("搜索词不能为空");
+		return false;
+	}
 	var csrf = $('#comment [name="csrfmiddlewaretoken"]').val();
 	$.ajax({
 		type:"POST",	

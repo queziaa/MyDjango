@@ -1,16 +1,125 @@
 <!doctype html>
 <html lang="zh-cn">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        {% load staticfiles %}
-        <link href="{% static 'libs/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
-        <title>bilibili监控</title>
-    </head>
-    <body>
-        {{ log }}
-        <script src="{% static 'libs/jquery-3.3.1.min.js' %}" charset="utf-8"></script>
-        <script src="{% static 'libs/popper.min.js' %}" charset="utf-8"></script>
-        <script src="{% static 'libs/bootstrap.min.js' %}" charset="utf-8"></script>
-    </body>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% load staticfiles %}
+<link href="{% static 'libs/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+<title>bilibili监控</title>        
+<style>
+    .box-shadow{ box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
+    .bg-danger {background-color: #fb7299!important;}
+</style>
+</head>
+<body>
+<!-- 标题栏 -->
+<nav class="navbar navbar-expand-md navbar-dark bg-danger">
+    <a class="navbar-brand" href="###">bilibili监控</a>
+    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-collapse collapse" id="navbarCollapse" style="">
+        <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+            <a class="nav-link active" href="###">排行榜</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="###">全部</a>
+        </li>
+        </ul>
+        <a class="p-0 py-1 nav-link text-white" data-toggle="modal" data-target="#mymodal-data" href="###">关于</a>
+    </div>
+</nav>           
+<!-- 标题栏弹窗 -->
+<div class="modal fade" id="mymodal-data" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">关于bilibili监控和我</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			</div>
+			<div class="modal-body">
+                <p>监控bilibili最新番剧播放量评论数等信息，生成图表，排名列出</p>
+                <p>开放源码 <a href="https://github.com/queziaa/MyDjango/tree/master/my_blog/monitor">https://github.com/queziaa/MyDjango</a></p>
+                <p>我的网站主页 <a href="https://queziaa.fun">queziaa.fun</a></p>
+				<p>数据来源网络 如有侵权请联系删除 <a href="mailto:queziaa31@gmail.com">queziaa31@gmail.com</a></p>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 突发奇想的小工具 -->
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h3 class="display-4">突发奇想的小工具</h3>
+    <p class="lead">获取bilibili最新番剧的、播放、弹幕、硬币、分享、评论数量制图展出，看看大家都在看什么，那部作品突然大火，那部作品常被人推荐。</p>
+</div>
+<!-- 最近更新 -->
+<div class="ml-5 mr-5">
+    <div class="container-fluid p-0" style="background-color:#e9ecef;border-radius:10px;">
+        <div class="pr-2 pl-2 row justify-content-center" style="background-color:#e9ecef;border-radius:10px;" >
+            <div class=" p-0 col-xl-12 d-flex justify-content-between align-items-center" style="border-radius:10px;background-color:#e9ecef;">
+                <div class="mr-3 ml-3 btn-group">
+                    <h4 class="my-2 m-0">最近更新</h4>
+                </div>
+                <small class="mx-4 text-muted">查看全部</small>
+            </div>
+            {% for data in start %} 
+            <div class="p-0 col-xl-2 col-lg-3 col-md-3 col-sm-4 col-5">
+                <div class="mt-0 ml-2 mr-2 mb-2 mcard p-0 shadow-sm" style="border-radius:0px 0px 7px 7px;">
+                    <span><a class="text-muted" style="color:#f8f9fa!important;background-color:rgba(000, 000, 000, .50);position: absolute; bottom:3.5em; right:0.5em" href="###" data-toggle="tooltip" title="" data-original-title="更新时间" temp-id= "{{ data.id }}" temp-storage-1="加入时间" temp-storage-2="{{ data.start }}" onclick="switch_time(this);">{{ data.hour }}</a></span>
+                    <img class="card-img-top" src={{ data.cover }} style="width: 100%; display: block;" >
+                    <div class="p-0 card-body" style="background-color:rgba(255, 255, 255, .5);border-radius:0px 0px 7px 7px;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group" style="width:100%">
+                                <p class="m-0 text-center" style="width:100%">{{ data.title }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!-- 排行榜 -->
+<div class="ml-5 mr-5 mt-5">
+    <div class="container-fluid p-0" style="background-color:#e9ecef;border-radius:10px;">
+        <div class="pr-2 pl-2 row justify-content-center" style="background-color:#e9ecef;border-radius:10px;" >
+            <div class="p-0 col-xl-12 d-flex justify-content-between align-items-center" style="border-radius:10px;background-color:#e9ecef;">
+                <div class="mr-3 ml-3 btn-group">
+                    <h4 class="my-2 m-0">排行榜</h4>
+                </div>
+                <small class="mx-4 text-muted">查看全部</small>
+            </div>
+            {% for data in ranking %} 
+            <div class="p-0 col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
+                <div class="ml-2 mr-2 p-0 pl-3 pr-3  shadow-sm" style="background-color:rgba(255, 255, 255, .5);border-radius:7px;">
+                    <h2 class="text-center py-2">{{ data.title }}</h2>
+                    <ol class="">
+                    {% for list in data.list %} 
+                        <li>{{ list }}</li>
+                    {% endfor %}
+                    </ol>
+                </div>
+            </div>
+            {% endfor %}            
+        </div>
+    </div>
+</div>
+<script src="{% static 'libs/jquery-3.3.1.min.js' %}" charset="utf-8"></script>
+<script src="{% static 'libs/popper.min.js' %}" charset="utf-8"></script>
+<script src="{% static 'libs/bootstrap.min.js' %}" charset="utf-8"></script>
+<script>
+    $(function () { $("[data-toggle='tooltip']").tooltip(); });
+    function switch_time(t){
+        var tt=$(t)
+        var s = tt.attr("data-original-title");
+        tt.attr("data-original-title",tt.attr("temp-storage-1"));
+        $('.tooltip-inner').text(tt.attr("temp-storage-1"));        
+        tt.attr("temp-storage-1",s);
+        s=tt.text();
+        tt.text(tt.attr("temp-storage-2"));
+        tt.attr("temp-storage-2",s);
+    }
+</script>
+</body>
 </html>
