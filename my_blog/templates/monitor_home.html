@@ -95,16 +95,17 @@
                 <div class="ml-2 mr-2 p-0 pl-3 pr-3  shadow-sm" style="background-color:rgba(255, 255, 255, .5);border-radius:7px;">
                     <h2 class="text-center py-2">{{ data.title }}</h2>
                     <ol class="">
-                    {% for list in data.list %} 
-                        <li>{{ list }}</li>
+                    {% for list in data.list %}
+                        <li><a class="text-dark" title="播放数:{{ list.view }}" href="###">{{ list.title }}</a><small class="text-muted">{{ list.index }}集</small></li>
                     {% endfor %}
                     </ol>
                 </div>
             </div>
-            {% endfor %}            
+            {% endfor %}
         </div>
     </div>
 </div>
+{{ log }}
 <script src="{% static 'libs/jquery-3.3.1.min.js' %}" charset="utf-8"></script>
 <script src="{% static 'libs/popper.min.js' %}" charset="utf-8"></script>
 <script src="{% static 'libs/bootstrap.min.js' %}" charset="utf-8"></script>

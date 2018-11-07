@@ -61,9 +61,9 @@ def main_spider_data(CELERY_ERROR_LOG):
             # if i_time['hour'] != None:
             temp = time_range(i_time['hour'],420)
             if  temp == 0:
-                i_time = spider_requests(i_time,'hour',CELERY_ERROR_LOG)
+                i_time = spider_requests(i_time,CELERY_ERROR_LOG)
             elif temp == -1:
-                while time_range(i_time['hour'],420) != -1:
+                while time_range(i_time['hour'],420) == -1:
                     i_time['hour'] += 3600
                     i_time['hour_freq'] += 1
                     i_time['coin'].append(0)
@@ -72,7 +72,7 @@ def main_spider_data(CELERY_ERROR_LOG):
                     i_time['view'].append(0)
                     i_time['reply'].append(0)
                 if time_range(i_time['hour'],420) == 0:
-                    i_time = spider_requests(i_time,'hour',CELERY_ERROR_LOG)
+                    i_time = spider_requests(i_time,CELERY_ERROR_LOG)
                 else:
                     i_time = -1
             else:
@@ -99,8 +99,9 @@ def main_spider_data(CELERY_ERROR_LOG):
             #         pass
 
 
-def spider_requests(i_time,hour_or_day,CELERY_ERROR_LOG):
+def spider_requests(i_time,CELERY_ERROR_LOG):
     try:
+        print(i_time)
         url='https://api.bilibili.com/x/web-interface/view?aid=' + str(i_time['aid'])
         headers['Host'] = 'api.bilibili.com'
         post_text = requests.get(url,headers=headers,timeout=10)
