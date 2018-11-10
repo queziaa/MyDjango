@@ -1,0 +1,27 @@
+@media screen and (min-width:540px){#chart-modal-dialog{max-width:500px;height:500px;}}
+@media screen and (min-width:740px){#chart-modal-dialog{max-width:700px;height:700px;}}
+@media screen and (min-width:940px){#chart-modal-dialog{max-width:900px;height:900px;}}
+@media screen and (min-width:1140px){#chart-modal-dialog{max-width:1100px;height:1100px;}}
+@media screen and (min-width:1340px){#chart-modal-dialog{max-width:1300px;height:1300px;}}
+@media screen and (min-width:1540px){#chart-modal-dialog{max-width:1500px;height:1500px;}}
+@media screen and (min-width:1740px){#chart-modal-dialog{max-width:1700px;height:1700px;}}
+#chart a.text-muted{
+    bottom:2.3em!important;
+}
+i.zi_cuohaocuhei{
+    position: absolute;
+    bottom: -3px;
+    right: 11.5px;
+}
+.box-shadow{
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+.bg-bilibili{
+    background-color: #fb7299!important;
+}
+a.bg-bilibili:hover,{
+    background-color: #fb7299!important;
+}
+a.bg-bilibili:focus, a.bg-bilibili:hover, button.bg-bilibili:focus, button.bg-bilibili:hover {
+    background-color: #fb7299!important;
+}

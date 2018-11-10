@@ -5,15 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 {% load staticfiles %}
 <link href="{% static 'libs/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
-<title>bilibili监控</title>        
-<style>
-    .box-shadow{ box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
-    .bg-danger {background-color: #fb7299!important;}
-</style>
+<link href="{% static 'css/monitor.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'libs/zico.min.css' %}" rel="stylesheet">
+<link href="{% static 'libs/waves.min.css' %}" rel="stylesheet">
+<title>bilibili监控</title>
 </head>
 <body>
 <!-- 标题栏 -->
-<nav class="navbar navbar-expand-md navbar-dark bg-danger">
+<nav class="navbar navbar-expand-md navbar-dark bg-bilibili">
     <a class="navbar-brand" href="###">bilibili监控</a>
     <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -55,7 +54,7 @@
 <!-- 最近更新 -->
 <div class="ml-5 mr-5">
     <div class="container-fluid p-0" style="background-color:#e9ecef;border-radius:10px;">
-        <div class="pr-2 pl-2 row justify-content-center" style="background-color:#e9ecef;border-radius:10px;" >
+        <div class="pr-2 pl-2 pb-2 row justify-content-center" style="background-color:#e9ecef;border-radius:10px;" >
             <div class=" p-0 col-xl-12 d-flex justify-content-between align-items-center" style="border-radius:10px;background-color:#e9ecef;">
                 <div class="mr-3 ml-3 btn-group">
                     <h4 class="my-2 m-0">最近更新</h4>
@@ -63,14 +62,14 @@
                 <small class="mx-4 text-muted">查看全部</small>
             </div>
             {% for data in start %} 
-            <div class="p-0 col-xl-2 col-lg-3 col-md-3 col-sm-4 col-5">
+            <div class="p-0 col-xl-2 col-lg-3 col-md-3 col-sm-4 col-5" onclick="pop_chart(this)" temp-id= "{{ data.id }}">
                 <div class="mt-0 ml-2 mr-2 mb-2 mcard p-0 shadow-sm" style="border-radius:0px 0px 7px 7px;">
-                    <span><a class="text-muted" style="color:#f8f9fa!important;background-color:rgba(000, 000, 000, .50);position: absolute; bottom:3.5em; right:0.5em" href="###" data-toggle="tooltip" title="" data-original-title="更新时间" temp-id= "{{ data.id }}" temp-storage-1="加入时间" temp-storage-2="{{ data.start }}" onclick="switch_time(this);">{{ data.hour }}</a></span>
+                    <span><a class="text-muted" style="color:#f8f9fa!important;background-color:rgba(000, 000, 000, .50);position: absolute; bottom:2em; right:0.5em" href="###" data-toggle="tooltip" title="" data-original-title="更新时间" temp-storage-1="加入时间" temp-storage-2="{{ data.start }}" onclick="switch_time(this);">{{ data.hour }}</a></span>
                     <img class="card-img-top" src={{ data.cover }} style="width: 100%; display: block;" >
                     <div class="p-0 card-body" style="background-color:rgba(255, 255, 255, .5);border-radius:0px 0px 7px 7px;">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group" style="width:100%">
-                                <p class="m-0 text-center" style="width:100%">{{ data.title }}</p>
+                                <p class="m-0 text-center text-truncate text-overflow" style="width:100%" title="{{ data.title }}">{{ data.title }}</p>
                             </div>
                         </div>
                     </div>
@@ -81,7 +80,7 @@
     </div>
 </div>
 <!-- 排行榜 -->
-<div class="ml-5 mr-5 mt-5">
+<div class="m-5">
     <div class="container-fluid p-0" style="background-color:#e9ecef;border-radius:10px;">
         <div class="pr-2 pl-2 row justify-content-center" style="background-color:#e9ecef;border-radius:10px;" >
             <div class="p-0 col-xl-12 d-flex justify-content-between align-items-center" style="border-radius:10px;background-color:#e9ecef;">
@@ -96,7 +95,7 @@
                     <h2 class="text-center py-2">{{ data.title }}</h2>
                     <ol class="">
                     {% for list in data.list %}
-                        <li><a class="text-dark" title="播放数:{{ list.view }}" href="###">{{ list.title }}</a><small class="text-muted">{{ list.index }}集</small></li>
+                        <li><a class="text-dark" title="{{ data.title|cut:'今日' }}:{{ list.num }}" href="###">{{ list.title }}</a><small class="text-muted">{{ list.index }}集</small></li>
                     {% endfor %}
                     </ol>
                 </div>
@@ -105,22 +104,23 @@
         </div>
     </div>
 </div>
-{{ log }}
+<!-- 图表弹窗 -->
+<div class="modal fade" id="chart" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog" id="chart-modal-dialog">
+        <div class="modal-content b-0">
+            <div class="modal-body p-0">
+                <div class="container-fluid p-0" style="border-radius:10px;">
+                    <div id= "chart-body" class="row p-0 justify-content-center" style="border-radius:10px;margin-left:0;margin-right:0" ></div>
+                </div>
+                <a class="p-0 btn btn-secondary" data-dismiss="modal" style="border-radius:40px;position:absolute;bottom:39em;right:-1em;height:3em;line-height:3em;width:3em;border:0;" href="###"><i class="zi zi_cuohaocuhei zi_2x"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="{% static 'libs/jquery-3.3.1.min.js' %}" charset="utf-8"></script>
 <script src="{% static 'libs/popper.min.js' %}" charset="utf-8"></script>
 <script src="{% static 'libs/bootstrap.min.js' %}" charset="utf-8"></script>
-<script>
-    $(function () { $("[data-toggle='tooltip']").tooltip(); });
-    function switch_time(t){
-        var tt=$(t)
-        var s = tt.attr("data-original-title");
-        tt.attr("data-original-title",tt.attr("temp-storage-1"));
-        $('.tooltip-inner').text(tt.attr("temp-storage-1"));        
-        tt.attr("temp-storage-1",s);
-        s=tt.text();
-        tt.text(tt.attr("temp-storage-2"));
-        tt.attr("temp-storage-2",s);
-    }
-</script>
+<script src="{% static 'libs/waves.min.js' %}" charset="utf-8"></script>
+<script src="{% static 'js/monitor.js' %}" charset="utf-8"></script>
 </body>
 </html>

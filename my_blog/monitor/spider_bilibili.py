@@ -101,7 +101,6 @@ def main_spider_data(CELERY_ERROR_LOG):
 
 def spider_requests(i_time,CELERY_ERROR_LOG):
     try:
-        print(i_time)
         url='https://api.bilibili.com/x/web-interface/view?aid=' + str(i_time['aid'])
         headers['Host'] = 'api.bilibili.com'
         post_text = requests.get(url,headers=headers,timeout=10)

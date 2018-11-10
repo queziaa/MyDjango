@@ -40,51 +40,52 @@ def home(request):
         start_data_i['start'] = time.strftime('%m月%d日%H:%M', time.localtime(start_data_i['start']))
         start_data_i['hour'] = time.strftime('%m月%d日%H:%M', time.localtime(start_data_i['hour']))
 
-    log = ''
-
     ranking=[]
+    inc_num = lambda x,y:x-y
+    inc_per = lambda x,y:(" %.2f%%" % ((x-y)/y*100))
+    ranking.append({'title':'今日播放数','list':ranking_get('view',inc_num,False)})
+    ranking.append({'title':'今日播放数增长率','list':ranking_get('view',inc_per,True)})
+    ranking.append({'title':'今日分享数','list':ranking_get('share',inc_num,False)})
+    ranking.append({'title':'今日分享数增长率','list':ranking_get('share',inc_per,True)})
+    return render(request,'monitor_home.html',{'start':start_data,'ranking':ranking})
+
+def ranking_get(ranking_type,col_lam,blank_2):
     ranking_data = []
     ranking_time_temp = start_time.objects.all()
     for i in ranking_time_temp:
         for i_i in i['time']:
             temp = {}
-            if len(i_i['view']) >= 25:
-                temp = {'title':i['title'],'index':i_i['index'],'view':i_i['view'][-1]-i_i['view'][-25]}
-                log+=str(i_i)
-            elif len(i_i['view']) == 0:
-                log+='0'
+            if len(i_i[ranking_type]) >= 25:
+                if not blank_2 or i_i[ranking_type][-25] != 0:
+                    temp = {'title':i['title'],'index':i_i['index'],ranking_type:col_lam(i_i[ranking_type][-1],i_i[ranking_type][-25])}
+                else:
+                    continue
+            elif len(i_i[ranking_type]) <= 1:
                 continue
-            elif len(i_i['view']) < 25:
-                # log+='2'
-                temp = {'title':i['title'],'index':i_i['index'],'view':i_i['view'][-1]-i_i['view'][1]}
+            elif len(i_i[ranking_type]) < 25 and not blank_2:
+                a = i_i[ranking_type]
+                temp = {'title':i['title'],'index':i_i['index'],ranking_type:col_lam(i_i[ranking_type][-1],i_i[ranking_type][1])}
             else:
-                # log+='3'
                 continue
             s=0
-            if len(ranking_data) <= 6 :
+            if len(ranking_data) <= 6:
+                temp['num'] = temp[ranking_type]
+                temp.pop(ranking_type)
                 ranking_data.append(temp)
                 continue
             for ranking_i in ranking_data:
-                if ranking_i['view'] < temp['view']:
-                    ranking_data.insert(s,temp)        
+                if ranking_i['num'] < temp[ranking_type]:
+                    temp['num'] = temp[ranking_type]
+                    temp.pop(ranking_type)
+                    ranking_data.insert(s,temp)
                     if len(ranking_data) > 6:
                         ranking_data = ranking_data[:6]
                     break
                 s+=1
-    temp = []
+    return ranking_data
 
-    ranking.append({'title':'今日播放数','list':ranking_data})
-    ranking.append({'title':'今日播放数','list':ranking_data})
-    ranking.append({'title':'今日播放数','list':ranking_data})
-    ranking.append({'title':'今日播放数','list':ranking_data})
-
-    # a = ['xxxxxxxxxxxxx','xxxxxxxxxxxxx','xxxxxxxxxxxxx']
-    # aa.append(a) 
-    # aa.append(a) 
-    # aa.append(a) 
-    # aa.append(a) 
-    # ranking.append({'title':'今日播放数增长率','list':aa})
-    # ranking.append({'title':'今日推荐数','list':aa})
-    # ranking.append({'title':'今日推荐数增长率','list':aa})
-
-    return render(request,'monitor_home.html',{'start':start_data,'ranking':ranking,'log':log})
+def post_animation_info(request):
+    pass
+    # if request.method == 'POST':
+    #     name=request.POST.get('name','')
+    #     password=request.POST.get('password','')
