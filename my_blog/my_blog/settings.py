@@ -28,13 +28,12 @@ SECRET_KEY = 'r-&180r7ih4(cm+49ky&@8l(uyx4*6-o7t0!t8$eagsgc9)f^h'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-# DEBUG = False
-# ALLOWED_HOSTS = ['www.queziaa.fun','blog.queziaa.fun','monitor.queziaa.fun']
-# CELERY_ERROR_LOG = r'/root/bilibili_monitor.log'
-
-ALLOWED_HOSTS = ['www.localhost.com','blog.localhost.com','monitor.localhost.com']
-DEBUG = True
-CELERY_ERROR_LOG = r'/home/que-linux/bilibili_monitor.log'
+DEBUG = False
+ALLOWED_HOSTS = ['www.queziaa.fun','blog.queziaa.fun','monitor.queziaa.fun']
+CELERY_ERROR_LOG = r'/root/bilibili_monitor.log'
+# ALLOWED_HOSTS = ['www.localhost.com','blog.localhost.com','monitor.localhost.com']
+# DEBUG = True
+# CELERY_ERROR_LOG = r'/home/que-linux/bilibili_monitor.log'
 
 TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
 

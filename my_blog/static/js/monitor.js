@@ -41,7 +41,7 @@ function pop_chart(tt){
     $div.append('<span><a class="p-0 btn btn-secondary stat_list stat_list_all" onclick="record(this,-7);" style="border:0;margin:2.5%;border-radius:7px;height:3em;line-height:3em;width:45%" href="###">显示全部</a></span>');
     $div.append($('<h3 class="text-center my-3">图表调整</h3>'));
     $div.append('<span><a class="p-0 btn btn-secondary bg-bilibili img-btn" onclick="record(this,-10);" style="border:0;border-radius:7px;height:3em;line-height:3em;width:3em"href="###"><i class="zi zi_longarrowaltleft zi_2x"></i></a></span>');
-    $div.append('<span class="h5 img_y">位置:0</span>');
+    $div.append('<span class="h5 img_y">位置:1</span>');
     $div.append('<span><a class="p-0 btn btn-secondary bg-bilibili img-btn" onclick="record(this,-20);" style="border:0;border-radius:7px;height:3em;line-height:3em;width:3em"href="###"><i class="zi zi_longarrowaltright zi_2x"></i></a></span>');
     $div.append('<span><a class="p-0 btn btn-secondary bg-bilibili img-btn" onclick="record(this,-30);" style="border:0;border-radius:7px;height:3em;line-height:3em;width:3em"href="###"><i class="zi zi_minuscircle zi_2x"></i></a></span>');
     $div.append('<span class="h5 img_m">缩放:1</span>');
@@ -69,7 +69,7 @@ function pop_chart(tt){
     tt.find('a.text-muted').html(null);
     $("#chart").modal();
     $chart_body.append(tt);
-    window["ajax_chart"]={'index':-1,'info':[-2,-3,-4,-5,-6],'img_y':0,'img_m':1,'img_y_max':10,'img_m_max':10};
+    window["ajax_chart"]={'index':-1,'info':[-2,-3,-4,-5,-6],'img_y':1,'img_m':1};
     Waves.attach('.btn', ['waves-float']);
     onclick_chart();
 }
@@ -92,34 +92,45 @@ function record(tt,sum){
     }else if(sum == -7){
         if($tt.hasClass('bg-bilibili')==false){
             ajax_chart['info']=[-2,-3,-4,-5,-6];
-            $('.stat_list').toggleClass('bg-bilibili',true);            
+            $('.stat_list').toggleClass('bg-bilibili',true);
+            Load_img();      
         }else{
             ajax_chart['info']=[];
             $('.stat_list').toggleClass('bg-bilibili',false);
         }
     }else if(sum<0 && sum>-10){
-        if($.inArray(sum, ajax_chart['info']) == -1)
-            ajax_chart['info'].push(sum)
-        else{
+        if($.inArray(sum, ajax_chart['info']) == -1){
+            ajax_chart['info'].push(sum);
+            Load_img();
+        }else{
             ajax_chart['info'].splice($.inArray(sum, ajax_chart['info']),1);
+            Load_img();
         }
         if(ajax_chart['info'].length==5)
             $('.stat_list_all').toggleClass('bg-bilibili',true);
         else
             $('.stat_list_all').toggleClass('bg-bilibili',false);
             $tt.toggleClass('bg-bilibili');
-    }else if(sum ==-10 && ajax_chart['img_y']!=0){
+    }else if(sum ==-10 && ajax_chart['img_y']>1){
         ajax_chart['img_y']-=1;
-        $('.img_y').text('位置:'+ajax_chart['img_y'])
-    }else if(sum ==-20 && ajax_chart['img_y'] != ajax_chart['img_y_max']){
-        ajax_chart['img_y']+=1;
-        $('.img_y').text('位置:'+ajax_chart['img_y'])
-    }else if(sum ==-30 && ajax_chart['img_m']!=0){
+        $('.img_y').text('位置:'+ajax_chart['img_y']);
+        Load_img();
+    }else if(sum ==-30 && ajax_chart['img_m']>1){
         ajax_chart['img_m']-=1;
-        $('.img_m').text('缩放:'+ajax_chart['img_m'])
-    }else if(sum ==-40 && ajax_chart['img_m'] != ajax_chart['img_m_max']){
-        ajax_chart['img_m']+=1;
-        $('.img_m').text('缩放:'+ajax_chart['img_m'])
+        $('.img_m').text('缩放:'+ajax_chart['img_m']);
+        Load_img();
+    }else if(sum ==-20){
+        if (ajax_chart['hour_freq']/ajax_chart['img_m']-ajax_chart['img_y']-1>=21){
+            ajax_chart['img_y']+=1;
+            $('.img_y').text('位置:'+ajax_chart['img_y']);
+            Load_img();
+        }
+    }else if(sum ==-40){
+        if (ajax_chart['hour_freq']/(ajax_chart['img_m']+1)-ajax_chart['img_y']>21){
+            ajax_chart['img_m']+=1;
+            $('.img_m').text('缩放:'+ajax_chart['img_m']);
+            Load_img();
+        }
     }else{
         ;
     }
@@ -150,9 +161,9 @@ function post_index(id){
     return result;
 }
 function onclick_chart(){
-    id = $('#chart').find('[temp-id]').attr('temp-id');
-    csrfmiddlewaretoken = $('#chart').attr('csrf_token');
-    csrfmiddlewaretoken = csrfmiddlewaretoken.substring(csrfmiddlewaretoken.indexOf("value='")+7,csrfmiddlewaretoken.indexOf("' />"));
+    var id = $('#chart').find('[temp-id]').attr('temp-id');
+    var csrfmiddlewaretoken = $('#chart').attr('csrf_token');
+    var csrfmiddlewaretoken = csrfmiddlewaretoken.substring(csrfmiddlewaretoken.indexOf("value='")+7,csrfmiddlewaretoken.indexOf("' />"));
     $.ajax({
         type:"POST",	
         url:"/post_animation_info/",
@@ -163,6 +174,12 @@ function onclick_chart(){
         },
         dataType:"json",
         success:function(data){
+            window['Load_img_data'] = data; 
+            ajax_chart['hour_freq'] = data['hour_freq'];
+            $('.img_y').text('位置:1');
+            $('.img_y').text('位置:1');
+            ajax_chart['img_m'] = 1;
+            ajax_chart['img_y'] = 1;
             Load_img(data);
         },
         error:function(jqXHR,textStatus,errorThrown){
@@ -173,33 +190,39 @@ function onclick_chart(){
     });
 }
 function Load_img(data){
+    if (data == undefined){
+        data = Load_img_data;
+    }
     var lineChartData = [];
-    window[""]={'index':-1,'info':[-2,-3,-4,-5,-6],'img_y':0,'img_m':1,'img_y_max':10,'img_m_max':10};
     if($.inArray(-2,ajax_chart['info'])!=-1){lineChartData.push(screen_line_chart('硬币数','coin',data,window.chartColors.blue));}
     if($.inArray(-3,ajax_chart['info'])!=-1){lineChartData.push(screen_line_chart('弹幕数','danmaku',data,window.chartColors.grey));}
     if($.inArray(-4,ajax_chart['info'])!=-1){lineChartData.push(screen_line_chart('分享数','share',data,window.chartColors.purple));}
     if($.inArray(-5,ajax_chart['info'])!=-1){lineChartData.push(screen_line_chart('播放数','view',data,window.chartColors.red));}
     if($.inArray(-6,ajax_chart['info'])!=-1){lineChartData.push(screen_line_chart('回复数','reply',data,window.chartColors.yellow));}
+    // alert(lineChartData[0]['data']);
+    console.log(lineChartData);
     color_init({'labels':  screen_line_chart_date(data['start']),'datasets':lineChartData});
 }
 function screen_line_chart(label_str,dict_key,data,chartColors){
-    alert(1);
     var color = Chart.helpers.color;
     var img_y = ajax_chart['img_y'];
     var img_m = ajax_chart['img_m'];
-    var datasets_data = data[dict_key].slice(img_y*img_m,(img_y+21)*img_m);
-    var datasets_data_length = datasets_data.length
-    if(img_m!=1){
-        for(i in datasets_data)
-            if(datasets_data_length-i%img_m!=0)
-                datasets_data.splice(datasets_data_length-i-1,1);
-    }
+    var datasets_data = data[dict_key].slice(img_y*img_m);
+    var datasets_data_min = [];
+    // var datasets_data_length = datasets_data.length
+    for(var i=0;i<21;i++)
+        datasets_data_min.push(datasets_data[i*img_m]);
+    // if(img_m!=1){
+    //     for(i in datasets_data)
+    //         if(datasets_data_length-i/img_m!=0)
+    //             datasets_data.splice(datasets_data_length-i-1,1);
+    // }
     return {
         'label': label_str,
         'backgroundColor': color(chartColors).alpha(0.2).rgbString(),
         'borderColor': chartColors,
         'pointBackgroundColor': chartColors,
-        'data': datasets_data
+        'data': datasets_data_min
     }
 }
 function screen_line_chart_date(start){
@@ -207,11 +230,13 @@ function screen_line_chart_date(start){
     var img_m = ajax_chart['img_m'];
     var labels_data = [];
     start = start + img_y*img_m*3600;
-    for(var i=1;i>=22;i++){
-        labels_data.append(getMyDate(start));
+    for(var i=1;i<=11;i++){
+        labels_data.push(getMyDate(start));
         start = start + img_m*3600;
-        labels_data.append('');
+        labels_data.push('');
     }
+    labels_data.pop();
+    return labels_data
 }
 function getMyDate(str){  
     var oDate = new Date(str*1000),  
@@ -221,8 +246,7 @@ function getMyDate(str){
     oHour = oDate.getHours(),  
     oTime = oYear +'年'+ oMonth +'月'+ oDay +'日'+ oHour+'时';
     return oTime.substring(2);  
-}; 
-
+};
 function color_init(lineChartData) {
 	var chartEl = document.getElementById('chart1');
 	new Chart(chartEl, {
