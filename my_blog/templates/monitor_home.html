@@ -17,7 +17,7 @@
     <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="navbar-collapse collapse" id="navbarCollapse" style="">
+    <div class="navbar-collapse collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
         <li class="nav-item">
             <a class="nav-link active" href="###">排行榜</a>
@@ -105,14 +105,14 @@
     </div>
 </div>
 <!-- 图表弹窗 -->
-<div class="modal fade" id="chart" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal fade" id="chart" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" csrf_token="{% csrf_token %}">
     <div class="modal-dialog" id="chart-modal-dialog">
         <div class="modal-content b-0">
             <div class="modal-body p-0">
                 <div class="container-fluid p-0" style="border-radius:10px;">
                     <div id= "chart-body" class="row p-0 justify-content-center" style="border-radius:10px;margin-left:0;margin-right:0" ></div>
                 </div>
-                <a class="p-0 btn btn-secondary" data-dismiss="modal" style="border-radius:40px;position:absolute;bottom:39em;right:-1em;height:3em;line-height:3em;width:3em;border:0;" href="###"><i class="zi zi_cuohaocuhei zi_2x"></i></a>
+                <a class="p-0 btn btn-secondary" data-dismiss="modal" style="border-radius:40px;height:3em;line-height:3em;width:3em;border:0;" href="###"><i class="zi zi_cuohaocuhei zi_2x"></i></a>
             </div>
         </div>
     </div>
@@ -121,6 +121,8 @@
 <script src="{% static 'libs/popper.min.js' %}" charset="utf-8"></script>
 <script src="{% static 'libs/bootstrap.min.js' %}" charset="utf-8"></script>
 <script src="{% static 'libs/waves.min.js' %}" charset="utf-8"></script>
+<script src="{% static 'libs/Chart.bundle.js' %}" charset="utf-8"></script>
+<script src="{% static 'libs/utils.js' %}" charset="utf-8"></script>
 <script src="{% static 'js/monitor.js' %}" charset="utf-8"></script>
 </body>
 </html>

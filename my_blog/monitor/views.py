@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from monitor.models import start_time_2 as start_time
 from my_blog.settings import CELERY_ERROR_LOG 
-import os,time
+import os,time,json
 
 def home(request):
     start_data = []
@@ -85,7 +85,49 @@ def ranking_get(ranking_type,col_lam,blank_2):
     return ranking_data
 
 def post_animation_info(request):
-    pass
-    # if request.method == 'POST':
-    #     name=request.POST.get('name','')
-    #     password=request.POST.get('password','')
+    data = None
+    if request.method == 'POST':
+        id=request.POST.get('id','')
+        index=int(request.POST.get('index',''))
+        start_time_temp = start_time.objects.get(id=id)['time']
+        if index == -1:
+            data = {'coin':[],'danmaku':[],'share':[],'view':[],'reply':[],'min_start':999999999}
+            for i in start_time_temp:
+                if i['start']  < data['min_start']:
+                    data['min_start'] = i['start']
+                    data['hour_freq'] = i['hour_freq']
+                data['start'] = data['min_start']
+                while True:
+                    if data['min_start'] > int(time.time()):
+                        break
+                    data['min_start'] += 3600
+                    data['coin'].append(0)
+                    data['danmaku'].append(0)
+                    data['share'].append(0)
+                    data['view'].append(0)
+                    data['reply'].append(0)
+            for i in start_time_temp:
+                deviation = int((i['start'] - data['min_start']) / 3600)
+                for data_i in range(len(i['coin'])):
+                    data['coin'][deviation+data_i] = i['coin'][data_i] 
+                    data['danmaku'][deviation+data_i] = i['danmaku'][data_i] 
+                    data['share'][deviation+data_i] = i['share'][data_i] 
+                    data['view'][deviation+data_i] = i['view'][data_i] 
+                    data['reply'][deviation+data_i] = i['reply'][data_i] 
+            data = json.dumps(data)
+        else:
+            for i in start_time_temp:
+                if i['index'] == index:
+                    data = i.to_json()
+                    break
+    return HttpResponse(data)
+
+def post_index(request):
+    data = {'info':1,'data':[]}
+    if request.method == 'POST':
+        id=request.POST.get('id','')
+        start_time_temp = start_time.objects.get(id=id)['time']
+        for i in start_time_temp:
+            data['data'].append(i['index'])
+            data['info'] = 0
+    return HttpResponse(json.dumps(data))

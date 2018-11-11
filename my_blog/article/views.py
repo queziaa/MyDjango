@@ -12,13 +12,7 @@ from my_blog.settings import SECRET_KEY as SALT
 from .forms import add_comment,outside_img,release_forms
 from article.models import Article,Comment_db,IMG,Article_examine,User_data,Search_db
 
-import datetime
-import base64
-import hashlib 
-import random
-import time
-import json
-import cgi
+import datetime,base64,hashlib ,random,time,json,cgi
 # import threading
 
 
