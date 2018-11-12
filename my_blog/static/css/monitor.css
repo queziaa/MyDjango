@@ -1,19 +1,24 @@
-@media screen and (min-width:620px) {#chart-modal-dialog{max-width:540px;} .img_y,.img_m{margin:5%;}  #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:103em;right:-1em;}}
-@media screen and (min-width:720px) {#chart-modal-dialog{max-width:640px;} .img_y,.img_m{margin:6%;}  #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:116em;right:-1em;}}
-@media screen and (min-width:820px) {#chart-modal-dialog{max-width:740px;} .img_y,.img_m{margin:7%;}  #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:129em;right:-1em;}}
-@media screen and (min-width:920px) {#chart-modal-dialog{max-width:840px;} .img_y,.img_m{margin:6%;}  #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:141em;right:-1em;}}
-@media screen and (min-width:1020px){#chart-modal-dialog{max-width:940px;} .img_y,.img_m{margin:8%;}  #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:119em;right:-1em;}}
-@media screen and (min-width:1120px){#chart-modal-dialog{max-width:1040px;}.img_y,.img_m{margin:10%;} #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:128em;right:-1em;}}
-@media screen and (min-width:1200px){#chart-modal-dialog{max-width:1140px;}.img_y,.img_m{margin:4%;}  #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:37em;right:-1em;}}
-@media screen and (min-width:1320px){#chart-modal-dialog{max-width:1240px;}.img_y,.img_m{margin:6%;}  #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:37em;right:-1em;}}
-@media screen and (min-width:1420px){#chart-modal-dialog{max-width:1340px;}.img_y,.img_m{margin:7%;}  #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:37em;right:-1em;}}
-@media screen and (min-width:1520px){#chart-modal-dialog{max-width:1440px;}.img_y,.img_m{margin:9%;}  #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:37em;right:-1em;}}
-@media screen and (min-width:1620px){#chart-modal-dialog{max-width:1540px;}.img_y,.img_m{margin:10%;} #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:37em;right:-1em;}}
-@media screen and (min-width:1720px){#chart-modal-dialog{max-width:1640px;}.img_y,.img_m{margin:11%;} #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:37em;right:-1em;}}
-@media screen and (min-width:1820px){#chart-modal-dialog{max-width:1740px;}.img_y,.img_m{margin:11%;} #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:37em;right:-1em;}}
-@media screen and (min-width:1920px){#chart-modal-dialog{max-width:1840px;}.img_y,.img_m{margin:12%;} #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:37em;right:-1em;}}
-.img-btn{
-	margin:3%;
+@media screen and (min-width:620px) {#chart-modal-dialog{max-width:540px;}  #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:103em;right:-1em;}}
+@media screen and (min-width:720px) {#chart-modal-dialog{max-width:640px;}  #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:116em;right:-1em;}}
+@media screen and (min-width:820px) {#chart-modal-dialog{max-width:740px;}  #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:129em;right:-1em;}}
+@media screen and (min-width:920px) {#chart-modal-dialog{max-width:840px;}  #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:141em;right:-1em;}}
+@media screen and (min-width:1020px){#chart-modal-dialog{max-width:940px;}  #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:119em;right:-1em;}}
+@media screen and (min-width:1120px){#chart-modal-dialog{max-width:1040px;} #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:128em;right:-1em;}}
+@media screen and (min-width:1200px){#chart-modal-dialog{max-width:1140px;} #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:37em;right:-1em;}}
+@media screen and (min-width:1320px){#chart-modal-dialog{max-width:1240px;} #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:37em;right:-1em;}}
+@media screen and (min-width:1420px){#chart-modal-dialog{max-width:1340px;} #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:37em;right:-1em;}}
+@media screen and (min-width:1520px){#chart-modal-dialog{max-width:1440px;} #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:37em;right:-1em;}}
+@media screen and (min-width:1620px){#chart-modal-dialog{max-width:1540px;} #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:37em;right:-1em;}}
+@media screen and (min-width:1720px){#chart-modal-dialog{max-width:1640px;} #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:37em;right:-1em;}}
+@media screen and (min-width:1820px){#chart-modal-dialog{max-width:1740px;} #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:37em;right:-1em;}}
+@media screen and (min-width:1920px){#chart-modal-dialog{max-width:1840px;} #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:37em;right:-1em;}}
+.img_y,.img_m{
+	margin:11%;
+}
+div.img-btn{
+	width: 100%;
+	text-align:center;
+	margin:2.5%;
 }
 #chart a.text-muted{
     bottom:2.3em!important;

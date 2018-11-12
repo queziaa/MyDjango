@@ -66,11 +66,11 @@ def main_spider_data(CELERY_ERROR_LOG):
                 while time_range(i_time['hour'],420) == -1:
                     i_time['hour'] += 3600
                     i_time['hour_freq'] += 1
-                    i_time['coin'].append(0)
-                    i_time['danmaku'].append(0)
-                    i_time['share'].append(0)
-                    i_time['view'].append(0)
-                    i_time['reply'].append(0)
+                    i_time['coin'].append(None)
+                    i_time['danmaku'].append(None)
+                    i_time['share'].append(None)
+                    i_time['view'].append(None)
+                    i_time['reply'].append(None)
                 if time_range(i_time['hour'],420) == 0:
                     i_time = spider_requests(i_time,CELERY_ERROR_LOG)
                 else:

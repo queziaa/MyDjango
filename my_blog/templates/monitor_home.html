@@ -96,7 +96,7 @@
                     <h2 class="text-center py-2">{{ data.title }}</h2>
                     <ol class="">
                     {% for list in data.list %}
-                        <li><a class="text-dark" title="{{ data.title|cut:'今日' }}:{{ list.num }}" href="###">{{ list.title }}</a><small class="text-muted">{{ list.index }}集</small></li>
+                        <li><a class="text-dark" title="{{ data.title|cut:'今日' }}:{{ list.num }}" href="###" onclick="ranking_pop_chart(this)" temp-id= "{{ list.id }}">{{ list.title }}</a><small class="text-muted">{{ list.index }}集</small></li>
                     {% endfor %}
                     </ol>
                 </div>

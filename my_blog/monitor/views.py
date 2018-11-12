@@ -64,7 +64,7 @@ def ranking_get(ranking_type,col_lam,blank_2):
                 continue
             elif len(i_i[ranking_type]) < 25 and not blank_2:
                 a = i_i[ranking_type]
-                temp = {'title':i['title'],'index':i_i['index'],ranking_type:col_lam(i_i[ranking_type][-1],i_i[ranking_type][1])}
+                temp = {'id':i['id'],'title':i['title'],'index':i_i['index'],ranking_type:col_lam(i_i[ranking_type][-1],i_i[ranking_type][1])}
             else:
                 continue
             s=0
@@ -129,11 +129,15 @@ def post_animation_info(request):
     return HttpResponse(data)
 
 def post_index(request):
-    data = {'info':1,'data':[]}
+    data = {'info':1,'data':[],'disabled':[]}
     if request.method == 'POST':
         id=request.POST.get('id','')
         start_time_temp = start_time.objects.get(id=id)['time']
         for i in start_time_temp:
             data['data'].append(i['index'])
+            if len(i['coin']) == 0:
+                data['disabled'].append(True)
+            else:
+                data['disabled'].append(False)
             data['info'] = 0
     return HttpResponse(json.dumps(data))

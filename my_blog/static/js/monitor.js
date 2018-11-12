@@ -30,14 +30,16 @@ function pop_chart(tt){
     $div.append('<span><a class="p-0 btn btn-secondary stat_list" onclick="record(this,-4);" style="border:0;margin:2.5%;border-radius:7px;height:3em;line-height:3em;width:45%" href="###">分享数</a></span>');
     $div.append('<span><a class="p-0 btn btn-secondary stat_list" onclick="record(this,-5);" style="border:0;margin:2.5%;border-radius:7px;height:3em;line-height:3em;width:45%" href="###">播放数</a></span>');
     $div.append('<span><a class="p-0 btn btn-secondary stat_list" onclick="record(this,-6);" style="border:0;margin:2.5%;border-radius:7px;height:3em;line-height:3em;width:45%" href="###">回复数</a></span>');
-    $div.append('<span><a class="p-0 btn btn-secondary stat_list stat_list_all" onclick="record(this,-7);" style="border:0;margin:2.5%;border-radius:7px;height:3em;line-height:3em;width:45%" href="###">显示全部</a></span>');
-    $div.append($('<h3 class="text-center my-3">图表调整</h3>'));
-    $div.append('<span><a class="p-0 btn btn-secondary bg-bilibili img-btn" onclick="record(this,-10);" style="border:0;border-radius:7px;height:3em;line-height:3em;width:3em"href="###"><i class="zi zi_longarrowaltleft zi_2x"></i></a></span>');
-    $div.append('<span class="h5 img_y">位置:1</span>');
-    $div.append('<span><a class="p-0 btn btn-secondary bg-bilibili img-btn" onclick="record(this,-20);" style="border:0;border-radius:7px;height:3em;line-height:3em;width:3em"href="###"><i class="zi zi_longarrowaltright zi_2x"></i></a></span>');
-    $div.append('<span><a class="p-0 btn btn-secondary bg-bilibili img-btn" onclick="record(this,-30);" style="border:0;border-radius:7px;height:3em;line-height:3em;width:3em"href="###"><i class="zi zi_minuscircle zi_2x"></i></a></span>');
-    $div.append('<span class="h5 img_m">缩放:1</span>');
-    $div.append('<span><a class="p-0 btn btn-secondary bg-bilibili img-btn" onclick="record(this,-40);" style="border:0;border-radius:7px;height:3em;line-height:3em;width:3em"href="###"><i class="zi zi_pluscircle zi_2x"></i></a></span>');
+    $div.append(''
+            +'<div class="img-btn"><span class="img-btn"><a class="p-0 btn btn-secondary bg-bilibili img-btn" onclick="record(this,-10);" style="border:0;border-radius:7px;height:3em;line-height:3em;width:3em"href="###">'
+            +'<i class="zi zi_longarrowaltleft zi_2x"></i></a></span><span class="h5 img_y">位置:1</span><span class="img-btn"><a class="p-0 btn btn-secondary bg-bilibili img-btn" onclick="record(this,-20);" '
+            +'style="border:0;border-radius:7px;height:3em;line-height:3em;width:3em"href="###"><i class="zi zi_longarrowaltright zi_2x"></i></a></span></div>'
+            );
+    $div.append(''
+            +'<div class="img-btn"><span class="img-btn"><a class="p-0 btn btn-secondary bg-bilibili img-btn" onclick="record(this,-30);" style="border:0;border-radius:7px;height:3em;line-height:3em;width:3em"href="###">'
+            +'<i class="zi zi_minuscircle zi_2x"></i></a></span><span class="h5 img_m">缩放:1</span><span class="img-btn"><a class="p-0 btn btn-secondary bg-bilibili img-btn" onclick="record(this,-40);" '
+            +'style="border:0;border-radius:7px;height:3em;line-height:3em;width:3em"href="###"><i class="zi zi_pluscircle zi_2x"></i></a></span></div>'
+            );
     $chart_body.append($div);
     var $img = $('<div id="canvas-holder1"></div>');
     $img.append('<canvas id="chart1" class="chartjs-render-monitor"></canvas>');
@@ -62,6 +64,9 @@ function pop_chart(tt){
     $("#chart").modal();
     $chart_body.append(tt);
     Waves.attach('.btn', ['waves-float']);
+}
+function ranking_pop_chart(tt){
+    pop_chart(tt);
 }
 function record(tt,sum){
     var $tt = $(tt);
@@ -110,13 +115,13 @@ function record(tt,sum){
         $('.img_m').text('缩放:'+ajax_chart['img_m']);
         Load_img();
     }else if(sum ==-20){
-        if (ajax_chart['hour_freq']/ajax_chart['img_m']-ajax_chart['img_y']-1>=21){
+        if (Load_img_data['view'].length/ajax_chart['img_m']-ajax_chart['img_y']-1>=21){
             ajax_chart['img_y']+=1;
             $('.img_y').text('位置:'+ajax_chart['img_y']);
             Load_img();
         }
     }else if(sum ==-40){
-        if (ajax_chart['hour_freq']/(ajax_chart['img_m']+1)-ajax_chart['img_y']>21){
+        if (Load_img_data['view'].length/(ajax_chart['img_m']+1)-ajax_chart['img_y']>21){
             ajax_chart['img_m']+=1;
             $('.img_m').text('缩放:'+ajax_chart['img_m']);
             Load_img();
@@ -138,12 +143,19 @@ function post_index(id){
         // async : false,
         dataType:"json",
         success:function(data){
-            var index_list = data['data'];
             var $choice_index = $('.choice_index');
-            for(i in index_list){
-                $('.index_list').toggleClass('bg-bilibili',false);
-                $choice_index.after('<span><a onclick="record(this,'+index_list[i]+');" class="p-0 btn btn-secondary index_list bg-bilibili" style="border:0;margin:6.3px;border-radius:40px;height:3em;line-height:3em;width:3em" href="###">'+index_list[i]+'</a></span>');
-                ajax_chart['index'] = index_list[i];
+            for(i in data['data']){
+                if(data["disabled"][i]){
+                    $choice_index.after('<span><a onclick="record(this,'+data['data'][i]+');" class="p-0 btn btn-secondary index_list disabled" '
+                        +'style="border:0;margin:6.3px;border-radius:40px;height:3em;line-height:3em;width:3em" href="###" title="暂未开始">'+data['data'][i]
+                        +'</a></span>');
+                }else{
+                    $('.index_list').toggleClass('bg-bilibili',false);
+                    $choice_index.after('<span><a onclick="record(this,'+data['data'][i]+');" class="p-0 btn btn-secondary index_list bg-bilibili" '
+                    +'style="border:0;margin:6.3px;border-radius:40px;height:3em;line-height:3em;width:3em" href="###">'
+                    +data['data'][i]+'</a></span>');
+                    ajax_chart['index'] = data['data'][i];
+                }
             // $div.append($('<span style="padding:0em 5% 0em 5%;"><a class="m-1 p-0 btn btn-secondary index_list index_list_all" onclick="record(this,-1);" style="border:0;border-radius:7px;height:3em;line-height:3em;width:90%" href="###">全部</a></span>'));
             }
             onclick_chart(true);
@@ -153,8 +165,10 @@ function post_index(id){
             console.log(textStatus);
             console.log(errorThrown);
             var $choice_index = $('.choice_index');
-            $choice_index.append($('<span style="padding:0em 5% 0em 5%;"><a class="m-1 p-0 btn btn-secondary index_list" style="border:0;border-radius:7px;height:3em;line-height:3em;width:90%" href="###">抱歉没有获取到信息 请尝试刷新</a></span>'));
-            $choice_index.append($('<span style="padding:0em 5% 0em 5%;"><a class="m-1 p-0 btn btn-secondary index_list" style="border:0;border-radius:7px;height:3em;line-height:3em;width:90%" href="mailto:queziaa31@gmail.com">或联系我queziaa31@gmail.com</a></span>'));
+            $choice_index.append($('<span style="padding:0em 5% 0em 5%;"><a class="m-1 p-0 btn btn-secondary index_list" '
+            +'style="border:0;border-radius:7px;height:3em;line-height:3em;width:90%" href="###">抱歉没有获取到信息 请尝试刷新</a></span>'));
+            $choice_index.append($('<span style="padding:0em 5% 0em 5%;"><a class="m-1 p-0 btn btn-secondary index_list" '
+            +'style="border:0;border-radius:7px;height:3em;line-height:3em;width:90%" href="mailto:queziaa31@gmail.com">或联系我queziaa31@gmail.com</a></span>'));
         }
     });
 }
@@ -327,7 +341,3 @@ var customTooltips = function (tooltip) {
 		});
 	}
 };
-
-
-
-
