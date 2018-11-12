@@ -13,7 +13,7 @@ headers = {"Accept":"application/json, text/plain, */*",
 "Pragma":"no-cache",
 "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36"}
 client = pymongo.MongoClient(host='localhost', port=27017, connect=False)
-mongopost = client['monitor']['start_time_2']
+mongopost = client['monitor']['start_time_3']
 
 
 def main_spider_time(CELERY_ERROR_LOG):
@@ -170,11 +170,11 @@ def count_time(start):
             break
         hour += 3600
         hour_freq += 1
-        coin.append(0)     #硬币数
-        danmaku.append(0)  #弹幕数
-        share.append(0)    #分享数
-        view.append(0)     #播放数
-        reply.append(0)    #回复数
+        # coin.append(0)     #硬币数
+        # danmaku.append(0)  #弹幕数
+        # share.append(0)    #分享数
+        # view.append(0)     #播放数
+        # reply.append(0)    #回复数
         # hour_data.append(None)
         # if hour_freq >= 24:
         #     hour = None

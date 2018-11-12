@@ -65,7 +65,8 @@
             <div class="p-0 col-xl-2 col-lg-3 col-md-3 col-sm-4 col-5" onclick="pop_chart(this)" temp-id= "{{ data.id }}">
                 <div class="mt-0 ml-2 mr-2 mb-2 mcard p-0 shadow-sm" style="border-radius:0px 0px 7px 7px;">
                     <span><a class="text-muted" style="color:#f8f9fa!important;background-color:rgba(000, 000, 000, .50);position: absolute; bottom:2em; right:0.5em" href="###" data-toggle="tooltip" title="" data-original-title="更新时间" temp-storage-1="加入时间" temp-storage-2="{{ data.start }}" onclick="switch_time(this);">{{ data.hour }}</a></span>
-                    <img class="card-img-top" src={{ data.cover }} style="width: 100%; display: block;" >
+                    <!-- <img class="card-img-top" src="https://{{ data.cover|cut:'http://' }}" style="width: 100%; display: block;" > -->
+                    <img class="card-img-top" src="{{ data.cover }}" style="width: 100%; display: block;" >
                     <div class="p-0 card-body" style="background-color:rgba(255, 255, 255, .5);border-radius:0px 0px 7px 7px;">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group" style="width:100%">

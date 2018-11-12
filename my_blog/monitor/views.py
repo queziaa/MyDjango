@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from monitor.models import start_time_2 as start_time
+from monitor.models import start_time_3 as start_time
 from my_blog.settings import CELERY_ERROR_LOG 
 import os,time,json
 
@@ -90,29 +90,29 @@ def post_animation_info(request):
         id=request.POST.get('id','')
         index=int(request.POST.get('index',''))
         start_time_temp = start_time.objects.get(id=id)['time']
-        if index == -1:
-            data = {'coin':[],'danmaku':[],'share':[],'view':[],'reply':[],'min_start':None}
-            for i in start_time_temp:
-                if data['min_start'] == None:
-                    data['min_start'] = i['start']
-                    data['hour_freq'] = i['hour_freq'] 
-                elif i['start']  < data['min_start']:
-                    data['min_start'] = i['start']
-                    data['hour_freq'] = i['hour_freq']
-                data['start'] = data['min_start']
-                for hour_freq in range(data['hour_freq']):
-                    data['coin'].append(0)
-                    data['danmaku'].append(0)
-                    data['share'].append(0)
-                    data['view'].append(0)
-                    data['reply'].append(0)
-            for i in start_time_temp:
-                differ = i['hour_freq']
-                differ = data['hour_freq']
-                differ = i['hour_freq']-data['hour_freq']
-                for key in ['coin','danmaku','share','view','reply']:
-                    for hour_freq in range(i['hour_freq']):
-                        data[key][differ+hour_freq]+=i[key][hour_freq]
+        # if index == -1:
+        #     data = {'coin':[],'danmaku':[],'share':[],'view':[],'reply':[],'min_start':None}
+        #     for i in start_time_temp:
+        #         if data['min_start'] == None:
+        #             data['min_start'] = i['start']
+        #             data['hour_freq'] = i['hour_freq'] 
+        #         elif i['start']  < data['min_start']:
+        #             data['min_start'] = i['start']
+        #             data['hour_freq'] = i['hour_freq']
+        #         data['start'] = data['min_start']
+        #         for hour_freq in range(data['hour_freq']):
+        #             data['coin'].append(0)
+        #             data['danmaku'].append(0)
+        #             data['share'].append(0)
+        #             data['view'].append(0)
+        #             data['reply'].append(0)
+        #     for i in start_time_temp:
+        #         differ = i['hour_freq']
+        #         differ = data['hour_freq']
+        #         differ = i['hour_freq']-data['hour_freq']
+        #         for key in ['coin','danmaku','share','view','reply']:
+        #             for hour_freq in range(i['hour_freq']):
+        #                 data[key][differ+hour_freq]+=i[key][hour_freq]
                 # deviation = int((i['start'] - data['min_start']) / 3600)
                 # for data_i in range(len(i['coin'])):
                 #     data['coin'][deviation+data_i] = i['coin'][data_i] 
@@ -120,12 +120,12 @@ def post_animation_info(request):
                 #     data['share'][deviation+data_i] = i['share'][data_i] 
                 #     data['view'][deviation+data_i] = i['view'][data_i] 
                 #     data['reply'][deviation+data_i] = i['reply'][data_i] 
-            data = json.dumps(data)
-        else:
-            for i in start_time_temp:
-                if i['index'] == index:
-                    data = i.to_json()
-                    break
+            # data = json.dumps(data)
+        # else:
+        for i in start_time_temp:
+            if i['index'] == index:
+                data = i.to_json()
+                break
     return HttpResponse(data)
 
 def post_index(request):
