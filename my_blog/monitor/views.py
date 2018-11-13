@@ -8,18 +8,7 @@ def home(request):
     start_data = []
     start_time_temp = start_time.objects.all()
     for i in start_time_temp:
-        hour_max = {}
-        for i_i in i['time']:
-            if i_i['hour'] == i_i['start']:
-                pass
-            elif hour_max == {}:
-                hour_max['hour'] = i_i['hour']
-                hour_max['start'] = i_i['start']
-            elif i_i['hour'] > hour_max['hour']:
-                hour_max['hour'] = i_i['hour']
-                hour_max['start'] = i_i['start']
-            else:
-                pass
+        hour_max = get_hour_max(i)
         if len(hour_max) == 0:
             continue
         if len(start_data) == 0:
@@ -37,8 +26,8 @@ def home(request):
         if len(start_data) > 12:
             start_data = start_data[:12]
     for start_data_i in start_data:
-        start_data_i['start'] = time.strftime('%m月%d日%H:%M', time.localtime(start_data_i['start']))
-        start_data_i['hour'] = time.strftime('%m月%d日%H:%M', time.localtime(start_data_i['hour']))
+        start_data_i['start'] = str_time(start_data_i['start'])
+        start_data_i['hour'] = str_time(start_data_i['hour'])
 
     ranking=[]
     inc_num = lambda x,y:x-y
@@ -48,6 +37,78 @@ def home(request):
     ranking.append({'title':'今日分享数','list':ranking_get('share',inc_num,False)})
     ranking.append({'title':'今日分享数增长率','list':ranking_get('share',inc_per,True)})
     return render(request,'monitor_home.html',{'start':start_data,'ranking':ranking})
+
+def all(request):
+    return render(request,'monitor_all.html')
+
+def id_list_post(request):
+    data = None
+    if request.method == 'POST':
+        key=request.POST.get('key','')
+        start_data = [{'id':None,key:0}]
+        start_time_temp = start_time.objects.all()
+        for i in start_time_temp:
+            total = 0
+            for i_i in i['time']:
+                if key == 'start' or key == 'hour':
+                    total = i_i[key]
+                elif len(i_i[key])!=0:
+                    total += i_i[key][-1]
+            count = 0
+            for start in start_data:
+                if start[key] < total:
+                    start_data.insert(count,{'id':str(i['id']),key:total})
+                    break
+                count+=1
+        for i in range(18):
+            start_data[i] = get_mod_mcard(start_data[i]['id'])
+
+        for i in start_data:
+            i['id'] = str(i['id'])
+    return HttpResponse(json.dumps(start_data))
+
+def mcard_list_post(request):
+
+    CELERY_ERROR_LOG = r'/home/que-linux/bilibili_monitor.log'
+    data = None
+    if request.method == 'POST':
+        id_list=request.POST.get('id_list','')
+        key=request.POST.get('key','')
+        start_data = []
+        id_list = json.loads(id_list)
+        for i in id_list:
+            if(i != 'None'):
+                start_data.append(get_mod_mcard(i))
+    return HttpResponse(json.dumps(start_data))
+
+def get_mod_mcard(id):
+    start_data = {}
+    mod_id = start_time.objects.get(id=id)
+    start_data['cover'] = mod_id['cover']
+    start_data['title'] = mod_id['title']
+    hour_max = get_hour_max(mod_id)
+    start_data['start'] = str_time(hour_max['start'])
+    start_data['hour'] = str_time(hour_max['hour'])
+    start_data['id'] = str(mod_id['id'])
+    return start_data
+
+def get_hour_max(mod):
+    hour_max = {}
+    for i_i in mod['time']:
+        if i_i['hour'] == i_i['start']:
+            pass
+        elif hour_max == {}:
+            hour_max['hour'] = i_i['hour']
+            hour_max['start'] = i_i['start']
+        elif i_i['hour'] > hour_max['hour']:
+            hour_max['hour'] = i_i['hour']
+            hour_max['start'] = i_i['start']
+        else:
+            pass
+    return hour_max
+
+def str_time(i):
+    return time.strftime('%m月%d日%H:%M', time.localtime(i))
 
 def ranking_get(ranking_type,col_lam,blank_2):
     ranking_data = []

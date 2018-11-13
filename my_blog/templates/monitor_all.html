@@ -1,0 +1,44 @@
+{% extends "monitor.html" %}
+{% block content %}
+<div class="py-3 ml-5 mr-5">
+    <div class="container-fluid p-0" style="border-radius:10px;">
+        <div class="pr-2 pl-2 pb-2 row justify-content-center" style="border-radius:10px;" >
+            <div class=" p-0 col-xl-12 d-flex justify-content-between align-items-center" style="border-radius:10px;">
+                <div class="mr-3 ml-3 btn-group">
+                    <h4 class="my-2 m-0 zi_2x">全部动画</h4>
+                </div>
+                <small class="mx-4 text-muted" >
+                    <span class="zi_2x">排序方式</span>
+                    <a class="btn p-0 login_btn waves-effect waves-float text-muted" href="###"><i data-toggle="tooltip" title="" data-original-title="加入时间" onclick="again_login('start')" class="zi zi_clockCir zi_2x"></i></a>
+                    <a class="btn p-0 login_btn waves-effect waves-float text-muted" href="###"><i data-toggle="tooltip" title="" data-original-title="更新时间" onclick="again_login('hour')" class="zi zi_syncalt zi_2x"></i></a>
+                    <a class="btn p-0 login_btn waves-effect waves-float text-muted" href="###"><i data-toggle="tooltip" title="" data-original-title="播放数量" onclick="again_login('view')" class="zi zi_play zi_2x"></i></a>
+                    <a class="btn p-0 login_btn waves-effect waves-float text-muted" href="###"><i data-toggle="tooltip" title="" data-original-title="弹幕数量" onclick="again_login('danmaku')" class="zi zi_alignleft zi_2x"></i></a>
+                    <a class="btn p-0 login_btn waves-effect waves-float text-muted" href="###"><i data-toggle="tooltip" title="" data-original-title="评论数量" onclick="again_login('reply')" class="zi zi_listol zi_2x"></i></a>
+                    <a class="btn p-0 login_btn waves-effect waves-float text-muted" href="###"><i data-toggle="tooltip" title="" data-original-title="硬币数量" onclick="again_login('danmaku')" class="zi zi_copyrightBold zi_2x"></i></a>
+                    <a class="btn p-0 login_btn waves-effect waves-float text-muted" href="###"><i data-toggle="tooltip" title="" data-original-title="分享数量" onclick="again_login('share')" class="zi zi_sharealt zi_2x"></i></a>
+                </small>
+            </div>
+            <div class=" p-0 col-xl-12 domUp" style="border-radius:10px;">
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+    {% load staticfiles %}	
+    <link rel="stylesheet" href="{% static 'libs/dropload.css' %}">
+    <script src="{% static 'libs/dropload.min.js' %}" charset="utf-8"></script>
+    <script src="{% static 'js/monitor_all.js' %}" charset="utf-8"></script>
+<style>
+    .login_btn{
+        height: 3em;
+        line-height: 3em;
+        width: 3em;
+        margin-bottom: 1rem!important;
+    }
+</style>
+{% endblock %}
+
+
+<a class="p-0 btn btn-secondary bg-bilibili img-btn waves-effect waves-float" onclick="record(this,-10);" style="border:0;border-radius:7px;height:3em;line-height:3em;width:3em" href="###">
+<i class="zi zi_longarrowaltleft zi_2x"></i>
+</a>

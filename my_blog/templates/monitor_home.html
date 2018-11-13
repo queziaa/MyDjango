@@ -1,51 +1,5 @@
-<!doctype html>
-<html lang="zh-cn">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-{% load staticfiles %}
-<link href="{% static 'libs/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
-<link href="{% static 'css/monitor.css' %}" rel="stylesheet" type="text/css">
-<link href="{% static 'libs/zico.min.css' %}" rel="stylesheet">
-<link href="{% static 'libs/waves.min.css' %}" rel="stylesheet">
-<title>bilibili监控</title>
-</head>
-<body>
-<!-- 标题栏 -->
-<nav class="navbar navbar-expand-md navbar-dark bg-bilibili">
-    <a class="navbar-brand" href="###">bilibili监控</a>
-    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="navbar-collapse collapse" id="navbarCollapse">
-        <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-            <a class="nav-link active" href="###">排行榜</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link active" href="###">全部</a>
-        </li>
-        </ul>
-        <a class="p-0 py-1 nav-link text-white" data-toggle="modal" data-target="#mymodal-data" href="###">关于</a>
-    </div>
-</nav>           
-<!-- 标题栏弹窗 -->
-<div class="modal fade" id="mymodal-data" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title">关于bilibili监控和我</h4>
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-			</div>
-			<div class="modal-body">
-                <p>监控bilibili最新番剧播放量评论数等信息，生成图表，排名列出</p>
-                <p>开放源码 <a href="https://github.com/queziaa/MyDjango/tree/master/my_blog/monitor">https://github.com/queziaa/MyDjango</a></p>
-                <p>我的网站主页 <a href="https://queziaa.fun">queziaa.fun</a></p>
-				<p>数据来源网络 如有侵权请联系删除 <a href="mailto:queziaa31@gmail.com">queziaa31@gmail.com</a></p>
-			</div>
-		</div>
-	</div>
-</div>
+{% extends "monitor.html" %}
+{% block content %}
 <!-- 突发奇想的小工具 -->
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
     <h3 class="display-4">突发奇想的小工具</h3>
@@ -59,13 +13,18 @@
                 <div class="mr-3 ml-3 btn-group">
                     <h4 class="my-2 m-0">最近更新</h4>
                 </div>
-                <small class="mx-4 text-muted">查看全部</small>
+                <small class="mx-4 text-muted h5 my-2"><a href="https://monitor.queziaa.fun/all" class="text-muted">查看全部</a></small>
             </div>
             {% for data in start %} 
             <div class="p-0 col-xl-2 col-lg-3 col-md-3 col-sm-4 col-5" onclick="pop_chart(this)" temp-id= "{{ data.id }}">
                 <div class="mt-0 ml-2 mr-2 mb-2 mcard p-0 shadow-sm" style="border-radius:0px 0px 7px 7px;">
-                    <span><a class="text-muted" style="color:#f8f9fa!important;background-color:rgba(000, 000, 000, .50);position: absolute; bottom:2em; right:0.5em" href="###" data-toggle="tooltip" title="" data-original-title="更新时间" temp-storage-1="加入时间" temp-storage-2="{{ data.start }}" onclick="switch_time(this);">{{ data.hour }}</a></span>
-                    <!-- <img class="card-img-top" src="https://{{ data.cover|cut:'http://' }}" style="width: 100%; display: block;" > -->
+                    <span>
+                        <a class="text-muted" style="color:#f8f9fa!important;background-color:rgba(000, 000, 000, .50);position: absolute; 
+                            bottom:2em; right:0.5em" href="###" data-toggle="tooltip" title="" data-original-title="更新时间" temp-storage-1="加入时间" 
+                            temp-storage-2="{{ data.start }}" onclick="switch_time(this);">
+                            {{ data.hour }}
+                        </a>
+                    </span>
                     <img class="card-img-top" src="{{ data.cover }}" style="width: 100%; display: block;" >
                     <div class="p-0 card-body" style="background-color:rgba(255, 255, 255, .5);border-radius:0px 0px 7px 7px;">
                         <div class="d-flex justify-content-between align-items-center">
@@ -96,7 +55,12 @@
                     <h2 class="text-center py-2">{{ data.title }}</h2>
                     <ol class="">
                     {% for list in data.list %}
-                        <li><a class="text-dark" title="{{ data.title|cut:'今日' }}:{{ list.num }}" href="###" onclick="ranking_pop_chart(this)" temp-id= "{{ list.id }}">{{ list.title }}</a><small class="text-muted">{{ list.index }}集</small></li>
+                        <li>
+                            <a class="text-dark" title="{{ data.title|cut:'今日' }}:{{ list.num }}" href="###" onclick="ranking_pop_chart(this)" temp-id= "{{ list.id }}">
+                                {{ list.title }}
+                            </a>
+                            <small class="text-muted">{{ list.index }}集</small>
+                        </li>
                     {% endfor %}
                     </ol>
                 </div>
@@ -105,25 +69,13 @@
         </div>
     </div>
 </div>
-<!-- 图表弹窗 -->
-<div class="modal fade" id="chart" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" csrf_token="{% csrf_token %}">
-    <div class="modal-dialog" id="chart-modal-dialog">
-        <div class="modal-content b-0">
-            <div class="modal-body p-0">
-                <div class="container-fluid p-0" style="border-radius:10px;">
-                    <div id= "chart-body" class="row p-0 justify-content-center" style="border-radius:10px;margin-left:0;margin-right:0" ></div>
-                </div>
-                <a class="p-0 btn btn-secondary" data-dismiss="modal" style="border-radius:40px;height:3em;line-height:3em;width:3em;border:0;" href="###"><i class="zi zi_cuohaocuhei zi_2x"></i></a>
-            </div>
-        </div>
-    </div>
-</div>
-<script src="{% static 'libs/jquery-3.3.1.min.js' %}" charset="utf-8"></script>
-<script src="{% static 'libs/popper.min.js' %}" charset="utf-8"></script>
-<script src="{% static 'libs/bootstrap.min.js' %}" charset="utf-8"></script>
-<script src="{% static 'libs/waves.min.js' %}" charset="utf-8"></script>
-<script src="{% static 'libs/Chart.bundle.js' %}" charset="utf-8"></script>
-<script src="{% static 'libs/utils.js' %}" charset="utf-8"></script>
-<script src="{% static 'js/monitor.js' %}" charset="utf-8"></script>
-</body>
-</html>
+{% endblock %}
+{% block js %}
+    {% load staticfiles %}	
+    <script>    
+        $(function () { 
+            $("[data-toggle='tooltip']").tooltip(); 
+            Waves.init();
+        });
+    </script>
+{% endblock %}

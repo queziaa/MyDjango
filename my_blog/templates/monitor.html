@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% load staticfiles %}
+<link href="{% static 'libs/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'css/monitor.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static 'libs/zico.min.css' %}" rel="stylesheet">
+<link href="{% static 'libs/waves.min.css' %}" rel="stylesheet">
+<title>bilibili监控</title>
+</head>
+<body csrf_token="{% csrf_token %}">
+<!-- 标题栏 -->
+<nav class="navbar navbar-expand-md navbar-dark bg-bilibili">
+    <a class="navbar-brand" href="https://monitor.queziaa.fun">bilibili监控</a>
+    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-collapse collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+            <a class="nav-link active" href="###">排行榜</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="/all">全部</a>
+        </li>
+        </ul>
+        <a class="p-0 py-1 nav-link text-white" data-toggle="modal" data-target="#mymodal-data" href="###">关于</a>
+    </div>
+</nav>           
+<!-- 标题栏弹窗 -->
+<div class="modal fade" id="mymodal-data" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">关于bilibili监控和我</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			</div>
+			<div class="modal-body">
+                <p>监控bilibili最新番剧播放量评论数等信息，生成图表，排名列出</p>
+                <p>开放源码 <a href="https://github.com/queziaa/MyDjango/tree/master/my_blog/monitor">https://github.com/queziaa/MyDjango</a></p>
+                <p>我的网站主页 <a href="https://queziaa.fun">queziaa.fun</a></p>
+				<p>数据来源网络 如有侵权请联系删除 <a href="mailto:queziaa31@gmail.com">queziaa31@gmail.com</a></p>
+			</div>
+		</div>
+	</div>
+</div>
+{% block content %}
+{% endblock %}
+<!-- 图表弹窗 -->
+<div class="modal fade" id="chart" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog" id="chart-modal-dialog">
+        <div class="modal-content b-0">
+            <div class="modal-body p-0">
+                <div class="container-fluid p-0" style="border-radius:10px;">
+                    <div id= "chart-body" class="row p-0 justify-content-center" style="border-radius:10px;margin-left:0;margin-right:0" ></div>
+                </div>
+                <a class="p-0 btn btn-secondary" data-dismiss="modal" style="border-radius:40px;height:3em;line-height:3em;width:3em;border:0;" href="###">
+                    <i class="zi zi_cuohaocuhei zi_2x"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'libs/jquery-3.3.1.min.js' %}" charset="utf-8"></script>
+<script src="{% static 'libs/popper.min.js' %}" charset="utf-8"></script>
+<script src="{% static 'libs/bootstrap.min.js' %}" charset="utf-8"></script>
+<script src="{% static 'libs/waves.min.js' %}" charset="utf-8"></script>
+<script src="{% static 'libs/Chart.bundle.js' %}" charset="utf-8"></script>
+<script src="{% static 'libs/utils.js' %}" charset="utf-8"></script>
+<script src="{% static 'js/monitor.js' %}" charset="utf-8"></script>
+{% block js %}
+{% endblock %}
+</body>
+</html>

@@ -1,7 +1,3 @@
-$(function () { 
-    $("[data-toggle='tooltip']").tooltip(); 
-    Waves.init();
-});
 function switch_time(tt){
     var tt=$(tt)
     var s = tt.attr("data-original-title");
@@ -17,7 +13,7 @@ function pop_chart(tt){
     var col_1 = 'p-0 col-xl-2 col-lg-12 col-md-12 col-sm-12 col-12';
     var col_2 = 'p-0 col-xl-2 col-lg-3 col-md-12 col-sm-12 col-12';
     var col_3 = 'p-0 col-xl-8 col-lg-9 col-md-12 col-sm-12 col-12';
-    window["ajax_chart"]={'index':1,'info':[-2,-3,-4,-5,-6],'img_y':1,'img_m':1};
+    window.ajax_chart={'index':1,'info':[-2,-3,-4,-5,-6],'img_y':1,'img_m':1};
     var $chart_body = $('#chart-body');
     $chart_body.html(null);
     var tt=$(tt).clone();
@@ -131,7 +127,7 @@ function record(tt,sum){
     }
 }
 function post_index(id){
-    csrfmiddlewaretoken = $('#chart').attr('csrf_token');
+    var csrfmiddlewaretoken = $('body').attr('csrf_token');
     csrfmiddlewaretoken = csrfmiddlewaretoken.substring(csrfmiddlewaretoken.indexOf("value='")+7,csrfmiddlewaretoken.indexOf("' />"));
     $.ajax({
         type:"POST",	
@@ -146,8 +142,8 @@ function post_index(id){
             var $choice_index = $('.choice_index');
             for(i in data['data']){
                 if(data["disabled"][i]){
-                    $choice_index.after('<span><a onclick="record(this,'+data['data'][i]+');" class="p-0 btn btn-secondary index_list disabled" '
-                        +'style="border:0;margin:6.3px;border-radius:40px;height:3em;line-height:3em;width:3em" href="###" title="暂未开始">'+data['data'][i]
+                    $choice_index.after('<span data-toggle="tooltip" title="" data-original-title="视频没有上架"><a onclick="record(this,'+data['data'][i]+');" class="p-0 btn btn-secondary index_list disabled" '
+                        +'style="border:0;margin:6.3px;border-radius:40px;height:3em;line-height:3em;width:3em" href="###">'+data['data'][i]
                         +'</a></span>');
                 }else{
                     $('.index_list').toggleClass('bg-bilibili',false);
@@ -156,7 +152,8 @@ function post_index(id){
                     +data['data'][i]+'</a></span>');
                     ajax_chart['index'] = data['data'][i];
                 }
-            // $div.append($('<span style="padding:0em 5% 0em 5%;"><a class="m-1 p-0 btn btn-secondary index_list index_list_all" onclick="record(this,-1);" style="border:0;border-radius:7px;height:3em;line-height:3em;width:90%" href="###">全部</a></span>'));
+                $("[data-toggle='tooltip']").tooltip(); 
+                // $div.append($('<span style="padding:0em 5% 0em 5%;"><a class="m-1 p-0 btn btn-secondary index_list index_list_all" onclick="record(this,-1);" style="border:0;border-radius:7px;height:3em;line-height:3em;width:90%" href="###">全部</a></span>'));
             }
             onclick_chart(true);
         },
@@ -173,15 +170,14 @@ function post_index(id){
     });
 }
 function onclick_chart(init){
-    var id = $('#chart').find('[temp-id]').attr('temp-id');
-    var csrfmiddlewaretoken = $('#chart').attr('csrf_token');
-    var csrfmiddlewaretoken = csrfmiddlewaretoken.substring(csrfmiddlewaretoken.indexOf("value='")+7,csrfmiddlewaretoken.indexOf("' />"));
+    var csrfmiddlewaretoken = $('body').attr('csrf_token');
+    csrfmiddlewaretoken = csrfmiddlewaretoken.substring(csrfmiddlewaretoken.indexOf("value='")+7,csrfmiddlewaretoken.indexOf("' />"));
     $.ajax({
         type:"POST",	
         url:"/post_animation_info/",
         data:{
             index:ajax_chart['index'],
-            id:id,
+            id:id = $('#chart').find('[temp-id]').attr('temp-id'),
             csrfmiddlewaretoken:csrfmiddlewaretoken,
         },
         dataType:"json",
@@ -316,8 +312,8 @@ function getMyDate(str){
     oMonth = oDate.getMonth()+1,  
     oDay = oDate.getDate(),  
     oHour = oDate.getHours(),  
-    oTime = oYear +'年'+ oMonth +'M'+ oDay +'D'+ oHour;
-    return oTime.substring(5);
+    oTime = oYear +'年'+ oMonth +'月'+ oDay +'日'+ oHour+'时';
+    return oTime.substring(2);
 };
 var customTooltips = function (tooltip) {
     $(this._chart.canvas).css('cursor', 'pointer');	
