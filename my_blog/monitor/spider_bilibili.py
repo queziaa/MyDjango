@@ -109,6 +109,9 @@ def spider_requests(i_time,CELERY_ERROR_LOG):
             fp.write(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))+'$spider_requests:ERRORget404@'+url+'\n')
             fp.close()
             return 1
+                fp = open(CELERY_ERROR_LOG,'a+',encoding='utf-8')
+        fp.write(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))+'spider_requests:LOG@'+post_text.text+'\n')
+        fp.close()
         result = json.loads(post_text.text)['data']['stat']
         i_time['hour'] += 3600
         i_time['hour_freq'] += 1
