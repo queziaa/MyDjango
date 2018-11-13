@@ -2,9 +2,14 @@ $(function () {
     window.time_key = 'view';
     $("[data-toggle='tooltip']").tooltip();
     Waves.init();
-    again_login('view');
+    again_login(null,'view');
 });
-function again_login(type){
+function again_login(tt,type){
+    if(tt != null){
+        tt = $(tt);
+        $('.login_btn').find('i').toggleClass('text-bilibili',false);
+        tt.addClass('text-bilibili');
+    }
     $(".login_sign_1").remove();
     $(".dropload-down").remove();
     window.time_key = type;

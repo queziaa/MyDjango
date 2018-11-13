@@ -31,6 +31,9 @@ i.zi_cuohaocuhei{
 .box-shadow{
     box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
+.text-bilibili{
+    color: #fb7299!important;
+}
 .bg-bilibili{
     background-color: #fb7299!important;
 }
