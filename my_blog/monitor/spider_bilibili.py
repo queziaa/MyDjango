@@ -73,13 +73,15 @@ def main_spider_data(CELERY_ERROR_LOG):
                     i_time['reply'].append(None)
                 if time_range(i_time['hour'],420) == 0:
                     i_time = spider_requests(i_time,CELERY_ERROR_LOG)
-                else:
-                    i_time = -1
             else:
                 pass
-            if i_time != -1:
+            if i_time != 1:
                 mongopost.update({'title':find_data['title']},{'$pull':{'time':{'index':i_time['index']}}})
                 mongopost.update({'title':find_data['title']},{'$push':{'time':i_time}})
+
+# fp = open(CELERY_ERROR_LOG,'a+',encoding='utf-8')
+# fp.write(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))+'sid_aid:ERROR@'+traceback.format_exc()+'\n')
+# fp.close()
             # if i_time['day'] != None:
             #     temp = time_range(i_time['day'],3600)
             #     if  temp == 0:
@@ -108,7 +110,7 @@ def spider_requests(i_time,CELERY_ERROR_LOG):
             fp = open(CELERY_ERROR_LOG,'a+',encoding='utf-8')
             fp.write(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))+'$spider_requests:ERRORget404@'+url+'\n')
             fp.close()
-            return -1
+            return 1
         result = json.loads(post_text.text)['data']['stat']
         i_time['hour'] += 3600
         i_time['hour_freq'] += 1
@@ -122,7 +124,7 @@ def spider_requests(i_time,CELERY_ERROR_LOG):
         fp = open(CELERY_ERROR_LOG,'a+',encoding='utf-8')
         fp.write(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))+'spider_requests:ERROR@'+traceback.format_exc()+'\n')
         fp.close()
-        return -1
+        return 1
 
     # else:
     #     if hour_or_day == 'day':
