@@ -19,7 +19,13 @@ mongopost = client['monitor']['start_time_3']
 def main_spider_time(CELERY_ERROR_LOG):
     # celery_list = []
     post_text = requests.get(url,headers=headers,timeout=10)
-    result = json.loads(post_text.text)["result"]
+    try:
+        result = json.loads(post_text.text)["result"]
+    except Exception as e:
+        fp = open(CELERY_ERROR_LOG,'a+',encoding='utf-8')
+        fp.write(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))+'spider_requests:ERROR@'+traceback.format_exc()+'\n')
+        fp.write(post_text.text)
+        fp.close()
     for i_result in result:
         for i_seasons in i_result["seasons"]:
             title = i_seasons['title']
@@ -58,30 +64,23 @@ def main_spider_time(CELERY_ERROR_LOG):
 def main_spider_data(CELERY_ERROR_LOG):
     for find_data in mongopost.find():
         for i_time in find_data['time']:
-            # if i_time['hour'] != None:
-            temp = time_range(i_time['hour'],420)
-            if  temp == 0:
+            fp = open(CELERY_ERROR_LOG,'a+',encoding='utf-8')
+            fp.write(str(i_time))
+            while time_range(i_time['hour'],420) == -1:
+                i_time['hour'] += 3600
+                i_time['hour_freq'] += 1
+                i_time['coin'].append(None)
+                i_time['danmaku'].append(None)
+                i_time['share'].append(None)
+                i_time['view'].append(None)
+                i_time['reply'].append(None)
+            if time_range(i_time['hour'],420) == 0:
                 i_time = spider_requests(i_time,CELERY_ERROR_LOG)
-            elif temp == -1:
-                while time_range(i_time['hour'],420) == -1:
-                    i_time['hour'] += 3600
-                    i_time['hour_freq'] += 1
-                    i_time['coin'].append(None)
-                    i_time['danmaku'].append(None)
-                    i_time['share'].append(None)
-                    i_time['view'].append(None)
-                    i_time['reply'].append(None)
-                if time_range(i_time['hour'],420) == 0:
-                    i_time = spider_requests(i_time,CELERY_ERROR_LOG)
-            else:
-                pass
-            if i_time != 1:
-                mongopost.update({'title':find_data['title']},{'$pull':{'time':{'index':i_time['index']}}})
-                mongopost.update({'title':find_data['title']},{'$push':{'time':i_time}})
+            fp.write(str(i_time))
+            mongopost.update({'title':find_data['title']},{'$pull':{'time':{'index':i_time['index']}}})
+            mongopost.update({'title':find_data['title']},{'$push':{'time':i_time}})
+            fp.close()
 
-# fp = open(CELERY_ERROR_LOG,'a+',encoding='utf-8')
-# fp.write(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))+'sid_aid:ERROR@'+traceback.format_exc()+'\n')
-# fp.close()
             # if i_time['day'] != None:
             #     temp = time_range(i_time['day'],3600)
             #     if  temp == 0:
@@ -99,7 +98,6 @@ def main_spider_data(CELERY_ERROR_LOG):
             #             i_time = spider_requests(i_time,'day',CELERY_ERROR_LOG)
             #     else:
             #         pass
-
 
 def spider_requests(i_time,CELERY_ERROR_LOG):
     try:
