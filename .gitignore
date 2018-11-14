@@ -1,4 +1,4 @@
 *.pyc
+*.log
 **/__pycache__
 **/migrations
-my_blog/static/img/monitor.log

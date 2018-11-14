@@ -3,7 +3,6 @@ from django_mongoengine import Document, EmbeddedDocument, fields
 
 class time_emd(EmbeddedDocument):
     index = fields.IntField(blank=True)
-    season_id = fields.IntField(blank=True)
     start = fields.IntField(blank=True)
     aid = fields.IntField(blank=True)
     hour = fields.IntField(blank=True)
@@ -14,9 +13,10 @@ class time_emd(EmbeddedDocument):
     view = fields.ListField()
     reply = fields.ListField()
 
-class start_time_3(Document):
+class start_time_4(Document):
     title = fields.StringField(blank=True)
     cover = fields.StringField(blank=True)
+    season_id = fields.IntField(blank=True)
     time = fields.ListField(fields.EmbeddedDocumentField('time_emd'), default=[])
 
 

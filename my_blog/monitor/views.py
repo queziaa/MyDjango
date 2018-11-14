@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from monitor.models import start_time_3 as start_time
+from monitor.models import start_time_4 as start_time
 from my_blog.settings import CELERY_ERROR_LOG 
 import os,time,json
 
@@ -116,14 +116,14 @@ def ranking_get(ranking_type,col_lam,blank_2):
     for i in ranking_time_temp:
         for i_i in i['time']:
             temp = {}
-            if len(i_i[ranking_type]) >= 25:
+            if len(i_i[ranking_type]) >= 25 and i_i[ranking_type][-1]!=None and i_i[ranking_type][-25]!=None:
                 if not blank_2 or i_i[ranking_type][-25] != 0:
                     temp = {'title':i['title'],'index':i_i['index'],ranking_type:col_lam(i_i[ranking_type][-1],i_i[ranking_type][-25])}
                 else:
                     continue
             elif len(i_i[ranking_type]) <= 1:
                 continue
-            elif len(i_i[ranking_type]) < 25 and not blank_2:
+            elif len(i_i[ranking_type]) < 25 and not blank_2 and i_i[ranking_type][-1]!=None and i_i[ranking_type][1]!=None:
                 a = i_i[ranking_type]
                 temp = {'id':i['id'],'title':i['title'],'index':i_i['index'],ranking_type:col_lam(i_i[ranking_type][-1],i_i[ranking_type][1])}
             else:
