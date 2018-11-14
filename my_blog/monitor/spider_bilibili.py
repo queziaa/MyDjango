@@ -1,7 +1,6 @@
 #coding=utf-8
 import requests,json,pymongo,os,time,re,traceback
 
-url = 'https://bangumi.bilibili.com/web_api/timeline_global'
 headers = {"Accept":"application/json, text/plain, */*",
 "Host":"bangumi.bilibili.com",
 "Referer":"https://www.bilibili.com/anime/timeline/",
@@ -17,6 +16,7 @@ mongopost = client['monitor']['start_time_4']
 
 
 def main_spider_time(CELERY_ERROR_LOG):
+    url = 'https://bangumi.bilibili.com/web_api/timeline_global'
     post_text = requests.get(url,headers=headers,timeout=10)
     try:
         result = json.loads(post_text.text)["result"]
@@ -25,6 +25,7 @@ def main_spider_time(CELERY_ERROR_LOG):
         fp.write(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))+'spider_requests:ERROR@'+post_text.text+traceback.format_exc()+'\n')
         fp.write(post_text.text)
         fp.close()
+        return url
     for i_result in result:
         for i_seasons in i_result["seasons"]:
             # if title == None or 'pub_index' not in i_seasons :
