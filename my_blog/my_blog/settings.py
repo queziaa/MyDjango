@@ -30,10 +30,11 @@ SECRET_KEY = 'r-&180r7ih4(cm+49ky&@8l(uyx4*6-o7t0!t8$eagsgc9)f^h'
 
 DEBUG = False
 ALLOWED_HOSTS = ['www.queziaa.fun','blog.queziaa.fun','monitor.queziaa.fun']
-CELERY_ERROR_LOG = r'/root/bilibili_monitor.log'
 # ALLOWED_HOSTS = ['www.localhost.com','blog.localhost.com','monitor.localhost.com']
 # DEBUG = True
-# CELERY_ERROR_LOG = r'/home/que-linux/bilibili_monitor.log'
+
+
+CELERY_ERROR_LOG = r'/var/www/MyDjango/my_blog/static/img/monitor.log'
 
 TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
 
@@ -169,11 +170,11 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERYBEAT_SCHEDULE={
-        "sqlclear-1-day": {
-            'task': 'article.tasks.SearchArrangementThread',
-            'schedule': timedelta(days=1)
-            # 'args':
-        },
+        # "sqlclear-1-day": {
+        #     'task': 'article.tasks.SearchArrangementThread',
+        #     'schedule': timedelta(days=1)
+        #     # 'args':
+        # },
         "bilibili_spider_time-1-hour": {
             'task': 'monitor.tasks.spider_time',
             'schedule': timedelta(hours=1)
