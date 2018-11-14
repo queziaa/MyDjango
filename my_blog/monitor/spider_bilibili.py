@@ -22,7 +22,7 @@ def main_spider_time(CELERY_ERROR_LOG):
         result = json.loads(post_text.text)["result"]
     except Exception as e:
         fp = open(CELERY_ERROR_LOG,'a+',encoding='utf-8')
-        fp.write(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))+'spider_requests:ERROR@'+post_text+traceback.format_exc()+'\n')
+        fp.write(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))+'spider_requests:ERROR@'+post_text.text+traceback.format_exc()+'\n')
         fp.write(post_text.text)
         fp.close()
     for i_result in result:
@@ -31,7 +31,6 @@ def main_spider_time(CELERY_ERROR_LOG):
             #     continue
             i_seasons['pub_index'] = int(''.join(re.findall("\d+",i_seasons['pub_index'])))
             if not mongopost.find_one({'season_id':i_seasons['season_id']}):
-                print('不'+i_seasons['title']+str(i_seasons['pub_index'])+'\n')
                 temp = {}
                 temp["title"] = i_seasons['title']
                 temp["cover"] = i_seasons['cover']
@@ -44,7 +43,6 @@ def main_spider_time(CELERY_ERROR_LOG):
                 temp['time'][0].update(count_time(i_seasons['pub_ts']))
                 mongopost.insert(temp)
             else:
-                print('存在'+i_seasons['title']+str(i_seasons['pub_index'])+'\n')
                 if not mongopost.find_one({"$and":[{"season_id":i_seasons['season_id']},{"time":{"$elemMatch":{"index":i_seasons['pub_index']}}}]}):
                     aid = sid_aid(i_seasons['season_id'],i_seasons['pub_index'])
                     if aid == -1:
@@ -56,7 +54,7 @@ def main_spider_time(CELERY_ERROR_LOG):
 def main_spider_data(CELERY_ERROR_LOG):
     for find_data in mongopost.find():
         for i_time in find_data['time']:
-            while time_range(i_time['hour'],420) == -1:
+            while time_range(i_time['hour'],180) == -1:
                 i_time['hour'] += 3600
                 i_time['hour_freq'] += 1
                 i_time['coin'].append(None)
@@ -64,7 +62,7 @@ def main_spider_data(CELERY_ERROR_LOG):
                 i_time['share'].append(None)
                 i_time['view'].append(None)
                 i_time['reply'].append(None)
-            if time_range(i_time['hour'],420) == 0:
+            if time_range(i_time['hour'],180) == 0:
                 i_time = spider_requests(i_time,CELERY_ERROR_LOG)
             mongopost.update({'title':find_data['title']},{'$pull':{'time':{'index':i_time['index']}}})
             mongopost.update({'title':find_data['title']},{'$push':{'time':i_time}})

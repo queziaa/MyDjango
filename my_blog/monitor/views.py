@@ -17,7 +17,7 @@ def home(request):
         s = 0
         for start_i in start_data:
             if start_i['hour'] < hour_max['hour']:
-                start_data.insert(s,{'hour':hour_max['hour'],'start':hour_max['start'],'id':i['id'],'cover':i['cover'],'title':i['title']})        
+                start_data.insert(s,{'hour':hour_max['hour'],'start':hour_max['start'],'id':i['id'],'cover':i['cover'],'title':i['title']})
                 if len(start_data) > 12:
                     start_data = start_data[:12]
                 break
@@ -41,11 +41,13 @@ def home(request):
 def all(request):
     return render(request,'monitor_all.html')
 
+def top(request):
+    return render(request,'monitor_top.html')
+
 def id_list_post(request):
-    data = None
     if request.method == 'POST':
         key=request.POST.get('key','')
-        start_data = [{'id':None,key:0}]
+        start_data = []
         start_time_temp = start_time.objects.all()
         for i in start_time_temp:
             total = 0
@@ -53,16 +55,24 @@ def id_list_post(request):
                 if key == 'start' or key == 'hour':
                     total = i_i[key]
                 elif len(i_i[key])!=0:
-                    total += i_i[key][-1]
+                    total += i_i[key][-1] if i_i[key][-1] != None else 0
             count = 0
+            if start_data == []:
+                start_data.append({'id':str(i['id']),key:total})
+                continue
             for start in start_data:
-                if start[key] < total:
+                if start[key] <= total:
                     start_data.insert(count,{'id':str(i['id']),key:total})
+                    count = -1
                     break
                 count+=1
-        for i in range(18):
+            if(count != -1):
+                start_data.append({'id':str(i['id']),key:total})
+        start_data_range = len(start_data)
+        if start_data_range >= 18:
+            start_data_range = 18
+        for i in range(start_data_range):
             start_data[i] = get_mod_mcard(start_data[i]['id'])
-
         for i in start_data:
             i['id'] = str(i['id'])
     return HttpResponse(json.dumps(start_data))

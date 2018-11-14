@@ -13,7 +13,7 @@
                 <div class="mr-3 ml-3 btn-group">
                     <h4 class="my-2 m-0">最近更新</h4>
                 </div>
-                <small class="mx-4 text-muted h5 my-2"><a href="https://monitor.queziaa.fun/all" class="text-muted">查看全部</a></small>
+                <small class="mx-4 text-muted h5 my-2"><a href="/all" class="text-muted">查看全部</a></small>
             </div>
             {% for data in start %} 
             <div class="p-0 col-xl-2 col-lg-3 col-md-3 col-sm-4 col-5" onclick="pop_chart(this)" temp-id= "{{ data.id }}">
@@ -47,7 +47,7 @@
                 <div class="mr-3 ml-3 btn-group">
                     <h4 class="my-2 m-0">排行榜</h4>
                 </div>
-                <small class="mx-4 text-muted">查看全部</small>
+                <small class="mx-4 text-muted"><a href="/top" class="text-muted">查看全部</a></small>
             </div>
             {% for data in ranking %} 
             <div class="p-0 col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">

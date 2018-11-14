@@ -1,1 +1,1 @@
-这是一个新手的小博客，www.queziaa.fun 功能加的差不多了 暂时停更 我去看看大数据
+这是一个萌新的小网站 www.queziaa.fun

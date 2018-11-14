@@ -90,6 +90,9 @@ function again_login(tt,type){
                 },
                 error:function(){
                     me.resetload();
+                    me.lock();
+                    me.noData();
+                    $('.dropload-noData').text('获取数据失败尝试刷新或联系我:queziaa31@gmail.com');
                 }
             });
         },
