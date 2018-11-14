@@ -17,15 +17,15 @@ mongopost = client['monitor']['start_time_4']
 
 def main_spider_time(CELERY_ERROR_LOG):
     url = 'https://bangumi.bilibili.com/web_api/timeline_global'
+    headers["Host"] = "bangumi.bilibili.com"
     post_text = requests.get(url,headers=headers,timeout=10)
     try:
         result = json.loads(post_text.text)["result"]
     except Exception as e:
         fp = open(CELERY_ERROR_LOG,'a+',encoding='utf-8')
-        fp.write(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))+'spider_requests:ERROR@'+post_text.text+traceback.format_exc()+'\n')
-        fp.write(post_text.text)
+        fp.write(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))+'main_spider_time_requests:ERROR@'+post_text.text+traceback.format_exc()+'\n')
         fp.close()
-        return url
+        return 'https://bangumi.bilibili.com/web_api/timeline_global'+str(headers)
     for i_result in result:
         for i_seasons in i_result["seasons"]:
             # if title == None or 'pub_index' not in i_seasons :
