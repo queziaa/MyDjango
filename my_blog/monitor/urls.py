@@ -32,6 +32,7 @@ urlpatterns = [
     path('all/',views.all,name="all"),
     path('id_list_post/',views.id_list_post,name="id_list_post"),
     path('mcard_list_post/',views.mcard_list_post,name="mcard_list_post"),
+    path('top_list_post/',views.top_list_post,name="top_list_post"),
     path('top/',views.top,name="top"),
     path('admin/',admin.site.urls),
     url(r'^favicon\.ico$', static.serve,{'document_root': settings.STATIC_ROOT,'path': "/img/favicon.ico"}),

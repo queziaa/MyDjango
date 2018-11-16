@@ -13,6 +13,9 @@
 @media screen and (min-width:1720px){#chart-modal-dialog{max-width:1640px;} #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:33em;right:-1em;}}
 @media screen and (min-width:1820px){#chart-modal-dialog{max-width:1740px;} #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:35em;right:-1em;}}
 @media screen and (min-width:1920px){#chart-modal-dialog{max-width:1840px;} #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:37em;right:-1em;}}
+.display_none{
+	display:none!important;
+}
 .img_y,.img_m{
 	margin:11%;
 }

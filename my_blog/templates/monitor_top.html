@@ -7,15 +7,37 @@
                 <div class="mr-3 ml-3 btn-group">
                     <h4 class="my-2 m-0 zi_2x">全部动画</h4>
                 </div>
-                <small class="mx-4 text-muted" >
-                    <span class="zi_2x">排序方式</span>
-                    <a class="btn p-0 login_btn waves-effect waves-float text-muted" href="###"><i data-toggle="tooltip" title="" data-original-title="加入时间" onclick="again_login(this,'start')" class="zi zi_clockCir zi_2x"></i></a>
-                    <a class="btn p-0 login_btn waves-effect waves-float text-muted" href="###"><i data-toggle="tooltip" title="" data-original-title="更新时间" onclick="again_login(this,'hour')" class="zi zi_syncalt zi_2x"></i></a>
-                    <a class="btn p-0 login_btn waves-effect waves-float text-muted" href="###"><i data-toggle="tooltip" title="" data-original-title="播放数量" onclick="again_login(this,'view')" class="zi zi_play zi_2x text-bilibili"></i></a>
-                    <a class="btn p-0 login_btn waves-effect waves-float text-muted" href="###"><i data-toggle="tooltip" title="" data-original-title="弹幕数量" onclick="again_login(this,'danmaku')" class="zi zi_alignleft zi_2x"></i></a>
-                    <a class="btn p-0 login_btn waves-effect waves-float text-muted" href="###"><i data-toggle="tooltip" title="" data-original-title="评论数量" onclick="again_login(this,'reply')" class="zi zi_listol zi_2x"></i></a>
-                    <a class="btn p-0 login_btn waves-effect waves-float text-muted" href="###"><i data-toggle="tooltip" title="" data-original-title="硬币数量" onclick="again_login(this,'danmaku')" class="zi zi_copyrightBold zi_2x"></i></a>
-                    <a class="btn p-0 login_btn waves-effect waves-float text-muted" href="###"><i data-toggle="tooltip" title="" data-original-title="分享数量" onclick="again_login(this,'share')" class="zi zi_sharealt zi_2x"></i></a>
+                <small class="mx-4 text-muted">
+                    <select class="selectpicker" onchange="sele_onch(0,this)">
+                        <option>播放</option>
+                        <option>回复</option>
+                        <option>分享</option>
+                        <option>弹幕</option>
+                        <option>硬币</option>  
+                    </select>
+                    <select class="selectpicker" onchange="sele_onch(1,this)">
+                        <option>现在</option>
+                        <option>1小时前</option>
+                        <option>24小时前</option>
+                        <option>自定义时间</option>
+                    </select>
+                    <input for="inputError" class="form-control mr-sm-2 time_sele display_none" type="text" onblur="inp_onb(this)" placeholder="输入小时数" style="display:inline;width:220px;">
+                    <select class="selectpicker calcu_type" onchange="sele_onch(2,this)">
+                        <option>数量</option>
+                        <option>相对以现在的增长数量</option>
+                        <option>相对以现在的增长率</option>
+                    </select>
+                    <select class="selectpicker" onchange="sele_onch(3,this)">
+                        <option>由高到低排序</option>
+                        <option>由低到高排序</option>
+                    </select>
+                    <select class="selectpicker" onchange="sele_onch(4,this)">
+                        <option>上架于1天内</option>
+                        <option>上架于7天内</option>
+                        <option>上架于14天内</option>
+                        <option>自定义时间</option>
+                    </select>
+                    <input for="inputError" class="form-control mr-sm-2 shelves_sele display_none" type="text" onblur="inp_onb(this)" placeholder="输入天数" style="display:inline;width:220px;">
                 </small>
             </div>
             <div class=" p-0 col-xl-12 domUp" style="border-radius:10px;">
@@ -24,4 +46,9 @@
 </div>
 {% endblock %}
 {% block js %}
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'libs/bootstrap-select.min.css' %}">
+    <script src="{% static 'libs/bootstrap-select.min.js' %}" charset="utf-8"></script>
+    <script src="{% static 'libs/defaults-zh_CN.min.js' %}" charset="utf-8"></script>
+    <script src="{% static 'js/monitor_top.js' %}" charset="utf-8"></script>
 {% endblock %}

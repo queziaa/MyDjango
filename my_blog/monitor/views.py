@@ -32,10 +32,10 @@ def home(request):
     ranking=[]
     inc_num = lambda x,y:x-y
     inc_per = lambda x,y:(" %.2f%%" % ((x-y)/y*100))
-    ranking.append({'title':'今日播放数','list':ranking_get('view',inc_num,False)})
-    ranking.append({'title':'今日播放数增长率','list':ranking_get('view',inc_per,True)})
-    ranking.append({'title':'今日分享数','list':ranking_get('share',inc_num,False)})
-    ranking.append({'title':'今日分享数增长率','list':ranking_get('share',inc_per,True)})
+    ranking.append({'title':'今日播放数','list':ranking_get('view',0,inc_num,True,False)})
+    ranking.append({'title':'24小时播放数增长率','list':ranking_get('view',24,inc_per,False,False)})
+    ranking.append({'title':'今日分享数','list':ranking_get('share',0,inc_num,True,False)})
+    ranking.append({'title':'24小时分享数增长率','list':ranking_get('share',24,inc_per,False,False)})
     return render(request,'monitor_home.html',{'start':start_data,'ranking':ranking})
 
 def all(request):
@@ -43,6 +43,51 @@ def all(request):
 
 def top(request):
     return render(request,'monitor_top.html')
+
+# 播放    今日         数量                   最高
+# 回复    于1小时前    相对以现在的增长数量      最低
+# 分享    于24小时前   相对以现在的增长率
+# 弹幕    自定义时间
+# 硬币
+
+def top_list_post(request):
+    if request.method == 'POST':
+        data_type = int(request.POST.get('data_type',''))
+        time = int(request.POST.get('time',''))
+        calcu_type = int(request.POST.get('calcu_type',''))
+        sort_type = int(request.POST.get('sort_type',''))
+        if data_type == 0:
+            data_type = 'view'
+        elif data_type == 1:
+            data_type = 'reply'
+        elif data_type == 2:
+            data_type = 'share'
+        elif data_type == 3:
+            data_type = 'coin'
+        elif data_type == 4:
+            data_type = 'danmaku'
+        else:
+            return HttpResponse('{"code":1,"data_type"'+str(data_type)+'}')
+        if calcu_type == 0:
+            calcu_type = lambda x,y:y
+            blank_2 = False
+        elif calcu_type == 1:
+            calcu_type = lambda x,y:x-y
+            blank_2 = True
+        elif calcu_type == 2:
+            calcu_type = lambda x,y:(" %.2f%%" % ((x-y)/y*100))
+            blank_2 = False
+        else:
+            return HttpResponse('{"code":1,"blank_2"'+str(blank_2)+'}')
+        if sort_type == 0:
+            sort_type == False
+        elif sort_type == 1:
+            sort_type == False
+        else:
+            return HttpResponse('{"code":1,"sort_type"'+str(sort_type)+'}') 
+        start_data = ranking_get(data_type,time,calcu_type,blank_2,sort_type)
+        return HttpResponse(json.dumps(start_data))
+
 
 def id_list_post(request):
     if request.method == 'POST':
@@ -78,7 +123,6 @@ def id_list_post(request):
     return HttpResponse(json.dumps(start_data))
 
 def mcard_list_post(request):
-
     CELERY_ERROR_LOG = r'/home/que-linux/bilibili_monitor.log'
     data = None
     if request.method == 'POST':
@@ -120,22 +164,24 @@ def get_hour_max(mod):
 def str_time(i):
     return time.strftime('%m月%d日%H:%M', time.localtime(i))
 
-def ranking_get(ranking_type,col_lam,blank_2):
+def ranking_get(ranking_type,time_apart,col_lam,blank_2,reverse_list):
+    time_apart+=1
     ranking_data = []
     ranking_time_temp = start_time.objects.all()
     for i in ranking_time_temp:
         for i_i in i['time']:
             temp = {}
-            if len(i_i[ranking_type]) >= 25 and i_i[ranking_type][-1]!=None and i_i[ranking_type][-25]!=None:
-                if not blank_2 or i_i[ranking_type][-25] != 0:
-                    temp = {'title':i['title'],'index':i_i['index'],ranking_type:col_lam(i_i[ranking_type][-1],i_i[ranking_type][-25])}
+            if len(i_i[ranking_type])>= 1 and time_apart == 1 and i_i[ranking_type][-1]!=None:
+                temp = {'id':str(i['id']),'title':i['title'],'index':i_i['index'],ranking_type:i_i[ranking_type][-time_apart]}
+            elif len(i_i[ranking_type]) >= time_apart and i_i[ranking_type][-1]!=None and i_i[ranking_type][-time_apart]!=None:
+                if blank_2 or i_i[ranking_type][-time_apart] != 0:
+                    temp = {'id':str(i['id']),'title':i['title'],'index':i_i['index'],ranking_type:col_lam(i_i[ranking_type][-1],i_i[ranking_type][-time_apart])}
                 else:
                     continue
             elif len(i_i[ranking_type]) <= 1:
                 continue
-            elif len(i_i[ranking_type]) < 25 and not blank_2 and i_i[ranking_type][-1]!=None and i_i[ranking_type][1]!=None:
-                a = i_i[ranking_type]
-                temp = {'id':i['id'],'title':i['title'],'index':i_i['index'],ranking_type:col_lam(i_i[ranking_type][-1],i_i[ranking_type][1])}
+            elif len(i_i[ranking_type]) < time_apart and blank_2 and i_i[ranking_type][-1]!=None and i_i[ranking_type][1]!=None:
+                temp = {'id':str(i['id']),'title':i['title'],'index':i_i['index'],ranking_type:col_lam(i_i[ranking_type][-1],i_i[ranking_type][1])}
             else:
                 continue
             s=0
@@ -153,6 +199,8 @@ def ranking_get(ranking_type,col_lam,blank_2):
                         ranking_data = ranking_data[:6]
                     break
                 s+=1
+    if(reverse_list):
+        ranking_data.reverse()
     return ranking_data
 
 def post_animation_info(request):
