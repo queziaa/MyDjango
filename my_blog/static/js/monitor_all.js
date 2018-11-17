@@ -30,22 +30,20 @@ function again_login(tt,type){
         },
         loadDownFn : function(me){
             var load_list = [];
-            var csrfmiddlewaretoken = $('body').attr('csrf_token');
-            csrfmiddlewaretoken = csrfmiddlewaretoken.substring(csrfmiddlewaretoken.indexOf("value='")+7,csrfmiddlewaretoken.indexOf("' />"));
             var url = '';
             var ajax_data = {}
             if (paging==0){
                 url = "/id_list_post/";
                 ajax_data = {
                     key:time_key,
-                    csrfmiddlewaretoken:csrfmiddlewaretoken,
+                    csrfmiddlewaretoken:GETcsrfmiddlewaretoken(),
                 };
             }else{
                 url = "/mcard_list_post/";
                 ajax_data = {
                     key:time_key,
                     id_list:[],
-                    csrfmiddlewaretoken:csrfmiddlewaretoken,
+                    csrfmiddlewaretoken:GETcsrfmiddlewaretoken(),
                 }
                 var temp = window.id_list.slice(0,18)
                 for(i in temp){

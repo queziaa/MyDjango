@@ -1,4 +1,16 @@
 {% extends "monitor.html" %}
+{% block css %}
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'libs/dropload.css' %}">
+    <style>
+        .login_btn{
+            height: 3em;
+            line-height: 3em;
+            width: 3em;
+            margin-bottom: 1rem!important;
+        }
+    </style>
+{% endblock %}
 {% block content %}
 <div class="py-3 ml-5 mr-5">
     <div class="container-fluid p-0" style="border-radius:10px;">
@@ -28,12 +40,4 @@
     <link rel="stylesheet" href="{% static 'libs/dropload.css' %}">
     <script src="{% static 'libs/dropload.min.js' %}" charset="utf-8"></script>
     <script src="{% static 'js/monitor_all.js' %}" charset="utf-8"></script>
-    <style>
-        .login_btn{
-            height: 3em;
-            line-height: 3em;
-            width: 3em;
-            margin-bottom: 1rem!important;
-        }
-    </style>
 {% endblock %}

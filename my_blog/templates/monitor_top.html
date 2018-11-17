@@ -1,4 +1,7 @@
 {% extends "monitor.html" %}
+{% block css %}
+    <link href="https://cdn.bootcss.com/bootstrap-select/1.13.3/css/bootstrap-select.min.css" rel="stylesheet">
+{% endblock %}
 {% block content %}
 <div class="py-3 ml-5 mr-5">
     <div class="container-fluid p-0" style="border-radius:10px;">
@@ -34,7 +37,7 @@
                     <select class="selectpicker" onchange="sele_onch(4,this)">
                         <option>上架于1天内</option>
                         <option>上架于7天内</option>
-                        <option>上架于14天内</option>
+                        <option>上架时间不限</option>
                         <option>自定义时间</option>
                     </select>
                     <input for="inputError" class="form-control mr-sm-2 shelves_sele display_none" type="text" onblur="inp_onb(this)" placeholder="输入天数" style="display:inline;width:220px;">
@@ -47,8 +50,7 @@
 {% endblock %}
 {% block js %}
     {% load staticfiles %}
-    <link rel="stylesheet" href="{% static 'libs/bootstrap-select.min.css' %}">
-    <script src="{% static 'libs/bootstrap-select.min.js' %}" charset="utf-8"></script>
-    <script src="{% static 'libs/defaults-zh_CN.min.js' %}" charset="utf-8"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-select/1.13.3/js/bootstrap-select.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-select/1.13.3/js/i18n/defaults-zh_CN.min.js"></script>
     <script src="{% static 'js/monitor_top.js' %}" charset="utf-8"></script>
 {% endblock %}

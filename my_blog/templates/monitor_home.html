@@ -1,4 +1,6 @@
 {% extends "monitor.html" %}
+{% block css %}
+{% endblock %}
 {% block content %}
 <!-- 突发奇想的小工具 -->
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
@@ -71,11 +73,10 @@
 </div>
 {% endblock %}
 {% block js %}
-    {% load staticfiles %}	
-    <script>    
-        $(function () { 
-            $("[data-toggle='tooltip']").tooltip(); 
-            Waves.init();
-        });
-    </script>
+<script>    
+    $(function () { 
+        $("[data-toggle='tooltip']").tooltip(); 
+        Waves.init();
+    });
+</script>
 {% endblock %}

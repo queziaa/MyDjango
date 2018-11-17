@@ -9,14 +9,15 @@ function switch_time(tt){
     tt.attr("temp-storage-2",s);
     event.stopPropagation(); 
 }
-function pop_chart(tt){
+function pop_chart(tt,clone){
     var col_1 = 'p-0 col-xl-2 col-lg-12 col-md-12 col-sm-12 col-12';
     var col_2 = 'p-0 col-xl-2 col-lg-3 col-md-12 col-sm-12 col-12';
     var col_3 = 'p-0 col-xl-8 col-lg-9 col-md-12 col-sm-12 col-12';
     window.ajax_chart={'index':1,'info':[-5],'img_y':1,'img_m':1};
     var $chart_body = $('#chart-body');
     $chart_body.html(null);
-    var tt=$(tt).clone();
+    if (clone ==undefined)
+        var tt=$(tt).clone();
     var $div = $('<div class="'+col_2+'"></div>');
     $div.append($('<h3 class="text-center my-3 choice_index">选择集数</h3>'));
     post_index(tt.attr('temp-id'));
@@ -48,7 +49,8 @@ function pop_chart(tt){
     tt.removeAttr("onclick");
     tt.removeAttr('class');
     tt[0].className=col_1;
-    tt.find('div.mcard')[0].className='m-0 mcard p-0';
+    if(tt.find('div.mcard')[0]!=undefined)
+        tt.find('div.mcard')[0].className='m-0 mcard p-0';
     tt.find('p.text-overflow').addClass('h4');
     tt.find('div.shadow-sm').removeClass('ml-2');
     tt.find('div.shadow-sm').removeClass('shadow-sm');
@@ -62,7 +64,27 @@ function pop_chart(tt){
     Waves.attach('.btn', ['waves-float']);
 }
 function ranking_pop_chart(tt){
-    pop_chart(tt);
+    $.ajax({
+        type:"POST",	
+        url:"/info_post/",
+        data:{
+            id:id = $(tt).attr('temp-id'),
+            csrfmiddlewaretoken:GETcsrfmiddlewaretoken(),
+        },
+        dataType:"json",
+        success:function(data){
+            var shadow = $('<div class="mt-0 ml-2 mr-2 mb-2 mcard p-0 shadow-sm" style="border-radius:0px 0px 7px 7px;"></div>');
+            shadow.append($('<span><a class="text-muted" style="color:#f8f9fa!important;background-color:rgba(000, 000, 000, .50);position: absolute; '
+                            +'bottom:2em; right:0.5em" href="###" data-toggle="tooltip" title="" data-original-title="更新时间" temp-storage-1="加入时间" '
+                            +'temp-storage-2="'+data['start']+'" onclick="switch_time(this);">'+data['hour']+'</a></span>'));
+            shadow.append($('<img class="card-img-top" src="'+data['cover']+'" style="width: 100%; display: block;">'));
+            shadow.append($('<div class="p-0 card-body" style="background-color:rgba(255, 255, 255, .5);border-radius:0px 0px 7px 7px;"><div class="d-flex '
+                            +'justify-content-between align-items-center"><div class="btn-group" style="width:100%"><p class="m-0 text-center text-truncate '
+                            +'text-overflow" style="width:100%" title="'+data['title']+'">'+data['title']+'</p></div></div></div>'));
+            shadow = $('<div class="p-0 col-xl-2 col-lg-3 col-md-3 col-sm-4 col-5" onclick="pop_chart(this)" temp-id="'+data['id']+'"></div>').append(shadow);
+            pop_chart(shadow,true);        
+        },
+    });
 }
 function record(tt,sum){
     var $tt = $(tt);
@@ -127,14 +149,12 @@ function record(tt,sum){
     }
 }
 function post_index(id){
-    var csrfmiddlewaretoken = $('body').attr('csrf_token');
-    csrfmiddlewaretoken = csrfmiddlewaretoken.substring(csrfmiddlewaretoken.indexOf("value='")+7,csrfmiddlewaretoken.indexOf("' />"));
     $.ajax({
         type:"POST",	
         url:"/post_index/",
         data:{
             id:id,
-            csrfmiddlewaretoken:csrfmiddlewaretoken,
+            csrfmiddlewaretoken:GETcsrfmiddlewaretoken(),
         },
         // async : false,
         dataType:"json",
@@ -157,10 +177,7 @@ function post_index(id){
             }
             onclick_chart(true);
         },
-        error:function(jqXHR,textStatus,errorThrown){
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
+        error:function(){
             var $choice_index = $('.choice_index');
             $choice_index.append($('<span style="padding:0em 5% 0em 5%;"><a class="m-1 p-0 btn btn-secondary index_list" '
             +'style="border:0;border-radius:7px;height:3em;line-height:3em;width:90%" href="###">抱歉没有获取到信息 请尝试刷新</a></span>'));
@@ -170,15 +187,13 @@ function post_index(id){
     });
 }
 function onclick_chart(init){
-    var csrfmiddlewaretoken = $('body').attr('csrf_token');
-    csrfmiddlewaretoken = csrfmiddlewaretoken.substring(csrfmiddlewaretoken.indexOf("value='")+7,csrfmiddlewaretoken.indexOf("' />"));
     $.ajax({
         type:"POST",	
         url:"/post_animation_info/",
         data:{
             index:ajax_chart['index'],
             id:id = $('#chart').find('[temp-id]').attr('temp-id'),
-            csrfmiddlewaretoken:csrfmiddlewaretoken,
+            csrfmiddlewaretoken:GETcsrfmiddlewaretoken(),
         },
         dataType:"json",
         success:function(data){
@@ -190,11 +205,6 @@ function onclick_chart(init){
             ajax_chart['img_y'] = 1;
             Load_img(data,init);
         },
-        error:function(jqXHR,textStatus,errorThrown){
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        }
     });
 }
 function Load_img(data,init){
@@ -261,9 +271,7 @@ function Load_img(data,init){
     // alert(lineChartData[0]['data']);
     window.ChartData['labels'] = screen_line_chart_date(data['start']);
     window.ChartData['datasets'] = lineChartData ;
-    console.log(window.ChartData['datasets']);
     window.chart_example.update();
-
 }
 function screen_line_chart(label_str,dict_key,data,chartColors){
     // var color = window.Chart.helpers.color;
@@ -337,3 +345,7 @@ var customTooltips = function (tooltip) {
 		});
 	}
 };
+function GETcsrfmiddlewaretoken(){
+    var csrfmiddlewaretoken = $('body').attr('csrf_token');
+    return csrfmiddlewaretoken.substring(csrfmiddlewaretoken.indexOf("value='")+7,csrfmiddlewaretoken.indexOf("' />"));
+}

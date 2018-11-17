@@ -4,10 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 {% load staticfiles %}
-<link href="{% static 'libs/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+<link href="https://cdn.bootcss.com/twitter-bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://ico.z01.com/zico.min.css" rel="stylesheet">
+<link href="https://cdn.bootcss.com/node-waves/0.7.6/waves.min.css" rel="stylesheet">
 <link href="{% static 'css/monitor.css' %}" rel="stylesheet" type="text/css">
-<link href="{% static 'libs/zico.min.css' %}" rel="stylesheet">
-<link href="{% static 'libs/waves.min.css' %}" rel="stylesheet">
+{% block css %}
+{% endblock %}
 <title>bilibili监控</title>
 </head>
 <body csrf_token="{% csrf_token %}">
@@ -63,11 +65,11 @@
         </div>
     </div>
 </div>
-<script src="{% static 'libs/jquery-3.3.1.min.js' %}" charset="utf-8"></script>
-<script src="{% static 'libs/popper.min.js' %}" charset="utf-8"></script>
-<script src="{% static 'libs/bootstrap.min.js' %}" charset="utf-8"></script>
-<script src="{% static 'libs/waves.min.js' %}" charset="utf-8"></script>
-<script src="{% static 'libs/Chart.bundle.js' %}" charset="utf-8"></script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://cdn.bootcss.com/twitter-bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="https://cdn.bootcss.com/node-waves/0.7.6/waves.min.js"></script>
+<script src="https://cdn.bootcss.com/Chart.js/2.7.3/Chart.bundle.js"></script>
 <script src="{% static 'libs/utils.js' %}" charset="utf-8"></script>
 <script src="{% static 'js/monitor.js' %}" charset="utf-8"></script>
 {% block js %}

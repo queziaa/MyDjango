@@ -8,7 +8,7 @@ def home(request):
     start_data = []
     start_time_temp = start_time.objects.all()
     for i in start_time_temp:
-        hour_max = get_hour_max(i)
+        hour_max = get_hour_max(i,False)
         if len(hour_max) == 0:
             continue
         if len(start_data) == 0:
@@ -28,14 +28,13 @@ def home(request):
     for start_data_i in start_data:
         start_data_i['start'] = str_time(start_data_i['start'])
         start_data_i['hour'] = str_time(start_data_i['hour'])
-
     ranking=[]
     inc_num = lambda x,y:x-y
     inc_per = lambda x,y:(" %.2f%%" % ((x-y)/y*100))
-    ranking.append({'title':'今日播放数','list':ranking_get('view',0,inc_num,True,False)})
-    ranking.append({'title':'24小时播放数增长率','list':ranking_get('view',24,inc_per,False,False)})
-    ranking.append({'title':'今日分享数','list':ranking_get('share',0,inc_num,True,False)})
-    ranking.append({'title':'24小时分享数增长率','list':ranking_get('share',24,inc_per,False,False)})
+    ranking.append({'title':'今日播放数','list':ranking_get('view',0,inc_num,True,False,-1)})
+    ranking.append({'title':'24小时播放数增长率','list':ranking_get('view',24,inc_per,False,False,-1)})
+    ranking.append({'title':'今日分享数','list':ranking_get('share',0,inc_num,True,False,-1)})
+    ranking.append({'title':'24小时分享数增长率','list':ranking_get('share',24,inc_per,False,False,-1)})
     return render(request,'monitor_home.html',{'start':start_data,'ranking':ranking})
 
 def all(request):
@@ -56,6 +55,7 @@ def top_list_post(request):
         time = int(request.POST.get('time',''))
         calcu_type = int(request.POST.get('calcu_type',''))
         sort_type = int(request.POST.get('sort_type',''))
+        shelves = int(request.POST.get('shelves',''))
         if data_type == 0:
             data_type = 'view'
         elif data_type == 1:
@@ -85,9 +85,15 @@ def top_list_post(request):
             sort_type == False
         else:
             return HttpResponse('{"code":1,"sort_type"'+str(sort_type)+'}') 
-        start_data = ranking_get(data_type,time,calcu_type,blank_2,sort_type)
+        start_data = ranking_get(data_type,time,calcu_type,blank_2,sort_type,shelves)
         return HttpResponse(json.dumps(start_data))
 
+def info_post(request):
+    if request.method == 'POST':
+        id=request.POST.get('id','')
+        data = get_mod_mcard(id)
+        return HttpResponse(json.dumps(data))
+    return HttpResponse('ERROR')
 
 def id_list_post(request):
     if request.method == 'POST':
@@ -120,7 +126,8 @@ def id_list_post(request):
             start_data[i] = get_mod_mcard(start_data[i]['id'])
         for i in start_data:
             i['id'] = str(i['id'])
-    return HttpResponse(json.dumps(start_data))
+        return HttpResponse(json.dumps(start_data))
+    return HttpResponse('ERROR')    
 
 def mcard_list_post(request):
     CELERY_ERROR_LOG = r'/home/que-linux/bilibili_monitor.log'
@@ -133,20 +140,19 @@ def mcard_list_post(request):
         for i in id_list:
             if(i != 'None'):
                 start_data.append(get_mod_mcard(i))
-    return HttpResponse(json.dumps(start_data))
+        return HttpResponse(json.dumps(start_data))
+    return HttpResponse('ERROR')
 
 def get_mod_mcard(id):
     start_data = {}
     mod_id = start_time.objects.get(id=id)
     start_data['cover'] = mod_id['cover']
     start_data['title'] = mod_id['title']
-    hour_max = get_hour_max(mod_id)
-    start_data['start'] = str_time(hour_max['start'])
-    start_data['hour'] = str_time(hour_max['hour'])
     start_data['id'] = str(mod_id['id'])
+    start_data.update(get_hour_max(mod_id))
     return start_data
 
-def get_hour_max(mod):
+def get_hour_max(mod,format=True):
     hour_max = {}
     for i_i in mod['time']:
         if i_i['hour'] == i_i['start']:
@@ -159,19 +165,24 @@ def get_hour_max(mod):
             hour_max['start'] = i_i['start']
         else:
             pass
+    if(format):
+        hour_max['hour'] = str_time(hour_max['hour'])
+        hour_max['start'] = str_time(hour_max['start'])
     return hour_max
 
 def str_time(i):
     return time.strftime('%m月%d日%H:%M', time.localtime(i))
 
-def ranking_get(ranking_type,time_apart,col_lam,blank_2,reverse_list):
+def ranking_get(ranking_type,time_apart,col_lam,blank_2,reverse_list,shelves):
     time_apart+=1
     ranking_data = []
     ranking_time_temp = start_time.objects.all()
     for i in ranking_time_temp:
         for i_i in i['time']:
             temp = {}
-            if len(i_i[ranking_type])>= 1 and time_apart == 1 and i_i[ranking_type][-1]!=None:
+            if shelves != -1 and i_i['start'] < int(time.time()) - shelves:
+                continue
+            elif len(i_i[ranking_type])>= 1 and time_apart == 1 and i_i[ranking_type][-1]!=None:
                 temp = {'id':str(i['id']),'title':i['title'],'index':i_i['index'],ranking_type:i_i[ranking_type][-time_apart]}
             elif len(i_i[ranking_type]) >= time_apart and i_i[ranking_type][-1]!=None and i_i[ranking_type][-time_apart]!=None:
                 if blank_2 or i_i[ranking_type][-time_apart] != 0:
@@ -245,7 +256,8 @@ def post_animation_info(request):
             if i['index'] == index:
                 data = i.to_json()
                 break
-    return HttpResponse(data)
+        return HttpResponse(data)
+    return HttpResponse('ERROR')    
 
 def post_index(request):
     data = {'info':1,'data':[],'disabled':[]}

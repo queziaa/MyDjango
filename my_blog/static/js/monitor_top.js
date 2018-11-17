@@ -36,6 +36,7 @@ function sele_onch(type,th){
             window.top_data['time'] = 24;
         }
         if(th.selectedIndex == 3){
+            window.top_data['time'] = 3;
             $('.time_sele').removeClass('display_none');
             return false;
         }else{
@@ -46,7 +47,14 @@ function sele_onch(type,th){
     }else if(type == 3){
         window.top_data['sort_type'] = th.selectedIndex;
     }else if(type == 4){
-        if(th.selectedIndex == 3){
+        if(th.selectedIndex == 0){
+            window.top_data['shelves'] = 24;
+        }else if(th.selectedIndex == 1){
+            window.top_data['shelves'] = 168;
+        }else if(th.selectedIndex == 2){
+            window.top_data['shelves'] = -1;
+        }else if(th.selectedIndex == 3){
+            window.top_data['shelves'] = 3;
             $('.shelves_sele').removeClass('display_none');
             return false;
         }else{
@@ -66,22 +74,20 @@ function inp_onb(th){
     }
 }
 function top_post(){
-    var csrfmiddlewaretoken = $('body').attr('csrf_token');
-    csrfmiddlewaretoken = csrfmiddlewaretoken.substring(csrfmiddlewaretoken.indexOf("value='")+7,csrfmiddlewaretoken.indexOf("' />"));
     if(window.top_data['time'] == 3){
         if(isNaN(parseInt($('.time_sele')[0].value)))
             return false
         else
-            window.top_data['calcu_type'] = parseInt($('.time_sele')[0].value);
+            window.top_data['time'] = parseInt($('.time_sele')[0].value);
     }
     if(window.top_data['shelves'] == 3){
         if(isNaN(parseInt($('.shelves_sele')[0].value)))
             return false
         else
-            window.top_data['shelves'] = parseInt($('.shelves_sele')[0].value);
+            window.top_data['shelves'] = parseInt($('.shelves_sele')[0].value)*24;
     }
     $.ajax({
-        type:"POST",	
+        type:"POST",
         url:"/top_list_post/",
         data:{
             data_type:window.top_data['data_type'],
@@ -89,7 +95,7 @@ function top_post(){
             calcu_type:window.top_data['calcu_type'],
             sort_type:window.top_data['sort_type'],
             shelves:window.top_data['shelves'],
-            csrfmiddlewaretoken:csrfmiddlewaretoken,
+            csrfmiddlewaretoken:GETcsrfmiddlewaretoken(),
         },
         dataType:"json",
         success:function(data){
