@@ -24,7 +24,8 @@
                         <option>24小时前</option>
                         <option>自定义时间</option>
                     </select>
-                    <input for="inputError" class="form-control mr-sm-2 time_sele display_none" type="text" onblur="inp_onb(this)" placeholder="输入小时数" style="display:inline;width:220px;">
+                    <input for="inputError" class="form-control mr-sm-2 time_sele display_none" 
+                        type="text" onblur="inp_onb(this)" placeholder="输入小时数" style="display:inline;width:110px;">
                     <select class="selectpicker calcu_type" onchange="sele_onch(2,this)">
                         <option>数量</option>
                         <option>相对以现在的增长数量</option>
@@ -40,10 +41,38 @@
                         <option>上架时间不限</option>
                         <option>自定义时间</option>
                     </select>
-                    <input for="inputError" class="form-control mr-sm-2 shelves_sele display_none" type="text" onblur="inp_onb(this)" placeholder="输入天数" style="display:inline;width:220px;">
+                    <input for="inputError" class="form-control mr-sm-2 shelves_sele display_none" 
+                        type="text" onblur="inp_onb(this)" placeholder="输入天数" style="display:inline;width:110px;">
+                    <select class="selectpicker" onchange="sele_onch(5,this)">
+                            <option>数据更新于1天内</option>
+                            <option>数据更新于7天内</option>
+                            <option>数据更新时间不限</option>
+                            <option>自定义时间</option>
+                    </select>
+                    <input for="inputError" class="form-control mr-sm-2 update_sele display_none" 
+                        type="text" onblur="inp_onb(this)" placeholder="输入天数" style="display:inline;width:110px;">
                 </small>
             </div>
-            <div class=" p-0 col-xl-12 domUp" style="border-radius:10px;">
+            <div class=" pt-5 col-xl-9 domUp" style="border-radius:10px;">	
+                <table class="table h4 table-hover">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>标题</th>
+                            <th>集数</th>
+                            <th>数据</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table_body">
+                        <tr>
+                            <td><i class="zi zi_syncalt zi_spin zi_2x"></i></td>
+                            <td><i class="zi zi_syncalt zi_spin zi_2x"></i></td>
+                            <td><i class="zi zi_syncalt zi_spin zi_2x"></i></td>
+                            <td><i class="zi zi_syncalt zi_spin zi_2x"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

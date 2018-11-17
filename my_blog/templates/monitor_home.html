@@ -55,13 +55,15 @@
             <div class="p-0 col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12">
                 <div class="ml-2 mr-2 p-0 pl-3 pr-3  shadow-sm" style="background-color:rgba(255, 255, 255, .5);border-radius:7px;">
                     <h2 class="text-center py-2">{{ data.title }}</h2>
-                    <ol class="">
+                    <ol>
                     {% for list in data.list %}
                         <li>
-                            <a class="text-dark" title="{{ data.title|cut:'今日' }}:{{ list.num }}" href="###" onclick="ranking_pop_chart(this)" temp-id= "{{ list.id }}">
-                                {{ list.title }}
-                            </a>
-                            <small class="text-muted">{{ list.index }}集</small>
+                            <p class="text-truncate p-0 m-0">
+                                <a class="text-dark" title="{{ data.title|cut:'今日' }}:{{ list.num }}" href="###" onclick="top_pop_chart('{{ list.id }}')" temp-id= "{{ list.id }}">
+                                    {{ list.title }}
+                                </a>
+                                <small class="text-muted">{{ list.index }}集</small>
+                            </p>
                         </li>
                     {% endfor %}
                     </ol>

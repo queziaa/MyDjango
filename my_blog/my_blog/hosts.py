@@ -7,8 +7,7 @@ from www import views as www          #导入app2,我的app2叫translate
 
 
 host_patterns = patterns('',
-    host(r'www', 'www.urls', name='www'),          #子域名，类似weather.test.com中的weather
-    host(r'blog', 'article.urls', name='article'), #子域名，类似translate.test.com 中的translate
-    host(r'monitor', 'monitor.urls', name='monitor'),
-    
+    host(r'cv', 'www.urls', name='www'),
+    host(r'www', 'article.urls', name='article'),
+    host(r'monitor', 'monitor.urls', name='monitor'),   
 )

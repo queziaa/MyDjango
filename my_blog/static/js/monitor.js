@@ -63,12 +63,12 @@ function pop_chart(tt,clone){
     $chart_body.append(tt);
     Waves.attach('.btn', ['waves-float']);
 }
-function ranking_pop_chart(tt){
+function top_pop_chart(temp_id){
     $.ajax({
         type:"POST",	
         url:"/info_post/",
         data:{
-            id:id = $(tt).attr('temp-id'),
+            id:id = temp_id,
             csrfmiddlewaretoken:GETcsrfmiddlewaretoken(),
         },
         dataType:"json",

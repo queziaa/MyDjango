@@ -31,10 +31,10 @@ def home(request):
     ranking=[]
     inc_num = lambda x,y:x-y
     inc_per = lambda x,y:(" %.2f%%" % ((x-y)/y*100))
-    ranking.append({'title':'今日播放数','list':ranking_get('view',0,inc_num,True,False,-1)})
-    ranking.append({'title':'24小时播放数增长率','list':ranking_get('view',24,inc_per,False,False,-1)})
-    ranking.append({'title':'今日分享数','list':ranking_get('share',0,inc_num,True,False,-1)})
-    ranking.append({'title':'24小时分享数增长率','list':ranking_get('share',24,inc_per,False,False,-1)})
+    ranking.append({'title':'今日播放数','list':ranking_get(ranking_type='view',time_apart=0,col_lam=inc_num,reverse_list=True,length=6)})
+    ranking.append({'title':'24小时播放数增长率','list':ranking_get(ranking_type='view',time_apart=24,col_lam=inc_per,length=6)})
+    ranking.append({'title':'今日分享数','list':ranking_get(ranking_type='share',time_apart=0,col_lam=inc_num,reverse_list=True,length=6)})
+    ranking.append({'title':'24小时分享数增长率','list':ranking_get(ranking_type='share',time_apart=24,col_lam=inc_per,length=6)})
     return render(request,'monitor_home.html',{'start':start_data,'ranking':ranking})
 
 def all(request):
@@ -43,12 +43,6 @@ def all(request):
 def top(request):
     return render(request,'monitor_top.html')
 
-# 播放    今日         数量                   最高
-# 回复    于1小时前    相对以现在的增长数量      最低
-# 分享    于24小时前   相对以现在的增长率
-# 弹幕    自定义时间
-# 硬币
-
 def top_list_post(request):
     if request.method == 'POST':
         data_type = int(request.POST.get('data_type',''))
@@ -56,6 +50,8 @@ def top_list_post(request):
         calcu_type = int(request.POST.get('calcu_type',''))
         sort_type = int(request.POST.get('sort_type',''))
         shelves = int(request.POST.get('shelves',''))
+        update = int(request.POST.get('update',''))
+        num = int(request.POST.get('num',''))
         if data_type == 0:
             data_type = 'view'
         elif data_type == 1:
@@ -85,7 +81,7 @@ def top_list_post(request):
             sort_type == False
         else:
             return HttpResponse('{"code":1,"sort_type"'+str(sort_type)+'}') 
-        start_data = ranking_get(data_type,time,calcu_type,blank_2,sort_type,shelves)
+        start_data = ranking_get(ranking_type=data_type,time_apart=time,col_lam=calcu_type,blank_2=blank_2,reverse_list=sort_type,shelves=shelves,update=update,length=num)
         return HttpResponse(json.dumps(start_data))
 
 def info_post(request):
@@ -173,14 +169,14 @@ def get_hour_max(mod,format=True):
 def str_time(i):
     return time.strftime('%m月%d日%H:%M', time.localtime(i))
 
-def ranking_get(ranking_type,time_apart,col_lam,blank_2,reverse_list,shelves):
+def ranking_get(*,ranking_type,time_apart,col_lam,blank_2=False,reverse_list=False,shelves=-1,update=-1,length=9):
     time_apart+=1
     ranking_data = []
     ranking_time_temp = start_time.objects.all()
     for i in ranking_time_temp:
         for i_i in i['time']:
             temp = {}
-            if shelves != -1 and i_i['start'] < int(time.time()) - shelves:
+            if shelves != -1 and i_i['start'] < int(time.time()) - shelves*3600 and update != -1 and i_i['start'] < int(time.time()) - update*3600:
                 continue
             elif len(i_i[ranking_type])>= 1 and time_apart == 1 and i_i[ranking_type][-1]!=None:
                 temp = {'id':str(i['id']),'title':i['title'],'index':i_i['index'],ranking_type:i_i[ranking_type][-time_apart]}
@@ -196,7 +192,7 @@ def ranking_get(ranking_type,time_apart,col_lam,blank_2,reverse_list,shelves):
             else:
                 continue
             s=0
-            if len(ranking_data) <= 6:
+            if length == -1 or len(ranking_data) <= length:
                 temp['num'] = temp[ranking_type]
                 temp.pop(ranking_type)
                 ranking_data.append(temp)
@@ -206,8 +202,8 @@ def ranking_get(ranking_type,time_apart,col_lam,blank_2,reverse_list,shelves):
                     temp['num'] = temp[ranking_type]
                     temp.pop(ranking_type)
                     ranking_data.insert(s,temp)
-                    if len(ranking_data) > 6:
-                        ranking_data = ranking_data[:6]
+                    if len(ranking_data) > length:
+                        ranking_data = ranking_data[:length]
                     break
                 s+=1
     if(reverse_list):

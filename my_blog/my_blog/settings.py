@@ -29,8 +29,8 @@ SECRET_KEY = 'r-&180r7ih4(cm+49ky&@8l(uyx4*6-o7t0!t8$eagsgc9)f^h'
 # SECURITY WARNING: don't run with debug turned on in production!
 
 # DEBUG = False
-# ALLOWED_HOSTS = ['www.queziaa.fun','blog.queziaa.fun','monitor.queziaa.fun']
-ALLOWED_HOSTS = ['www.localhost.com','blog.localhost.com','monitor.localhost.com']
+# ALLOWED_HOSTS = ['www.queziaa.fun','cv.queziaa.fun','monitor.queziaa.fun']
+ALLOWED_HOSTS = ['www.localhost.com','cv.localhost.com','monitor.localhost.com']
 DEBUG = True
 
 
