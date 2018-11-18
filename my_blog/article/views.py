@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone  
 from my_blog.settings import SECRET_KEY as SALT
 from .forms import add_comment,outside_img,release_forms
-from article.models import Article,Comment_db,IMG,Article_examine,User_data,Search_db
+from article.models import Article,Comment_db,IMG,Article_examine,User_data,Search_db,Message_db
 
 import datetime,base64,hashlib ,random,time,json,cgi
 # import threading
@@ -45,7 +45,34 @@ def get_home_articles(request,page):
     return HttpResponse(json.dumps(archive_json))
 
 def me(request):
-    return render(request,'me.html',{'html_title':'关于我_'})
+    if request.method == 'POST':
+        form = add_comment(request.POST)
+        if form.is_valid():
+            comment_content = form.cleaned_data['comment_content']
+            ip=obtain_nameORip(request)
+            Message_db.objects.create(comments_text = comment_content,ip_hash = ip)
+            return HttpResponseRedirect('/me')
+    comment = add_comment()
+    comment_content = []
+    comment_ip_floor = len(Message_db.objects.all())
+    for message in Message_db.objects.all():
+        comment_content.append(message)
+        comment_content[-1].floor = comment_ip_floor
+        comment_content[-1].comments_text = Article_mix(comment_content[-1].comments_text)
+        comment_ip_floor = comment_ip_floor-1
+    cookie_data = cookie_verification(request)
+    if type(cookie_data) == str:
+        response = HttpResponseRedirect('/me')
+        response.delete_cookie('password')
+        response.delete_cookie('name')
+        return response
+    elif cookie_data == None:
+        User_name = ip_base(request)
+        Result = None
+    else:
+        User_name = cookie_data['name']
+        Result = True
+    return render(request,'me.html',{'comment':comment,'comment_content':comment_content,'User_name':User_name,'Result':Result,'html_title':'关于我_'})
 
 def detailed(request,id):
     if request.method == 'POST':
@@ -60,7 +87,6 @@ def detailed(request,id):
             post.comments_quantity=post.comments_quantity+1
             post.save()
             return HttpResponseRedirect('/detailed/'+str(id)+'/')
-
     post = Article.objects.get(id=id)
     post.label=post.label.split('#')
     comment=add_comment()

@@ -1,6 +1,46 @@
 {% extends "base.html" %}
 {% block content %}
+	<style>
+		a:hover[onclick]{
+			color:#a78d71;
+		}
+	.title p{
+		font-size:50px;
+		margin:0;
+		color: #a78d71;
+		text-align: center;
+		padding :0px 0px 10px 0px;
+	}
+	.ther span{
+		text-align: center;
+	}
+	.section_main .comment{
+		padding:4% 0%;
+	}
+	.section_main textarea{
+		height: 100%;
+		text-align:left;
+	}
+	.section_main input{
+		width: auto;
+	}
+	.comment a{
+		margin:0% 0% 0% 1% ;
+		background: #bfc4cc;
+		color: #31332e;
+		border-radius: 5px;
+		height:40px;
+		padding:2%;
+		font-size: 20px; 
+	}
+	.ther{
+		padding:0px 0px 30px 0px;
+	}
+	</style>
 	<div style="font-size: 70px;padding: 50px;color: #bfc4cc;">
+		<div style="width:100%;float:left;">
+			<a href="###" onclick="this.text=array[Math.floor(Math.random()*array.length)];">QAQ</a>
+		</div>
 		<div style="width:20%;float:left;">
 			<p>Github : </p>
 			<p>E-mail : </p>
@@ -11,15 +51,47 @@
 			<p><a href="mailto:queziaa31@gmail.com">queziaa31@gmail.com</a></p>
 			<p><a class="cv_a" href="aHR0cHM6Ly9jdi5xdWV6aWFhLmNvbQ==">Y3YucXVlemlhYS5mdW4=</a></p>
 		</div>
-		<div style="width:100%;float:left;">
-			<a href="###" onclick="this.text=array[Math.floor(Math.random()*array.length)];">QAQ</a>
+	</div>
+	<div class="section_main">
+		<form class="comment" method='post'>
+			{% csrf_token %}
+			{{ comment }}
+			{% if Result %}
+				<span>${{ User_name }}</span>
+				<input type="submit" value="发布评论">
+			{% else %}
+				<span>#{{ User_name }}</span>
+				<input type="submit" value="匿名评论">
+			{% endif %}
+				<input type="button" value="格式帮助" onclick="help()">
+		</form>
+		{% for comment_text in comment_content %} 
+		<div id="comment_text">
+			<div id="comment_title">
+				<span id="comment_name">{{ comment_text.ip_hash}}</span>
+				<span id="comment_time">{{ comment_text.date_time }}</span>
+			</div>
+			<div id="comment_floor">#{{ comment_text.floor }}</div>
+			<div id="comment_content">
+				<p>
+					{% for temp in comment_text.comments_text %}
+						{% if temp.text %}
+							{{ temp.text|linebreaksbr }}
+						{% endif %}
+							{% if temp.type == 'img' %}
+								<img src="{{ temp.date_1 }}" >
+							{% elif temp.type == 'a' %}
+								<a href="{{ temp.date_1 }}">{{ temp.date_2 }}</a>
+							{% elif temp.type == 'code' %}
+								<pre><code>{{ temp.date_1 }}</code></pre>
+							{% else %}
+							{% endif %}
+					{% endfor %}
+				</p>
+			</div>
 		</div>
-	</div>	
-	<style>
-		a:hover[onclick]{
-			color:#a78d71;
-		}
-	</style>
+		{% endfor %}
+	</div>
 	<script>
 		function b64DecodeUnicode(str) {
 			return decodeURIComponent(atob(str).split('').map(function(c) {
@@ -55,5 +127,6 @@
 		"ヽ（≧□≦）ノ","(* ￣︿￣)","(*￣︿￣)","（＃￣～￣＃）","￣へ￣","(⊙x⊙;)","o(≧口≦)o","(○´･д･)ﾉ","(*Φ皿Φ*)","wow~ ⊙o⊙","⊙▾⊙","(￣m￣）",
 		"~(￣0￣)/","￣△￣","(°ー°〃)","_( ﾟДﾟ)ﾉ","╰(*°‿°*)╯","Σ( ° △ °|||)︴","Σ(｀д′*ノ)ノ","Σ(っ °Д °;)っ","(⊙ˍ⊙)","(。_。)","(￣△￣；)",
 		"（*゜ー゜*）","Ｏ(≧口≦)Ｏ"];
+		document.getElementById("id_comment_content").placeholder='这是一个留言板\n留下点什么吧';
 	</script>
 {% endblock %}

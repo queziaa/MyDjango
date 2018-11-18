@@ -39,5 +39,5 @@ def spider_data():
         fp.close()
     else:
         fp = open(CELERY_ERROR_LOG,'a+',encoding='utf-8')
-        fp.write(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))+'spider_data:OK@'+str(log)+'\n')
+        fp.write(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))+'$spider_data:OK@'+str(log)+'\n')
         fp.close()    

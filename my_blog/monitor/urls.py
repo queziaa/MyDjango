@@ -30,12 +30,15 @@ urlpatterns = [
     path('post_animation_info/',views.post_animation_info,name = 'post_animation_info'),
     path('post_index/',views.post_index,name = 'post_index'),
     path('all/',views.all,name="all"),
+    path('top/',views.top,name="top"),
+    path('log/',views.log,name="log"),
+    path('admin/',admin.site.urls),
+
     path('id_list_post/',views.id_list_post,name="id_list_post"),
     path('mcard_list_post/',views.mcard_list_post,name="mcard_list_post"),
     path('top_list_post/',views.top_list_post,name="top_list_post"),
-    path('top/',views.top,name="top"),
     path('info_post/',views.info_post,name="info_post"),
-    path('admin/',admin.site.urls),
+
     url(r'^favicon\.ico$', static.serve,{'document_root': settings.STATIC_ROOT,'path': "/img/favicon.ico"}),
     url(r'^static/(?P<path>.*)$', static.serve,{'document_root': settings.STATIC_ROOT}, name='static'), 
     

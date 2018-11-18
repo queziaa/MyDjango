@@ -70,3 +70,8 @@ class Search_db(models.Model):
     
     def __str__(self) :
         return self.marking
+
+class Message_db(models.Model):
+    date_time = models.DateTimeField(auto_now_add = True)
+    comments_text = models.TextField(max_length = 450,null = True)
+    ip_hash = models.CharField(max_length = 13)

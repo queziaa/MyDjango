@@ -31,9 +31,9 @@ def home(request):
     ranking=[]
     inc_num = lambda x,y:x-y
     inc_per = lambda x,y:(" %.2f%%" % ((x-y)/y*100))
-    ranking.append({'title':'今日播放数','list':ranking_get(ranking_type='view',time_apart=0,col_lam=inc_num,reverse_list=True,length=6)})
+    ranking.append({'title':'今日播放数','list':ranking_get(ranking_type='view',time_apart=0,col_lam=inc_num,blank_2=True,reverse_list=True,length=6)})
     ranking.append({'title':'24小时播放数增长率','list':ranking_get(ranking_type='view',time_apart=24,col_lam=inc_per,length=6)})
-    ranking.append({'title':'今日分享数','list':ranking_get(ranking_type='share',time_apart=0,col_lam=inc_num,reverse_list=True,length=6)})
+    ranking.append({'title':'今日分享数','list':ranking_get(ranking_type='share',time_apart=0,col_lam=inc_num,blank_2=True,reverse_list=True,length=6)})
     ranking.append({'title':'24小时分享数增长率','list':ranking_get(ranking_type='share',time_apart=24,col_lam=inc_per,length=6)})
     return render(request,'monitor_home.html',{'start':start_data,'ranking':ranking})
 
@@ -42,6 +42,9 @@ def all(request):
 
 def top(request):
     return render(request,'monitor_top.html')
+
+def log(request):
+    return render(request,'monitor_log.html')
 
 def top_list_post(request):
     if request.method == 'POST':
@@ -66,7 +69,7 @@ def top_list_post(request):
             return HttpResponse('{"code":1,"data_type"'+str(data_type)+'}')
         if calcu_type == 0:
             calcu_type = lambda x,y:y
-            blank_2 = False
+            blank_2 = True
         elif calcu_type == 1:
             calcu_type = lambda x,y:x-y
             blank_2 = True
@@ -192,7 +195,7 @@ def ranking_get(*,ranking_type,time_apart,col_lam,blank_2=False,reverse_list=Fal
             else:
                 continue
             s=0
-            if length == -1 or len(ranking_data) <= length:
+            if len(ranking_data) == 0:
                 temp['num'] = temp[ranking_type]
                 temp.pop(ranking_type)
                 ranking_data.append(temp)
@@ -202,7 +205,7 @@ def ranking_get(*,ranking_type,time_apart,col_lam,blank_2=False,reverse_list=Fal
                     temp['num'] = temp[ranking_type]
                     temp.pop(ranking_type)
                     ranking_data.insert(s,temp)
-                    if len(ranking_data) > length:
+                    if length != -1 and len(ranking_data) > length:
                         ranking_data = ranking_data[:length]
                     break
                 s+=1

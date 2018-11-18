@@ -59,7 +59,7 @@
                     {% for list in data.list %}
                         <li>
                             <p class="text-truncate p-0 m-0">
-                                <a class="text-dark" title="{{ data.title|cut:'今日' }}:{{ list.num }}" href="###" onclick="top_pop_chart('{{ list.id }}')" temp-id= "{{ list.id }}">
+                                <a class="text-dark" title="{{ data.title|cut:'今日' }}:{{ list.num }}" href="###" onclick="top_pop_chart('{{ list.id }}',{{ list.index }})" temp-id= "{{ list.id }}">
                                     {{ list.title }}
                                 </a>
                                 <small class="text-muted">{{ list.index }}集</small>

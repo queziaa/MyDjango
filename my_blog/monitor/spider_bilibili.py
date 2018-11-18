@@ -15,7 +15,9 @@ client = pymongo.MongoClient(host='localhost', port=27017, connect=False)
 mongopost = client['monitor']['start_time_4']
 
 
-def main_spider_time(CELERY_ERROR_LOG):
+def main_spider_time(CELERY_ERROR_LOG_L):
+    global CELERY_ERROR_LOG
+    CELERY_ERROR_LOG = CELERY_ERROR_LOG_L
     url = 'https://bangumi.bilibili.com/web_api/timeline_global'
     headers["Host"] = "bangumi.bilibili.com"
     post_text = requests.get(url,headers=headers,timeout=10)
@@ -52,7 +54,9 @@ def main_spider_time(CELERY_ERROR_LOG):
                     temp.update(count_time(i_seasons['pub_ts']))
                     mongopost.update({"season_id":i_seasons['season_id']},{"$push":{"time":temp}})
                     
-def main_spider_data(CELERY_ERROR_LOG):
+def main_spider_data(CELERY_ERROR_LOG_L):
+    global CELERY_ERROR_LOG
+    CELERY_ERROR_LOG = CELERY_ERROR_LOG_L
     for find_data in mongopost.find():
         for i_time in find_data['time']:
             while time_range(i_time['hour'],180) == -1:
@@ -64,11 +68,11 @@ def main_spider_data(CELERY_ERROR_LOG):
                 i_time['view'].append(None)
                 i_time['reply'].append(None)
             if time_range(i_time['hour'],180) == 0:
-                i_time = spider_requests(i_time,CELERY_ERROR_LOG)
+                i_time = spider_requests(i_time)
             mongopost.update({'title':find_data['title']},{'$pull':{'time':{'index':i_time['index']}}})
             mongopost.update({'title':find_data['title']},{'$push':{'time':i_time}})
 
-def spider_requests(i_time,CELERY_ERROR_LOG):
+def spider_requests(i_time):
     try:
         url='https://api.bilibili.com/x/web-interface/view?aid=' + str(i_time['aid'])
         headers['Host'] = 'api.bilibili.com'
@@ -119,14 +123,20 @@ def count_time(start):
     return {"hour":hour,"hour_freq":hour_freq,'coin':coin,'danmaku':danmaku,'share':share,'view':view,'reply':reply}
 
 def sid_aid(s_id,index):        
-        url='https://www.bilibili.com/bangumi/play/ss' + str(s_id)
-        headers['Host'] = 'www.bilibili.com'
-        post_text = requests.get(url,headers=headers,timeout=10)
+    url='https://www.bilibili.com/bangumi/play/ss' + str(s_id)
+    headers['Host'] = 'www.bilibili.com'
+    post_text = requests.get(url,headers=headers,timeout=10)
+    try:
         text = json.loads(re.findall('__INITIAL_STATE__.*function',post_text.text)[0][18:-10])['epList']
-        for i in text:
-            if i['index'] == str(index):
-                return int(i['aid'])
+    except Exception as e:
+        fp = open(CELERY_ERROR_LOG,'a+',encoding='utf-8')
+        fp.write(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))+'sid_aid:ERRORloadsRe@'+traceback.format_exc()+url+post_text.text+'\n')
+        fp.close()
         return -1
+    for i in text:
+        if i['index'] == str(index):
+            return int(i['aid'])
+    return -1
 
 if __name__ == '__main__':
     CELERY_ERROR_LOG = r'/home/que-linux/bilibili_monitor.log'

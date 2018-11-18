@@ -30,7 +30,6 @@ function sele_onch(type,th){
             window.calcu_type_parent.attr("data-original-title","时间为现在时只能查询数量");
             window.calcu_type_parent.attr("data-toggle","tooltip");
             $("[data-toggle='tooltip']").tooltip();
-            return false;
         }else if(th.selectedIndex == 1){
             window.top_data['time'] = 1;
         }else if(th.selectedIndex == 2){
@@ -136,7 +135,7 @@ function top_post(){
                 var $tr = $('<tr></tr>');
                 $tr.append('<td>'+num+'</td>')
                 var temp = "'"+data[i]['id']+"'";
-                $tr.append('<td><a href="###" onclick="top_pop_chart('+temp+')">'+data[i]['title']+'</a></td>')
+                $tr.append('<td><a href="###" onclick="top_pop_chart('+temp+','+data[i]['index']+')">'+data[i]['title']+'</a></td>')
                 $tr.append('<td>'+data[i]['index']+'集</td>')
                 $tr.append('<td>'+data[i]['num']+'</td>')
                 $table_body.append($tr);

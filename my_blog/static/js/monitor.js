@@ -9,18 +9,18 @@ function switch_time(tt){
     tt.attr("temp-storage-2",s);
     event.stopPropagation(); 
 }
-function pop_chart(tt,clone){
+function pop_chart(tt,clone,index){
     var col_1 = 'p-0 col-xl-2 col-lg-12 col-md-12 col-sm-12 col-12';
     var col_2 = 'p-0 col-xl-2 col-lg-3 col-md-12 col-sm-12 col-12';
     var col_3 = 'p-0 col-xl-8 col-lg-9 col-md-12 col-sm-12 col-12';
-    window.ajax_chart={'index':1,'info':[-5],'img_y':1,'img_m':1};
+    window.ajax_chart={'index':index,'info':[-5],'img_y':1,'img_m':1};
     var $chart_body = $('#chart-body');
     $chart_body.html(null);
     if (clone ==undefined)
         var tt=$(tt).clone();
     var $div = $('<div class="'+col_2+'"></div>');
     $div.append($('<h3 class="text-center my-3 choice_index">选择集数</h3>'));
-    post_index(tt.attr('temp-id'));
+    post_index(tt.attr('temp-id'),index);
     $div.append($('<h3 class="text-center my-3">选择显示信息</h3>'));
     $div.append('<span><a class="p-0 btn btn-secondary stat_list" onclick="record(this,-2);" style="border:0;margin:2.5%;border-radius:7px;height:3em;line-height:3em;width:45%" href="###">硬币数</a></span>');
     $div.append('<span><a class="p-0 btn btn-secondary stat_list" onclick="record(this,-3);" style="border:0;margin:2.5%;border-radius:7px;height:3em;line-height:3em;width:45%" href="###">弹幕数</a></span>');
@@ -63,7 +63,7 @@ function pop_chart(tt,clone){
     $chart_body.append(tt);
     Waves.attach('.btn', ['waves-float']);
 }
-function top_pop_chart(temp_id){
+function top_pop_chart(temp_id,index){
     $.ajax({
         type:"POST",	
         url:"/info_post/",
@@ -82,7 +82,7 @@ function top_pop_chart(temp_id){
                             +'justify-content-between align-items-center"><div class="btn-group" style="width:100%"><p class="m-0 text-center text-truncate '
                             +'text-overflow" style="width:100%" title="'+data['title']+'">'+data['title']+'</p></div></div></div>'));
             shadow = $('<div class="p-0 col-xl-2 col-lg-3 col-md-3 col-sm-4 col-5" onclick="pop_chart(this)" temp-id="'+data['id']+'"></div>').append(shadow);
-            pop_chart(shadow,true);        
+            pop_chart(shadow,true,index);        
         },
     });
 }
@@ -148,7 +148,7 @@ function record(tt,sum){
         ;
     }
 }
-function post_index(id){
+function post_index(id,index){
     $.ajax({
         type:"POST",	
         url:"/post_index/",
@@ -167,11 +167,17 @@ function post_index(id){
                         +'</a></span>');
                 }else{
                     $('.index_list').toggleClass('bg-bilibili',false);
-                    $choice_index.after('<span><a onclick="record(this,'+data['data'][i]+');" class="p-0 btn btn-secondary index_list bg-bilibili" '
+                    $choice_index.after('<span><a onclick="record(this,'+data['data'][i]+');" index="'+data['data'][i]+'" class="p-0 btn btn-secondary index_list bg-bilibili" '
                     +'style="border:0;margin:6.3px;border-radius:40px;height:3em;line-height:3em;width:3em" href="###">'
                     +data['data'][i]+'</a></span>');
                     ajax_chart['index'] = data['data'][i];
                 }
+                if(index!=undefined){
+                    ajax_chart['index'] = index;
+                    $('.index_list').toggleClass('bg-bilibili',false);
+                    $('[index='+index+']').addClass('bg-bilibili');
+                }
+
                 $("[data-toggle='tooltip']").tooltip(); 
                 // $div.append($('<span style="padding:0em 5% 0em 5%;"><a class="m-1 p-0 btn btn-secondary index_list index_list_all" onclick="record(this,-1);" style="border:0;border-radius:7px;height:3em;line-height:3em;width:90%" href="###">全部</a></span>'));
             }
