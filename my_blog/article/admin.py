@@ -1,5 +1,5 @@
 from django.contrib import admin
-from article.models import Article,Comment_db,IMG,Article_examine,User_data,Search_db
+from article.models import Article,Comment_db,IMG,Article_examine,User_data,Search_db,Message_db
 
 class Article_admin(admin.ModelAdmin):
 	list_display = ('date_time','examine_time')
@@ -20,3 +20,7 @@ admin.site.register(User_data)
 class Search_db_admin(admin.ModelAdmin):
 	list_display = ('examine_time',)
 admin.site.register(Search_db,Search_db_admin)
+
+class Message_db_admin(admin.ModelAdmin):
+	list_display = ('comments_text',)
+admin.site.register(Message_db,Message_db_admin)
