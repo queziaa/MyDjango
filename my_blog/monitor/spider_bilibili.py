@@ -30,8 +30,8 @@ def main_spider_time(CELERY_ERROR_LOG_L):
         return 'https://bangumi.bilibili.com/web_api/timeline_global'+str(headers)
     for i_result in result:
         for i_seasons in i_result["seasons"]:
-            # if title == None or 'pub_index' not in i_seasons :
-            #     continue
+            if title == None or 'pub_index' not in i_seasons :
+                continue
             i_seasons['pub_index'] = int(''.join(re.findall("\d+",i_seasons['pub_index'])))
             if not mongopost.find_one({'season_id':i_seasons['season_id']}):
                 temp = {}

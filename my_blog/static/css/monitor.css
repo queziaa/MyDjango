@@ -13,7 +13,7 @@
 @media screen and (min-width:1720px){#chart-modal-dialog{max-width:1640px;} #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:33em;right:-1em;}}
 @media screen and (min-width:1820px){#chart-modal-dialog{max-width:1740px;} #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:35em;right:-1em;}}
 @media screen and (min-width:1920px){#chart-modal-dialog{max-width:1840px;} #chart-modal-dialog a[data-dismiss]{position:absolute;bottom:37em;right:-1em;}}
-@media (min-width: 1200px){#chart-body>div.col-xl-2[temp-id] {max-width: 16.668%;flex:0 0 16.669667%;}
+@media (min-width: 1200px){#chart-body>div.col-xl-2[temp-id] {max-width: 16.668%;flex:0 0 16.669667%;}}
 .bootstrap-select{
 	width:160px!important;
 }
@@ -56,7 +56,7 @@ canvas {
 	-webkit-user-select: none;
 	-ms-user-select: none;
 }
-}.chartjs-tooltip {
+.chartjs-tooltip {
 	opacity: 1;
 	position: absolute;
 	background: rgba(0, 0, 0, .7);
@@ -68,7 +68,8 @@ canvas {
 	-webkit-transform: translate(-50%, 0);
 	transform: translate(-50%, 0);
 	padding: 4px;
-}.chartjs-tooltip-key {
+}
+.chartjs-tooltip-key {
 	display: inline-block;
 	width: 10px;
 	height: 10px;
