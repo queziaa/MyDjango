@@ -7,6 +7,9 @@
 			document.getElementById("id_comment_content").placeholder='使用图片请在上传图片初提交图片{@img|图片ID@}\n使用超链接{@a|url|显示文字@}\n插入代码{@code|代码@}';
 			return false
 		}
+		$('pre code').each(function(i, block) {
+					hljs.highlightBlock(block);
+		});
 	</script>
 		<div class="section_main">
 			<div class="title">
