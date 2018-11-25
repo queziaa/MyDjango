@@ -1,13 +1,15 @@
 from django_hosts import patterns, host #导入django-host
 from django.conf import settings        #导入settings
 
-from article import views as article  #导入app1,我的app1叫ss_update
-from monitor import views as monitor  #导入app2,我的app2叫translate
-from www import views as www          #导入app2,我的app2叫translate
+from article import views as article
+from monitor import views as monitor
+from www import views as www        
 
 
 host_patterns = patterns('',
-    host(r'cv', 'www.urls', name='www'),
-    host(r'www', 'article.urls', name='article'),
+    host(r'cv', 'www.urls', name='cv'),
+    host(r'blog', 'www.urls', name='blog'),
+    host(r'r', 'www.urls', name='r'),
+    host(r'www', 'article.urls', name='www'),
     host(r'monitor', 'monitor.urls', name='monitor'),   
 )

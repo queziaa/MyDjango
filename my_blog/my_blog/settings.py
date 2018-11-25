@@ -29,9 +29,9 @@ SECRET_KEY = 'r-&180r7ih4(cm+49ky&@8l(uyx4*6-o7t0!t8$eagsgc9)f^h'
 # SECURITY WARNING: don't run with debug turned on in production!
 
 DEBUG = False
-ALLOWED_HOSTS = ['www.queziaa.fun','cv.queziaa.fun','monitor.queziaa.fun']
+ALLOWED_HOSTS = ['queziaa.fun','www.queziaa.fun','cv.queziaa.fun','monitor.queziaa.fun','r.queziaa.fun','blog.queziaa.fun']
 # DEBUG = True
-# ALLOWED_HOSTS = ['www.localhost.com','cv.localhost.com','monitor.localhost.com']
+# ALLOWED_HOSTS = ['localhost.com','www.localhost.com','cv.localhost.com','monitor.localhost.com','r.localhost.com','blog.localhost.com']
 
 
 CELERY_ERROR_LOG = r'/var/www/MyDjango/my_blog/static/img/monitor.log'

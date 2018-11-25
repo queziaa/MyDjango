@@ -32,9 +32,9 @@ def home(request):
     inc_num = lambda x,y:x-y
     inc_per = lambda x,y:(" %.2f%%" % ((x-y)/y*100))
     ranking.append({'title':'今日播放数','list':ranking_get(ranking_type='view',time_apart=0,col_lam=inc_num,blank_2=True,reverse_list=True,length=6)})
-    ranking.append({'title':'24小时播放数增长率','list':ranking_get(ranking_type='view',time_apart=24,col_lam=inc_per,length=6)})
+    ranking.append({'title':'24小时播放增长率','list':ranking_get(ranking_type='view',time_apart=24,col_lam=inc_per,length=6)})
     ranking.append({'title':'今日分享数','list':ranking_get(ranking_type='share',time_apart=0,col_lam=inc_num,blank_2=True,reverse_list=True,length=6)})
-    ranking.append({'title':'24小时分享数增长率','list':ranking_get(ranking_type='share',time_apart=24,col_lam=inc_per,length=6)})
+    ranking.append({'title':'24小时分享增长率','list':ranking_get(ranking_type='share',time_apart=24,col_lam=inc_per,length=6)})
     return render(request,'monitor_home.html',{'start':start_data,'ranking':ranking})
 
 def all(request):
